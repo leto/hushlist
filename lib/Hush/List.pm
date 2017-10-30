@@ -7,8 +7,8 @@ use File::Spec::Functions;
 
 #TODO: verify
 my $MAX_RECIPIENTS      = 55;
-my $HUSH_CONFIG_DIR     = $ENV{HUSH_CONFIG_DIR}     || catdir($ENV{HOME},'.hush');
-my $HUSHLIST_CONFIG_DIR = $ENV{HUSHLIST_CONFIG_DIR} || catdir($HUSHLIST_CONFIG_DIR, 'list');
+my $HUSH_CONFIG_DIR     = $ENV{HUSH_CONFIG_DIR} || catdir($ENV{HOME},'.hush');
+my $HUSHLIST_CONFIG_DIR = $ENV{HUSH_CONFIG_DIR} || catdir($HUSH_CONFIG_DIR, 'list');
 
 #TODO: create this if not specified
 my $ZADDR = $ENV{HUSH_LIST_ZADDR} || die 'No funding zaddr found';
@@ -20,7 +20,14 @@ sub _sanity_checks {
 
     if (!-e $HUSHLIST_CONFIG_DIR) {
         print "No Hush List config directory found, creating one...\n";
-        mkdir $HUSHLIST_CONFIG_DIR;
+        if (mkdir $HUSHLIST_CONFIG_DIR) {
+            print "Created $HUSHLIST_CONFIG_DIR\n";
+        } else {
+            die "Could not create $HUSHLIST_CONFIG_DIR, bailing out";
+        }
+        my $list_conf = catfile($HUSHLIST_CONFIG_DIR, 'list.conf');
+
+        open my $fh, ">", $list_conf or die "Could not write file $list_conf ! : $!";
     }
 }
 
