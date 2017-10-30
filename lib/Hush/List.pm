@@ -25,8 +25,9 @@ sub _sanity_checks {
 }
 
 sub new {
+    my ($options)       = @_;
     my $hush_list       = {};
-    my $rpc             = Hush::RPC->new;
+    my $rpc             = Hush::RPC->new($options);
 
     # we only need a single RPC connection
     $hush_list->{rpc}   = $rpc;
