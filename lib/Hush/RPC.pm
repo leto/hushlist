@@ -12,6 +12,8 @@ sub new {
     return $rpc,
 }
 
+1;
+
 __DATA__
 
 my $chaininfo = $btc->getblockchaininfo;
@@ -30,5 +32,3 @@ my $balance = $btc->getbalance($account, 1, JSON::true);
 # Send to an address
 #     https://bitcoin.org/en/developer-reference#sendtoaddress
 my $txid = $rpc->sendtoaddress("1Ky49cu7FLcfVmuQEHLa1WjhRiqJU2jHxe","0.01");
-
-1;

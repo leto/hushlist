@@ -3,17 +3,37 @@ use strict;
 use warnings;
 use Hush::RPC;
 use Try::Tiny;
-
+use File::Spec::Functions;
 
 #TODO: verify
-my $MAX_RECIPIENTS = 55;
+my $MAX_RECIPIENTS      = 55;
+my $HUSH_CONFIG_DIR     = $ENV{HUSH_CONFIG_DIR}     || catdir($ENV{HOME},'.hush');
+my $HUSHLIST_CONFIG_DIR = $ENV{HUSHLIST_CONFIG_DIR} || catdir($HUSHLIST_CONFIG_DIR, 'list');
 
 #TODO: create this if not specified
 my $ZADDR = $ENV{HUSH_LIST_ZADDR} || die 'No funding zaddr found';
 
+sub _sanity_checks {
+    if (!-e $HUSH_CONFIG_DIR ) {
+        die "Hush config directory $HUSH_CONFIG_DIR not found! You can set the HUSH_CONFIG_DIR environment variable if it is not ~/.hush";
+    }
+
+    if (!-e $HUSHLIST_CONFIG_DIR) {
+        print "No Hush List config directory found, creating one...\n";
+        mkdir $HUSHLIST_CONFIG_DIR;
+    }
+}
+
 sub new {
-    my $hush_list = {};
+    my $hush_list       = {};
+    my $rpc             = Hush::RPC->new;
+
+    # we only need a single RPC connection
+    $hush_list->{rpc}   = $rpc;
     $hush_list->{lists} = {};
+
+    _sanity_checks();
+
     return bless $hush_list, 'Hush::List';
 }
 
@@ -28,6 +48,7 @@ sub new_list {
 # send a message to a Hush List, weeeeee!
 sub send_message {
     my ($self,$from,$name,$message) = @_;
+    my $rpc = $self->{rpc};
 
     # TODO: better validation
     die "Invalid Hush list name" unless $name;
@@ -36,7 +57,6 @@ sub send_message {
 
     my $hush_list = $self->{lists}->{$name} || die "No Hush List by the name of '$name' found";
 
-    my $rpc = Hush::RPC->new;
     my $recipients = $hush_list->recipients;
 
     die "Max recipients of $MAX_RECIPIENTS exceeded" if (@$recipients > $MAX_RECIPIENTS);
