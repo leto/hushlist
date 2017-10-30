@@ -40,8 +40,34 @@ sub new {
 sub new_list {
     my ($self,$name)        = @_;
     my $lists = $self->{lists};
-    die "Hush list $name already exists" if $lists->{$name};
-    $lists->{$name}++;
+    # a list is simply a list of addresses, which can be looked up by name, and maybe some other metadata
+    $lists->{$name} = { recipients => {} };
+    return $self;
+}
+
+sub add_zaddr {
+    my ($self,$name,$zaddr) = @_;
+    die "Invalid zaddr=$zaddr" unless $zaddr;
+
+    my $lists = $self->{lists};
+    my $list  = $lists->{$name};
+
+    die "Hush list $list does not exist" unless $list;
+    $list->{recipients}->{$zaddr}++;
+    return $self;
+}
+
+sub remove_zaddr {
+    my ($self,$name,$zaddr) = @_;
+    die "Invalid zaddr=$zaddr" unless $zaddr;
+
+    my $lists = $self->{lists};
+    my $list  = $lists->{$name};
+
+    die "Hush list $list does not exist" unless $list;
+
+    delete $list->{recipients}->{$zaddr};
+
     return $self;
 }
 
