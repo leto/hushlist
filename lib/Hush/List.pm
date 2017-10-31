@@ -11,7 +11,7 @@ my $HUSH_CONFIG_DIR     = $ENV{HUSH_CONFIG_DIR} || catdir($ENV{HOME},'.hush');
 my $HUSHLIST_CONFIG_DIR = $ENV{HUSH_CONFIG_DIR} || catdir($HUSH_CONFIG_DIR, 'list');
 
 #TODO: create this if not specified
-my $ZADDR = $ENV{HUSH_LIST_ZADDR} || die 'No funding zaddr found';
+my $ZADDR = $ENV{HUSH_LIST_ZADDR};
 
 sub _sanity_checks {
     if (!-e $HUSH_CONFIG_DIR ) {
@@ -100,7 +100,7 @@ sub send_message {
 
     # this could blow up for a bajillion reasons...
     try {
-        $rpc->z_sendmany($from, $amount, $recipients, $memo);
+        $rpc->z_sendmany($from, $amount, $recipients, $message);
     } catch {
         die "caught RPC error: $_";
     } finally {
