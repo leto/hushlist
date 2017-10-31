@@ -5,6 +5,8 @@ use Hush::RPC;
 use Try::Tiny;
 use File::Spec::Functions;
 
+our $VERSION = 20171031;
+
 #TODO: verify
 my $MAX_RECIPIENTS      = 55;
 my $HUSH_CONFIG_DIR     = $ENV{HUSH_CONFIG_DIR} || catdir($ENV{HOME},'.hush');
@@ -18,6 +20,8 @@ sub _sanity_checks {
         die "Hush config directory $HUSH_CONFIG_DIR not found! You can set the HUSH_CONFIG_DIR environment variable if it is not ~/.hush";
     }
 
+    my $list_conf = catfile($HUSHLIST_CONFIG_DIR, 'list.conf');
+
     if (!-e $HUSHLIST_CONFIG_DIR) {
         print "No Hush List config directory found, creating one...\n";
         if (mkdir $HUSHLIST_CONFIG_DIR) {
@@ -25,10 +29,28 @@ sub _sanity_checks {
         } else {
             die "Could not create $HUSHLIST_CONFIG_DIR, bailing out";
         }
-        my $list_conf = catfile($HUSHLIST_CONFIG_DIR, 'list.conf');
+        create_default_conf($list_conf);
 
-        open my $fh, ">", $list_conf or die "Could not write file $list_conf ! : $!";
+    } else {
+        # directory exists, does the conf file?
+        if (-e $list_conf) {
+            # conf file already exists, DO NOTHING
+        } else {
+            # no config file found, generate one
+            create_default_conf($list_conf);
+        }
     }
+}
+
+sub create_default_conf {
+    my ($list_conf) = @_;
+    my $time = time;
+    open my $fh, ">", $list_conf or die "Could not write file $list_conf ! : $!";
+    print $fh "# hushlist config\n";
+    print $fh "funding_zaddr=\n";
+    print $fh "introducer_zaddr=\n";
+    print $fh "generated=$time\n";
+    print $fh "generated_by=Hush::List $Hush::List::VERSION\n";
 }
 
 sub new {
