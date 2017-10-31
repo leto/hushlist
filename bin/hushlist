@@ -1,0 +1,44 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use Try::Tiny;
+use Hush::List;
+
+my $command = shift || help();
+my $list = Hush::List->new;
+
+my $COMMANDS = {
+    "add"    =>   \&add,
+    "new"    =>   \&new,
+    "remove"  =>  \&remove,
+    "send"    =>  \&send,
+};
+
+sub help {
+    print "It would be nice to give some help\n";
+}
+sub run {
+    my $cmd = $COMMANDS->{$command};
+    if ($cmd) {
+    } else {
+        help();
+    }
+}
+
+sub add {
+    my ($list_name,$zaddr) = @_;
+
+    $list->add_zaddr($list_name,$zaddr);
+}
+
+sub remove {
+    my ($list_name,$zaddr) = @_;
+
+    $list->remove_zaddr($list_name,$zaddr);
+}
+
+sub send {
+    my ($list_name,$from,$memo) = @_;
+
+    $list->send_message($from, $list_name, $memo);
+}
