@@ -3,8 +3,9 @@ use strict;
 use warnings;
 use Test::More;
 
-use_ok("Hush");
-use_ok("Hush::List");
-use_ok("Hush::Messenger");
+BEGIN {
+    my @mods = qw/Hush Hush::List Hush::Messenger Hush::RPC Hush::Util Hush::Contact/;
+    map { use_ok($_) } @mods;
+}
 
 done_testing;
