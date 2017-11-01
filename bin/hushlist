@@ -4,8 +4,10 @@ use warnings;
 use Try::Tiny;
 use lib 'lib';
 use Hush::List;
+use Data::Dumper;
 
 my $command = shift || help();
+# we only need one
 my $list = Hush::List->new;
 
 my $COMMANDS = {
@@ -14,13 +16,26 @@ my $COMMANDS = {
     "remove"  =>  \&remove,
     "send"    =>  \&send,
 };
+run();
+
 
 sub help {
     print "It would be nice to give some help\n";
 }
+
+sub new {
+    my $name = shift || '';
+    die "Invalid hushlist name '$name' !" unless $name;
+    $list->new_list($name);
+    print "hushlist '$name' created, enjoy your private comms :)\n";
+}
+
 sub run {
+    print "Running command $command\n";
     my $cmd = $COMMANDS->{$command};
+
     if ($cmd) {
+        $cmd->(@ARGV);
     } else {
         help();
     }

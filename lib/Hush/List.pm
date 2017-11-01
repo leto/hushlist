@@ -72,6 +72,11 @@ sub new_list {
     my $lists = $self->{lists};
     # a list is simply a list of addresses, which can be looked up by name, and maybe some other metadata
     $lists->{$name} = { recipients => {} };
+
+    # ~/.hush/list/LIST_NAME/
+    # ~/.hush/list/LIST_NAME/list.conf - list-specific config items
+    # ~/.hush/list/LIST_NAME/list.json - list data, in JSON
+    # ~/.hush/list/LIST_NAME/list.png  - user-specified image for list
     return $self;
 }
 
@@ -117,8 +122,10 @@ sub send_message {
 
     die "Max recipients of $MAX_RECIPIENTS exceeded" if (@$recipients > $MAX_RECIPIENTS);
 
-    # prevent an easily searchable single xtn amount
-    my $amount  = 1e-4 + (1e-5*rand());
+    # TODO: can we make amount=0 and have fee-only xtns?
+    # amount is hidden, so it does not identify list messages via metadata
+    my $amount  = 1e-4;
+    my $fee     = 1e-6;
 
     # this could blow up for a bajillion reasons...
     try {
