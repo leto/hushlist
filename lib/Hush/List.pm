@@ -34,6 +34,12 @@ sub _sanity_checks {
         }
         create_default_conf($list_conf);
 
+        if (mkdir catdir($HUSHLIST_CONFIG_DIR,'contacts')) {
+            print "Created $HUSHLIST_CONFIG_DIR/contacts\n";
+        } else {
+            die "Could not create $HUSHLIST_CONFIG_DIR/contacts, bailing out";
+        }
+
     } else {
         # directory exists, does the conf file?
         if (-e $list_conf) {
@@ -97,8 +103,8 @@ sub new_list {
     # of zaddrs into a file, if they want. We sync/serialize to list.json
     # each time we run
     # hust list contacts?
-
     # TODO: still in flux
+    # ~/.hush/list/contacts/
     # ~/.hush/list/LIST_NAME/
     # ~/.hush/list/LIST_NAME/list.conf - list-specific config items
     # ~/.hush/list/LIST_NAME/members.txt  - list member zaddrs, one per line
