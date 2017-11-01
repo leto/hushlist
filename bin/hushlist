@@ -6,26 +6,37 @@ use lib 'lib';
 use Hush::List;
 use Data::Dumper;
 
-my $command = shift || help();
 # we only need one
-my $list = Hush::List->new;
+my $list    = Hush::List->new;
+my $command = shift || help();
 
 my $COMMANDS = {
-    "add"    =>   \&add,
-    "new"    =>   \&new,
-    "remove"  =>  \&remove,
-    "send"    =>  \&send,
+    "add"     =>   \&add,
+    "contact" =>   \&contact,
+    "new"     =>   \&new,
+    "remove"  =>   \&remove,
+    "send"    =>   \&send,
 };
 run();
-
 
 sub help {
     print "It would be nice to give some help\n";
 }
 
+sub contact {
+    my $cmd = shift || '';
+    if ($cmd eq 'new') {
+        # add a hust contact, yay
+        my ($name,$zaddr) = @ARGV;
+        die Dumper [ $name, $zaddr ];
+    }
+}
+
 sub new {
     my $name = shift || '';
-    die "Invalid hushlist name '$name' !" unless $name;
+    #TODO: better validation and allow safe unicode stuff
+    die "Invalid hushlist name '$name' !" unless $name && ($name =~ m/^[A-z0-9_-]{0,64}/);
+
     $list->new_list($name);
     print "hushlist '$name' created, enjoy your private comms :)\n";
 }
