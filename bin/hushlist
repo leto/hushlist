@@ -4,6 +4,7 @@ use warnings;
 use Try::Tiny;
 use lib 'lib';
 use Hush::List;
+use Hush::Util qw/barf/;
 use Data::Dumper;
 
 # we only need one

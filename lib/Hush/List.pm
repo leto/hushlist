@@ -5,8 +5,7 @@ use Hush::RPC;
 use Try::Tiny;
 use File::Spec::Functions;
 use Carp qw/longmess/;
-
-sub barf { die longmess(@_) }
+use Hush::Util qw/barf/;
 
 our $VERSION = 20171031;
 
