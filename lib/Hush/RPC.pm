@@ -8,6 +8,7 @@ sub new {
         user     => $ENV{HUSH_RPC_USERNAME} || "hush",
         password => $ENV{HUSH_RPC_PASSWORD} || "puppy",
         host     => "127.0.0.1",
+        port     => 8822,
     );
     return $rpc,
 }
