@@ -53,7 +53,6 @@ sub _sanity_checks {
 sub create_default_conf {
     my ($list_conf) = @_;
     my $time = time;
-    open my $fh, ">", $list_conf or die "Could not write file $list_conf ! : $!";
 
     # when we create a brand new conf, we create brand new funding+nym addrs
     my $rpc             = Hush::RPC->new;
@@ -63,6 +62,7 @@ sub create_default_conf {
     my $pseudonym_taddr = $rpc->getnewaddress;
     die "Unable to create pseudonym taddr" unless $pseudonym_taddr;
 
+    open my $fh, ">", $list_conf or die "Could not write file $list_conf ! : $!";
     print $fh "# hushlist config v$Hush::List::VERSION\n";
     print $fh "funding_zaddr=$funding_zaddr\n";
     print $fh "pseudonym_taddr=$pseudonym_taddr\n";
