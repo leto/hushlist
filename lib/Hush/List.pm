@@ -54,11 +54,20 @@ sub create_default_conf {
     my ($list_conf) = @_;
     my $time = time;
     open my $fh, ">", $list_conf or die "Could not write file $list_conf ! : $!";
-    print $fh "# hushlist config\n";
-    print $fh "funding_zaddr=\n";
-    print $fh "introducer_zaddr=\n";
+
+    # when we create a brand new conf, we create brand new funding+nym addrs
+    my $rpc             = Hush::RPC->new;
+    my $funding_zaddr   = $rpc->z_getnewaddress;
+    die "Unable to create funding zaddr" unless $funding_zaddr;
+
+    my $pseudonym_taddr = $rpc->getnewaddress;
+    die "Unable to create pseudonym taddr" unless $pseudonym_taddr;
+
+    print $fh "# hushlist config v$Hush::List::VERSION\n";
+    print $fh "funding_zaddr=$funding_zaddr\n";
+    print $fh "pseudonym_taddr=$pseudonym_taddr\n";
     print $fh "generated=$time\n";
-    print $fh "generated_by=Hush::List $Hush::List::VERSION\n";
+    close $fh;
 }
 
 sub new {
@@ -114,7 +123,8 @@ sub new_list {
 
 sub add_zaddr {
     my ($self,$name,$zaddr) = @_;
-    die "Invalid zaddr=$zaddr" unless $zaddr;
+    $zaddr||= '';
+    die "Invalid zaddr=$zaddr" unless $zaddr =~ m/^z/;
 
     my $lists = $self->{lists};
     my $list  = $lists->{$name};

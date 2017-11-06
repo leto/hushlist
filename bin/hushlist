@@ -20,7 +20,6 @@ my $total_balance = $balance->{total};
 
 print "Hushlist running on $chain chain, $blocks blocks\n";
 print "Balances: transparent $tbalance HUSH, private $zbalance HUSH\n";
-exit;
 
 # we only need one
 my $list    = Hush::List->new;
@@ -34,6 +33,7 @@ my $COMMANDS = {
     "send"    =>   \&send,
 };
 run();
+exit;
 
 sub help {
     print "It would be nice to give some help\n";
@@ -42,7 +42,7 @@ sub help {
 sub contact {
     my $cmd = shift || '';
     if ($cmd eq 'new') {
-        # add a hust contact, yay
+        # add a hush contact, yay
         my ($name,$zaddr) = @ARGV;
         die Dumper [ $name, $zaddr ];
     }
