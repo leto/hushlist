@@ -96,18 +96,28 @@ sub new_list {
     if (!-e $list_dir) {
         # create the config dir for the list for the first time
         mkdir $list_dir;
-        if ($!) {
+        if (!-e $list_dir) {
             barf "Could not create directory $list_dir !";
         }
+    } else {
+        barf "Hushlist $name already exists!";
     }
     my $list_specific_conf =  catfile($HUSHLIST_CONFIG_DIR,$name,'list.conf');
+    my $member_list        =  catfile($HUSHLIST_CONFIG_DIR,$name,'members.txt');
     my $time = time;
 
+    {
     open my $fh, '>', $list_specific_conf or barf "Could not open $list_specific_conf for writing";
-    print $fh "# hushlist $name config\n";
+    print $fh "# hushlist $name config v$Hush::List::VERSION\n";
     print $fh "generated=$time\n";
-    print $fh "generated_by=Hush::List $Hush::List::VERSION\n";
     close $fh;
+    }
+
+    {
+    open my $fh, '>', $member_list or barf "Could not open $member_list for writing";
+    print $fh "";
+    close $fh;
+    }
 
     # We consider members.txt the oracle, so users can simply maintain a list
     # of zaddrs into a file, if they want. We sync/serialize to list.json

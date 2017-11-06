@@ -54,7 +54,7 @@ sub new {
     die "Invalid hushlist name '$name' !" unless $name && ($name =~ m/^[A-z0-9_-]{0,64}/);
 
     $list->new_list($name);
-    print "hushlist '$name' created, enjoy your private comms :)\n";
+    print "hushlist '$name' created, enjoy your private comms ;)\n";
 }
 
 sub run {
