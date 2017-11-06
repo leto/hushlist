@@ -2,16 +2,24 @@ package Hush::RPC;
 use strict;
 use warnings;
 use Bitcoin::RPC::Client;
+use Hush::Util qw/barf/;
 
 sub new {
+    my $port = $ENV{HUSH_RPC_PORT} || 8822;
+    my $host = "127.0.0.1";
+
     my $rpc = Bitcoin::RPC::Client->new(
+        port     => $port, # set this to 18822 to use testnet
+        host     => $host,
         user     => $ENV{HUSH_RPC_USERNAME} || "hush",
-        password => $ENV{HUSH_RPC_PASSWORD} || "puppy",
-        host     => "127.0.0.1",
-        # set this to 18822 to use testnet
-        port     => $ENV{HUSH_RPC_PORT} || 8822,
+        password => $ENV{HUSH_RPC_PASSWORD} || "hushmegently",
     );
-    return $rpc,
+    my $info = $rpc->getinfo;
+    if ($info) {
+        return $rpc,
+    } else {
+        barf "Unable to make RPC connection to $host:$port !";
+    }
 }
 
 1;
