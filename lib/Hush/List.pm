@@ -10,8 +10,8 @@ use File::Slurp;
 
 our $VERSION = 20171031;
 
-#TODO: verify
-my $MAX_RECIPIENTS      = 55;
+# as per z_sendmany rpc docs
+my $MAX_RECIPIENTS      = 54;
 my $HUSH_CONFIG_DIR     = $ENV{HUSH_CONFIG_DIR} || catdir($ENV{HOME},'.hush');
 my $HUSHLIST_CONFIG_DIR = $ENV{HUSH_CONFIG_DIR} || catdir($HUSH_CONFIG_DIR, 'list');
 
