@@ -6,6 +6,7 @@ use Try::Tiny;
 use File::Spec::Functions;
 use Carp qw/longmess/;
 use Hush::Util qw/barf/;
+use File::Slurp;
 
 our $VERSION = 20171031;
 
@@ -14,12 +15,9 @@ my $MAX_RECIPIENTS      = 55;
 my $HUSH_CONFIG_DIR     = $ENV{HUSH_CONFIG_DIR} || catdir($ENV{HOME},'.hush');
 my $HUSHLIST_CONFIG_DIR = $ENV{HUSH_CONFIG_DIR} || catdir($HUSH_CONFIG_DIR, 'list');
 
-#TODO: create this if not specified
-my $ZADDR = $ENV{HUSH_LIST_ZADDR};
-
 sub _sanity_checks {
     if (!-e $HUSH_CONFIG_DIR ) {
-        die "Hush config directory $HUSH_CONFIG_DIR not found! You can set the HUSH_CONFIG_DIR environment variable if it is not ~/.hush";
+        barf "Hush config directory $HUSH_CONFIG_DIR not found! You can set the HUSH_CONFIG_DIR environment variable if it is not ~/.hush";
     }
 
     my $list_conf = catfile($HUSHLIST_CONFIG_DIR, 'list.conf');
@@ -29,14 +27,14 @@ sub _sanity_checks {
         if (mkdir $HUSHLIST_CONFIG_DIR) {
             print "Created $HUSHLIST_CONFIG_DIR\n";
         } else {
-            die "Could not create $HUSHLIST_CONFIG_DIR, bailing out";
+            barf "Could not create $HUSHLIST_CONFIG_DIR, bailing out";
         }
         create_default_conf($list_conf);
 
         if (mkdir catdir($HUSHLIST_CONFIG_DIR,'contacts')) {
             print "Created $HUSHLIST_CONFIG_DIR/contacts\n";
         } else {
-            die "Could not create $HUSHLIST_CONFIG_DIR/contacts, bailing out";
+            barf "Could not create $HUSHLIST_CONFIG_DIR/contacts, bailing out";
         }
 
     } else {
@@ -56,15 +54,15 @@ sub create_default_conf {
     # when we create a brand new conf, we create brand new funding+nym addrs
     my $rpc             = Hush::RPC->new;
     my $funding_zaddr   = $rpc->z_getnewaddress;
-    die "Unable to create funding zaddr" unless $funding_zaddr;
+    barf "Unable to create funding zaddr" unless $funding_zaddr;
 
     my $pseudonym_taddr = $rpc->getnewaddress;
-    die "Unable to create pseudonym taddr" unless $pseudonym_taddr;
+    barf "Unable to create pseudonym taddr" unless $pseudonym_taddr;
 
     warn "funding=$funding_zaddr, nym=$pseudonym_taddr";
 
     my $time = time;
-    open my $fh, ">", $list_conf or die "Could not write file $list_conf ! : $!";
+    open my $fh, ">", $list_conf or barf "Could not write file $list_conf ! : $!";
     print $fh "# hushlist config v$Hush::List::VERSION\n";
     print $fh "funding_zaddr=$funding_zaddr\n";
     print $fh "pseudonym_taddr=$pseudonym_taddr\n";
@@ -84,6 +82,24 @@ sub new {
     _sanity_checks();
 
     return bless $hush_list, 'Hush::List';
+}
+
+sub status {
+    my ($self,$name)   = @_;
+
+    my $list_dir           =  catdir($HUSHLIST_CONFIG_DIR,$name);
+    if (!-e $list_dir) {
+        barf "Hushlist $name does not exist!";
+    } else {
+        my $list_specific_conf = catfile($HUSHLIST_CONFIG_DIR,$name,'list.conf');
+        my %list_conf          = read_file( $list_specific_conf ) =~ /^(\w+)=(.*)$/mg ;
+        my $member_list        = catfile($HUSHLIST_CONFIG_DIR,$name,'members.txt');
+        my @members            = read_file($member_list);
+        my @nicknames          = map { m/^[^ ]+(.*)/ } @members;
+        my $num_members        = @members;
+        print "Hushlist '$name' has $num_members members, generated at $list_conf{generated}\n";
+        map { print "\t - $_\n" } @nicknames;
+    }
 }
 
 sub new_list {
@@ -136,24 +152,24 @@ sub new_list {
 sub add_zaddr {
     my ($self,$name,$zaddr) = @_;
     $zaddr||= '';
-    die "Invalid zaddr=$zaddr" unless $zaddr =~ m/^z/;
+    barf "Invalid zaddr=$zaddr" unless $zaddr =~ m/^z/;
 
     my $lists = $self->{lists};
     my $list  = $lists->{$name};
 
-    die "Hush list $list does not exist" unless $list;
+    barf "Hush list $list does not exist" unless $list;
     $list->{recipients}->{$zaddr}++;
     return $self;
 }
 
 sub remove_zaddr {
     my ($self,$name,$zaddr) = @_;
-    die "Invalid zaddr=$zaddr" unless $zaddr;
+    barf "Invalid zaddr=$zaddr" unless $zaddr;
 
     my $lists = $self->{lists};
     my $list  = $lists->{$name};
 
-    die "Hush list $list does not exist" unless $list;
+    barf "Hush list $list does not exist" unless $list;
 
     delete $list->{recipients}->{$zaddr};
 
@@ -166,15 +182,15 @@ sub send_message {
     my $rpc = $self->{rpc};
 
     # TODO: better validation
-    die "Invalid Hush list name" unless $name;
-    die "Hush message cannot be empty" unless $message;
-    die "Invalid Hush from address: $from" unless $from;
+    barf "Invalid Hush list name" unless $name;
+    barf "Hush message cannot be empty" unless $message;
+    barf "Invalid Hush from address: $from" unless $from;
 
-    my $hush_list = $self->{lists}->{$name} || die "No Hush List by the name of '$name' found";
+    my $hush_list = $self->{lists}->{$name} || barf "No Hush List by the name of '$name' found";
 
     my $recipients = $hush_list->recipients;
 
-    die "Max recipients of $MAX_RECIPIENTS exceeded" if (@$recipients > $MAX_RECIPIENTS);
+    barf "Max recipients of $MAX_RECIPIENTS exceeded" if (@$recipients > $MAX_RECIPIENTS);
 
     # TODO: can we make amount=0 and have fee-only xtns?
     # amount is hidden, so it does not identify list messages via metadata
@@ -183,9 +199,10 @@ sub send_message {
 
     # this could blow up for a bajillion reasons...
     try {
-        $rpc->z_sendmany($from, $amount, $recipients, $message);
+        my $txid = $rpc->z_sendmany($from, $amount, $recipients, $message);
+        warn "txid=$txid";
     } catch {
-        die "caught RPC error: $_";
+        barf "caught RPC error: $_";
     } finally {
         # TODO: notekeeping, logging, etc..
     }

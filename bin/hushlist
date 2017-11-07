@@ -31,6 +31,7 @@ my $COMMANDS = {
     "new"     =>   \&new,
     "remove"  =>   \&remove,
     "send"    =>   \&send,
+    "status"  =>   \&status,
 };
 run();
 exit;
@@ -48,10 +49,16 @@ sub contact {
     }
 }
 
+sub status {
+    my $name = shift || '';
+    barf "Hushlist name required" unless $name;
+    my $status = $list->status($name);
+}
+
 sub new {
     my $name = shift || '';
     #TODO: better validation and allow safe unicode stuff
-    die "Invalid hushlist name '$name' !" unless $name && ($name =~ m/^[A-z0-9_-]{0,64}/);
+    barf "Invalid hushlist name '$name' !" unless $name && ($name =~ m/^[A-z0-9_-]{0,64}/);
 
     $list->new_list($name);
     print "hushlist '$name' created, enjoy your private comms ;)\n";
