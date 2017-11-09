@@ -84,6 +84,21 @@ sub new {
     return bless $hush_list, 'Hush::List';
 }
 
+# show overview of current hushlists
+sub global_status {
+    my ($self) = @_;
+    my @hushlists = map { -d $_ && $_ } glob catdir($HUSHLIST_CONFIG_DIR,'*');
+    print "Hushlists:\n";
+    for my $hushlist (@hushlists) {
+        my $members_file = catfile($hushlist,'members.txt');
+        if (-e $members_file) {
+            my @members      = read_file($members_file);
+            print "\t- $hushlist: " . scalar(@members) . " members \n";
+        }
+    }
+}
+
+# show details about a particular hushlist
 sub status {
     my ($self,$name)   = @_;
 
@@ -98,7 +113,8 @@ sub status {
         my @nicknames          = map { m/^[^ ]+(.*)/ } @members;
         my $num_members        = @members;
         print "Hushlist '$name' has $num_members members, generated at $list_conf{generated}\n";
-        map { print "\t - $_\n" } @nicknames;
+        #map { print "\t - $_\n" } @nicknames;
+        map { print "\t - $_" } @members;
     }
 }
 

@@ -17,8 +17,9 @@ my $balance       = $rpc->z_gettotalbalance;
 my $tbalance      = $balance->{transparent};
 my $zbalance      = $balance->{private};
 my $total_balance = $balance->{total};
+my $blockchain    = "HUSH";
 
-print "Hushlist running on $chain chain, $blocks blocks\n";
+print "Hushlist running on $blockchain ${chain}net, $blocks blocks\n";
 print "Balances: transparent $tbalance HUSH, private $zbalance HUSH\n";
 
 # we only need one
@@ -50,9 +51,12 @@ sub contact {
 }
 
 sub status {
-    my $name = shift || '';
-    barf "Hushlist name required" unless $name;
-    my $status = $list->status($name);
+    my $name = shift;
+    if ($name) {
+        my $status = $list->status($name);
+    } else {
+        my $status = $list->global_status;
+    }
 }
 
 sub new {
