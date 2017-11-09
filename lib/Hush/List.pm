@@ -96,6 +96,20 @@ sub global_status {
             print "\t- $hushlist: " . scalar(@members) . " members \n";
         }
     }
+
+    print "Hushlist contacts:\n ";
+
+    # other possibilties: KMD, ZEN, others?
+    my @chains = qw/hush tush zec taz/;
+
+    for my $chain (@chains) {
+        my $contacts_file = catdir($HUSHLIST_CONFIG_DIR,"$chain-contacts.txt");
+        if (-e $contacts_file) {
+            my @contacts      = read_file($contacts_file);
+            my $uchain        = uc($chain);
+            print "\t- " . scalar(@contacts) . " $uchain contacts\n";
+        }
+    }
 }
 
 # show details about a particular hushlist
@@ -142,6 +156,12 @@ sub new_list {
     open my $fh, '>', $list_specific_conf or barf "Could not open $list_specific_conf for writing";
     print $fh "# hushlist $name config v$Hush::List::VERSION\n";
     print $fh "generated=$time\n";
+    # default chain is hush for now
+    # changing the chain of an existing list means that the subset
+    # of members that have addresses in the local contact list for the
+    # new chain will receive message, or operation aborts if no valid
+    # contacts on new chain
+    print $fh "chain=hush\n";
     close $fh;
     }
 

@@ -23,10 +23,9 @@ print "Hushlist running on $blockchain ${chain}net, $blocks blocks\n";
 print "Balances: transparent $tbalance HUSH, private $zbalance HUSH\n";
 
 # we only need one
-my $list    = Hush::List->new;
-my $command = shift || help();
-
-my $COMMANDS = {
+my $list      = Hush::List->new;
+my $command   = shift || help();
+my $COMMANDS  = {
     "add"     =>   \&add,
     "contact" =>   \&contact,
     "new"     =>   \&new,
@@ -43,10 +42,22 @@ sub help {
 
 sub contact {
     my $cmd = shift || '';
-    if ($cmd eq 'new') {
-        # add a hush contact, yay
-        my ($name,$zaddr) = @ARGV;
-        die Dumper [ $name, $zaddr ];
+    my $subcommands = {
+        "add" => sub {
+            # add a hush contact, yay
+            my ($cmd,$name,$zaddr) = @ARGV;
+            barf Dumper [ $cmd, $name, $zaddr ];
+        },
+        "rm" => sub {
+            my ($cmd,$name,$zaddr) = @ARGV;
+            barf Dumper [ $cmd, $name, $zaddr ];
+        },
+    };
+    my $subcmd = $subcommands->{$cmd};
+    if ($subcmd) {
+        $subcmd->();
+    } else {
+        barf "Invalid hushlist contact subcommand!";
     }
 }
 
@@ -69,7 +80,7 @@ sub new {
 }
 
 sub run {
-    print "Running command $command\n";
+    #print "Running command $command\n";
     my $cmd = $COMMANDS->{$command};
 
     if ($cmd) {
