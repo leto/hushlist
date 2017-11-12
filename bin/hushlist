@@ -14,8 +14,8 @@ my $walletinfo    = $rpc->getwalletinfo;
 my $chain         = $chaininfo->{chain};
 my $blocks        = $chaininfo->{blocks};
 my $balance       = $rpc->z_gettotalbalance;
-my $tbalance      = $balance->{transparent};
-my $zbalance      = $balance->{private};
+my $tbalance      = sprintf "%.6f", $balance->{transparent};
+my $zbalance      = sprintf "%.6f", $balance->{private};
 my $total_balance = $balance->{total};
 my $blockchain    = "HUSH";
 
@@ -71,8 +71,12 @@ sub status {
     }
 }
 
-sub public {
+# make a hushlist public by publishing its privkey in OP_RETURN data
+# This operation costs HUSH!!!
+sub publi {
     my ($name) = @_;
+
+    $list->public($name);
 }
 
 sub new {
@@ -108,7 +112,7 @@ sub remove {
 }
 
 sub send {
-    my ($list_name,$from,$memo) = @_;
+    my ($list_name,$memo) = @_;
 
-    $list->send_message($from, $list_name, $memo);
+    $list->send_message($list_name, $memo);
 }

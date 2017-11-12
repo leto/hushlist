@@ -9,6 +9,7 @@ use Hush::Util qw/barf/;
 use File::Slurp;
 
 our $VERSION = 20171031;
+my $rpc             = Hush::RPC->new;
 
 # as per z_sendmany rpc docs
 my $MAX_RECIPIENTS      = 54;
@@ -52,7 +53,6 @@ sub create_default_conf {
     my ($list_conf) = @_;
 
     # when we create a brand new conf, we create brand new funding+nym addrs
-    my $rpc             = Hush::RPC->new;
     my $funding_zaddr   = $rpc->z_getnewaddress;
     barf "Unable to create funding zaddr" unless $funding_zaddr;
 
@@ -82,6 +82,9 @@ sub new {
     _sanity_checks();
 
     return bless $hush_list, 'Hush::List';
+}
+
+sub list_members {
 }
 
 # show overview of current hushlists
@@ -150,11 +153,15 @@ sub new_list {
     }
     my $list_specific_conf =  catfile($HUSHLIST_CONFIG_DIR,$name,'list.conf');
     my $member_list        =  catfile($HUSHLIST_CONFIG_DIR,$name,'members.txt');
-    my $time = time;
+    my $time               = time;
+    my $sending_zaddr      = $rpc->z_getnewaddress;
 
     {
     open my $fh, '>', $list_specific_conf or barf "Could not open $list_specific_conf for writing";
     print $fh "# hushlist $name config v$Hush::List::VERSION\n";
+    # every list has a unique sending zaddr, so there is no metadata leaked
+    # across one user sending messages to multiple hushlists
+    print $fh "sending_zaddr=$sending_zaddr\n";
     print $fh "generated=$time\n";
     # default chain is hush for now
     # changing the chain of an existing list means that the subset
@@ -171,18 +178,22 @@ sub new_list {
     close $fh;
     }
 
-    # We consider members.txt the oracle, so users can simply maintain a list
-    # of zaddrs into a file, if they want. We sync/serialize to list.json
-    # each time we run
-    # hust list contacts?
-    # TODO: still in flux
-    # ~/.hush/list/contacts/
+    # We consider members.txt the oracle, so users can simply maintain a simple
+    # text file of one item per line, and other files serialized version
     # ~/.hush/list/LIST_NAME/
     # ~/.hush/list/LIST_NAME/list.conf - list-specific config items
     # ~/.hush/list/LIST_NAME/members.txt  - list member zaddrs, one per line
     # ~/.hush/list/LIST_NAME/list.json - list data, in JSON
     # ~/.hush/list/LIST_NAME/list.png  - user-specified image for list
     return $self;
+}
+
+# make a local hushlist PUBLIC by publishing its PRIVKEY
+# to the blockchain via OP_RETURN. This is a ONE WAY PROCESS!!!
+# You can not make a public hushlist private again, it's privkey is in the wild,
+# but we CAN make 
+sub public {
+    my ($self,$name) = @_;
 }
 
 sub add_zaddr {
@@ -214,27 +225,57 @@ sub remove_zaddr {
 
 # send a message to a Hush List, weeeeee!
 sub send_message {
-    my ($self,$from,$name,$message) = @_;
+    my ($self,$name,$message) = @_;
     my $rpc = $self->{rpc};
 
     # TODO: better validation
-    barf "Invalid Hush list name" unless $name;
+    barf "Invalid Hush list name" unless $name =~ m/^([a-z0-9]+)$/i;
     barf "Hush message cannot be empty" unless $message;
-    barf "Invalid Hush from address: $from" unless $from;
+
+    # each hush list has a sending_zaddr defined at time of creation
+    # which is used to send to this list
+    my $list_specific_conf = catfile($HUSHLIST_CONFIG_DIR,$name,'list.conf');
+    unless (-e $list_specific_conf) {
+        barf "Hushlist config for $name list not found!";
+    }
+
+    my %list_conf          = read_file( $list_specific_conf ) =~ /^(\w+)=(.*)$/mg ;
+    my $from               = $list_conf{sending_zaddr};
+
+    barf "Invalid Hush from address! $from" unless $from;
 
     my $hush_list = $self->{lists}->{$name} || barf "No Hush List by the name of '$name' found";
+
+    my $list_members_file = catfile($HUSHLIST_CONFIG_DIR,$name,'members.txt');
+    unless (-e $list_members_file) {
+        barf "No members file found for Hushlist $name!";
+    }
+    my @list_members      = read_file($list_members_file);
 
     my $recipients = $hush_list->recipients;
 
     barf "Max recipients of $MAX_RECIPIENTS exceeded" if (@$recipients > $MAX_RECIPIENTS);
 
-    # TODO: can we make amount=0 and have fee-only xtns?
     # amount is hidden, so it does not identify list messages via metadata
-    my $amount  = 1e-4;
-    my $fee     = 1e-6;
+    my $amount  = 0.0;
 
     # this could blow up for a bajillion reasons...
     try {
+
+# z_sendmany
+# Arguments:
+# 1. "fromaddress"         (string, required) The taddr or zaddr to send the funds from.
+# 2. "amounts"             (array, required) An array of json objects representing the amounts to send.
+#     [{
+#       "address":address  (string, required) The address is a taddr or zaddr
+#       "amount":amount    (numeric, required) The numeric amount in ZEC is the value
+#       "memo":memo        (string, optional) If the address is a zaddr, raw data represented in hexadecimal string format
+#     }, ... ]
+# 3. minconf               (numeric, optional, default=1) Only use funds confirmed at least this many times.
+# 4. fee                   (numeric, optional, default=0.0001) The fee amount to attach to this transaction.
+
+        my $addr = "z42";
+        my $amounts = [ { address => $addr, amount => $amount, memo => $message } ];
         my $txid = $rpc->z_sendmany($from, $amount, $recipients, $message);
         warn "txid=$txid";
     } catch {
