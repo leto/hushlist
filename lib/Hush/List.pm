@@ -255,8 +255,9 @@ sub send_message {
     unless (-e $list_members_file) {
         barf "No members file found for Hushlist $name!";
     }
-    my @list_members      = read_file($list_members_file);
-    #debug("send_message: list_members=" . join(",",@list_members));
+    my %list_members   = read_file( $list_members_file ) =~ /^(.*)$/mg ;
+    debug("send_message: list_members=" . join(",",keys %list_members));
+    use Data::Dumper;
 
     # Now that we have all the list member pseudonyms, look them
     # up in the appropriate chain
@@ -268,7 +269,8 @@ sub send_message {
 
     # grab all contacts
     # TODO: serialize/make more effiecient/etc
-    my %contacts   = read_file( $contacts_file ) =~ /^(\w+)=(.*)$/mg ;
+    my %contacts   = read_file( $contacts_file ) =~ /^([a-z0-9]+) (.*)$/mgi ;
+    debug("send_message: contacts=" . join(",",keys %contacts));
     # this is the subset of contacts that we are sending to on this hushlist
     # with proper amount/memo keys to appease the z_sendmany gods
     my $list_addrs = { };
@@ -300,10 +302,11 @@ sub send_message {
 #           }, ... ]
 #       3. minconf               (numeric, optional, default=1) Only use funds confirmed at least this many times.
 #       4. fee                   (numeric, optional, default=0.0001) The fee amount to attach to this transaction.
-    my $json = encode_json( $list_addrs );
-    #my $opid = $rpc->z_sendmany($from, [$json]);
-    my $opid = $rpc->z_sendmany($from, [$list_addrs]);
-    my $opid = $rpc->z_sendmany($from, [ 42 ]);
+    my $json = encode_json( [$list_addrs] );
+    my $opid = $rpc->z_sendmany($from, $json);
+    #my $opid = $rpc->z_sendmany($from, [$list_addrs]);
+    #my $opid = $rpc->z_sendmany($from, [ 42 ]);
+    #my $opid = $rpc->z_sendmany($from,  "fuck");
     if (defined $opid) {
         debug("send_message: z_sendmany opid=$opid from $from");
     } else {
