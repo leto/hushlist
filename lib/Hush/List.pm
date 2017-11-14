@@ -241,7 +241,9 @@ sub send_message {
 
     my %list_conf          = read_file( $list_specific_conf ) =~ /^(\w+)=(.*)$/mg ;
     my $from               = $list_conf{sending_zaddr};
+    my $chain              = $list_conf{chain};
 
+    barf "Invalid Hushlist chain! $chain" unless $chain =~ m/$(tush|hush)$/i;
     barf "Invalid Hush from address! $from" unless $from;
 
     my $hush_list = $self->{lists}->{$name} || barf "No Hush List by the name of '$name' found";
@@ -252,31 +254,46 @@ sub send_message {
     }
     my @list_members      = read_file($list_members_file);
 
-    my $recipients = $hush_list->recipients;
+    # Now that we have all the list member pseudonyms, look them
+    # up in the appropriate chain
 
-    barf "Max recipients of $MAX_RECIPIENTS exceeded" if (@$recipients > $MAX_RECIPIENTS);
+    my $contacts_file = catdir($HUSHLIST_CONFIG_DIR,"$chain-contacts.txt");
+    unless (-e $contacts_file) {
+        barf "Could not find Hushlist contacts for chain $chain!";
+    }
 
-    # amount is hidden, so it does not identify list messages via metadata
-    my $amount  = 0.0;
+    # grab all contacts
+    # TODO: serialize/make more effiecient/etc
+    my %contacts   = read_file( $contacts_file ) =~ /^(\w+)=(.*)$/mg ;
+    # this is the subset of contacts that we are sending to on this hushlist
+    # with proper amount/memo keys to appease the z_sendmany gods
+    my $list_addrs = { };
+    my $amount     = 0.0; # amount is hidden, so it does not identify list messages via metadata
+    while (my ($contact, $addr) = %contacts) {
+        warn "adding $contact => $addr to recipients";
+        $list_addrs->{$contact} = {
+            address => $addr,
+            amount  => $amount,
+            memo    => $message,
+        };
+    }
+
+    barf "Max recipients of $MAX_RECIPIENTS exceeded" if (keys %contacts > $MAX_RECIPIENTS);
 
     # this could blow up for a bajillion reasons...
     try {
-
-# z_sendmany
-# Arguments:
-# 1. "fromaddress"         (string, required) The taddr or zaddr to send the funds from.
-# 2. "amounts"             (array, required) An array of json objects representing the amounts to send.
-#     [{
-#       "address":address  (string, required) The address is a taddr or zaddr
-#       "amount":amount    (numeric, required) The numeric amount in ZEC is the value
-#       "memo":memo        (string, optional) If the address is a zaddr, raw data represented in hexadecimal string format
-#     }, ... ]
-# 3. minconf               (numeric, optional, default=1) Only use funds confirmed at least this many times.
-# 4. fee                   (numeric, optional, default=0.0001) The fee amount to attach to this transaction.
-
-        my $addr = "z42";
-        my $amounts = [ { address => $addr, amount => $amount, memo => $message } ];
-        my $txid = $rpc->z_sendmany($from, $amount, $recipients, $message);
+#       z_sendmany
+#       Arguments:
+#       1. "fromaddress"         (string, required) The taddr or zaddr to send the funds from.
+#       2. "amounts"             (array, required) An array of json objects representing the amounts to send.
+#           [{
+#             "address":address  (string, required) The address is a taddr or zaddr
+#             "amount":amount    (numeric, required) The numeric amount in ZEC is the value
+#             "memo":memo        (string, optional) If the address is a zaddr, raw data represented in hexadecimal string format
+#           }, ... ]
+#       3. minconf               (numeric, optional, default=1) Only use funds confirmed at least this many times.
+#       4. fee                   (numeric, optional, default=0.0001) The fee amount to attach to this transaction.
+        my $txid = $rpc->z_sendmany($from, [ $list_addrs ]);
         warn "txid=$txid";
     } catch {
         barf "caught RPC error: $_";
