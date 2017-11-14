@@ -256,7 +256,7 @@ sub send_message {
         barf "No members file found for Hushlist $name!";
     }
     my @list_members      = read_file($list_members_file);
-    debug("send_message: list_members=@list_members");
+    #debug("send_message: list_members=" . join(",",@list_members));
 
     # Now that we have all the list member pseudonyms, look them
     # up in the appropriate chain
