@@ -6,14 +6,14 @@ use Try::Tiny;
 use File::Spec::Functions;
 use Hush::Util qw/barf/;
 use File::Slurp;
-
-our $VERSION = 20171031;
-my $rpc             = Hush::RPC->new;
+use Hush::Logger qw/debug/;
 
 # as per z_sendmany rpc docs
 my $MAX_RECIPIENTS      = 54;
 my $HUSH_CONFIG_DIR     = $ENV{HUSH_CONFIG_DIR} || catdir($ENV{HOME},'.hush');
 my $HUSHLIST_CONFIG_DIR = $ENV{HUSH_CONFIG_DIR} || catdir($HUSH_CONFIG_DIR, 'list');
+our $VERSION            = 20171031;
+my $rpc                 = Hush::RPC->new;
 
 sub _sanity_checks {
     if (!-e $HUSH_CONFIG_DIR ) {
@@ -41,6 +41,7 @@ sub _sanity_checks {
         # directory exists, does the conf file?
         if (-e $list_conf) {
             # conf file already exists, DO NOTHING
+            debug("detected existing $list_conf");
         } else {
             # no config file found, generate one
             create_default_conf($list_conf);
@@ -58,15 +59,18 @@ sub create_default_conf {
     my $pseudonym_taddr = $rpc->getnewaddress;
     barf "Unable to create pseudonym taddr" unless $pseudonym_taddr;
 
-    warn "funding=$funding_zaddr, nym=$pseudonym_taddr";
+    debug("setting funding_zaddr=$funding_zaddr, pseudonym_taddr=$pseudonym_taddr");
 
     my $time = time;
+    # this will overwrite an existing conf!!! should we back up last version?
     open my $fh, ">", $list_conf or barf "Could not write file $list_conf ! : $!";
     print $fh "# hushlist config v$Hush::List::VERSION\n";
     print $fh "funding_zaddr=$funding_zaddr\n";
     print $fh "pseudonym_taddr=$pseudonym_taddr\n";
     print $fh "generated=$time\n";
     close $fh;
+
+    debug("created new config file $list_conf");
 }
 
 sub new {
@@ -292,8 +296,8 @@ sub send_message {
 #           }, ... ]
 #       3. minconf               (numeric, optional, default=1) Only use funds confirmed at least this many times.
 #       4. fee                   (numeric, optional, default=0.0001) The fee amount to attach to this transaction.
-        my $txid = $rpc->z_sendmany($from, [ $list_addrs ]);
-        warn "txid=$txid";
+        my $opid = $rpc->z_sendmany($from, [ $list_addrs ]);
+        debug("z_sendmany opid=$opid from $from");
     } catch {
         barf "caught RPC error: $_";
     } finally {
