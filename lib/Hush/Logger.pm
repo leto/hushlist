@@ -14,7 +14,9 @@ sub debug {
     my $time = localtime();
     my $debug = catfile($HUSHLIST_CONFIG_DIR, 'debug.log');
     open(my $log, '>>', $debug) or barf("Could not open $debug for writing!!!");
-    print $log "[$time] [$$] $msg";
+    my $stuff = "[$time] [$$] $msg\n";
+    print $stuff;
+    print $log $stuff;
     close $log;
 }
 

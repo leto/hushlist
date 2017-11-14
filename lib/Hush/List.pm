@@ -7,6 +7,7 @@ use File::Spec::Functions;
 use Hush::Util qw/barf/;
 use File::Slurp;
 use Hush::Logger qw/debug/;
+use JSON;
 
 # as per z_sendmany rpc docs
 my $MAX_RECIPIENTS      = 54;
@@ -297,7 +298,8 @@ sub send_message {
 #           }, ... ]
 #       3. minconf               (numeric, optional, default=1) Only use funds confirmed at least this many times.
 #       4. fee                   (numeric, optional, default=0.0001) The fee amount to attach to this transaction.
-    my $opid = $rpc->z_sendmany($from, [ $list_addrs ]);
+    my $json = encode_json( $list_addrs );
+    my $opid = $rpc->z_sendmany($from, [$json]);
     if (defined $opid) {
         debug("send_message: z_sendmany opid=$opid from $from");
     } else {
