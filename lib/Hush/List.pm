@@ -285,7 +285,6 @@ sub send_message {
     debug("send_message: initiating z_sendmany");
 
     # this could blow up for a bajillion reasons...
-    my $opid;
     #try {
 #       z_sendmany
 #       Arguments:
@@ -299,7 +298,11 @@ sub send_message {
 #       3. minconf               (numeric, optional, default=1) Only use funds confirmed at least this many times.
 #       4. fee                   (numeric, optional, default=0.0001) The fee amount to attach to this transaction.
     my $opid = $rpc->z_sendmany($from, [ $list_addrs ]);
-    debug("send_message: z_sendmany opid=$opid from $from");
+    if (defined $opid) {
+        debug("send_message: z_sendmany opid=$opid from $from");
+    } else {
+        debug("send_message: z_sendmany failed!");
+    }
 
     return $self;
 }
