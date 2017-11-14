@@ -277,7 +277,7 @@ sub send_message {
 
     # This must be a string to make JSON elder gods happy
     my $amount     = "0.00"; # amount is hidden, so it does not identify list messages via metadata
-    while (my ($contact, $addr) = %contacts) {
+    while (my ($contact, $addr) = each %contacts) {
         debug("send_message: adding $contact => $addr to recipients");
         $list_addrs->{$contact} = {
             address => $addr,
