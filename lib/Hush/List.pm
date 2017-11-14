@@ -272,7 +272,9 @@ sub send_message {
     # this is the subset of contacts that we are sending to on this hushlist
     # with proper amount/memo keys to appease the z_sendmany gods
     my $list_addrs = { };
-    my $amount     = 0.0; # amount is hidden, so it does not identify list messages via metadata
+
+    # This must be a string to make JSON elder gods happy
+    my $amount     = "0.00"; # amount is hidden, so it does not identify list messages via metadata
     while (my ($contact, $addr) = %contacts) {
         debug("send_message: adding $contact => $addr to recipients");
         $list_addrs->{$contact} = {
@@ -299,7 +301,9 @@ sub send_message {
 #       3. minconf               (numeric, optional, default=1) Only use funds confirmed at least this many times.
 #       4. fee                   (numeric, optional, default=0.0001) The fee amount to attach to this transaction.
     my $json = encode_json( $list_addrs );
-    my $opid = $rpc->z_sendmany($from, [$json]);
+    #my $opid = $rpc->z_sendmany($from, [$json]);
+    my $opid = $rpc->z_sendmany($from, [$list_addrs]);
+    my $opid = $rpc->z_sendmany($from, [ 42 ]);
     if (defined $opid) {
         debug("send_message: z_sendmany opid=$opid from $from");
     } else {
