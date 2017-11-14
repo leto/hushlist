@@ -4,7 +4,6 @@ use warnings;
 use Hush::RPC;
 use Try::Tiny;
 use File::Spec::Functions;
-use Carp qw/longmess/;
 use Hush::Util qw/barf/;
 use File::Slurp;
 
