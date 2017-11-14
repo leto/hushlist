@@ -250,13 +250,12 @@ sub send_message {
     #barf "Invalid Hushlist chain! $chain" unless $chain =~ m/$(tush|hush)$/i;
     barf "Invalid Hush from address! $from" unless $from;
 
-    my $hush_list = $self->{lists}->{$name} || barf "No Hush List by the name of '$name' found";
-
     my $list_members_file = catfile($HUSHLIST_CONFIG_DIR,$name,'members.txt');
     unless (-e $list_members_file) {
         barf "No members file found for Hushlist $name!";
     }
     my @list_members      = read_file($list_members_file);
+    debug("send_message: list_members=@list_members");
 
     # Now that we have all the list member pseudonyms, look them
     # up in the appropriate chain
@@ -274,7 +273,7 @@ sub send_message {
     my $list_addrs = { };
     my $amount     = 0.0; # amount is hidden, so it does not identify list messages via metadata
     while (my ($contact, $addr) = %contacts) {
-        warn "adding $contact => $addr to recipients";
+        debug("send_message: adding $contact => $addr to recipients");
         $list_addrs->{$contact} = {
             address => $addr,
             amount  => $amount,
@@ -283,9 +282,11 @@ sub send_message {
     }
 
     barf "Max recipients of $MAX_RECIPIENTS exceeded" if (keys %contacts > $MAX_RECIPIENTS);
+    debug("send_message: initiating z_sendmany");
 
     # this could blow up for a bajillion reasons...
-    try {
+    my $opid;
+    #try {
 #       z_sendmany
 #       Arguments:
 #       1. "fromaddress"         (string, required) The taddr or zaddr to send the funds from.
@@ -297,13 +298,8 @@ sub send_message {
 #           }, ... ]
 #       3. minconf               (numeric, optional, default=1) Only use funds confirmed at least this many times.
 #       4. fee                   (numeric, optional, default=0.0001) The fee amount to attach to this transaction.
-        my $opid = $rpc->z_sendmany($from, [ $list_addrs ]);
-        debug("z_sendmany opid=$opid from $from");
-    } catch {
-        barf "caught RPC error: $_";
-    } finally {
-        # TODO: notekeeping, logging, etc..
-    }
+    my $opid = $rpc->z_sendmany($from, [ $list_addrs ]);
+    debug("send_message: z_sendmany opid=$opid from $from");
 
     return $self;
 }
