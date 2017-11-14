@@ -244,9 +244,10 @@ sub send_message {
 
     my %list_conf          = read_file( $list_specific_conf ) =~ /^(\w+)=(.*)$/mg ;
     my $from               = $list_conf{sending_zaddr};
-    my $chain              = $list_conf{chain};
+    # default should probably be TUSH, but meh...
+    my $chain              = $list_conf{chain} || 'hush';
 
-    barf "Invalid Hushlist chain! $chain" unless $chain =~ m/$(tush|hush)$/i;
+    #barf "Invalid Hushlist chain! $chain" unless $chain =~ m/$(tush|hush)$/i;
     barf "Invalid Hush from address! $from" unless $from;
 
     my $hush_list = $self->{lists}->{$name} || barf "No Hush List by the name of '$name' found";
