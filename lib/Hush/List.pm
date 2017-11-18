@@ -277,12 +277,14 @@ sub send_message {
 
     # This must be a string to make JSON elder gods happy
     my $amount     = "0.00"; # amount is hidden, so it does not identify list messages via metadata
-    while (my ($contact, $addr) = each %contacts) {
-        debug("send_message: adding $contact => $addr to recipients");
+    while (my ($addr, $contact) = each %contacts) {
+        my $memo    = sprintf("%x", $message);
+        debug("send_message: adding $contact => $addr to recipients and sending: $memo");
         $list_addrs->{$contact} = {
             address => $addr,
             amount  => $amount,
-            memo    => $message,
+            # backend wants hex-encoded memo-field
+            memo    => $memo,
         };
     }
 
@@ -302,11 +304,9 @@ sub send_message {
 #           }, ... ]
 #       3. minconf               (numeric, optional, default=1) Only use funds confirmed at least this many times.
 #       4. fee                   (numeric, optional, default=0.0001) The fee amount to attach to this transaction.
-    my $json = encode_json( [$list_addrs] );
-    my $opid = $rpc->z_sendmany($from, $json);
-    #my $opid = $rpc->z_sendmany($from, [$list_addrs]);
-    #my $opid = $rpc->z_sendmany($from, [ 42 ]);
-    #my $opid = $rpc->z_sendmany($from,  "fuck");
+
+    my $opid = $rpc->z_sendmany($from, [values $list_addrs]);
+
     if (defined $opid) {
         debug("send_message: z_sendmany opid=$opid from $from");
     } else {
