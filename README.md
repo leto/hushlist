@@ -1,4 +1,13 @@
-# Hushlist: Censorship Resistant Communication
+# Hushlist: Censorship Resistant Metadata-Minimizing Multi-Blockchain Communication
+
+    Hush, little baby, don't say a word,
+    Mama's going to buy you a mockingbird.
+    And if that mockingbird don't sing,
+    Mama's going to buy you a diamond ring.
+    And if that diamond ring turns brass,
+    Mama's going to buy you a looking glass.
+
+Examples of using Hush:
 
     # create a new Hush contact
     hushlist contact add alice z123
