@@ -23,7 +23,8 @@ print "Hushlist running on $blockchain ${chain}net, $blocks blocks\n";
 print "Balances: transparent $tbalance HUSH, private $zbalance HUSH\n";
 
 # we only need one
-my $list      = Hush::List->new;
+my $options   = {};
+my $list      = Hush::List->new($rpc, $options);
 my $command   = shift || help();
 my $COMMANDS  = {
     "add"     =>   \&add,

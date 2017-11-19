@@ -20,7 +20,16 @@ sub new {
     if ($info) {
         return $rpc,
     } else {
-        barf "Unable to make RPC connection to $host:$port !";
+        my $coins = {
+            8822 => 'HUSH',
+           18822 => 'TUSH',
+            8232 => 'ZEC',
+           18232 => 'TAZ',
+        };
+        my $coin = $coins->{$port} || 'cryptocoin';
+        print "Unable to make RPC connection to $coin full node at $host:$port !\n";
+        print "Your $coin full node is not running, or not accessible at that port :(\n";
+        exit(1);
     }
 }
 

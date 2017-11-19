@@ -14,6 +14,7 @@ my $MAX_RECIPIENTS      = 54;
 my $HUSH_CONFIG_DIR     = $ENV{HUSH_CONFIG_DIR} || catdir($ENV{HOME},'.hush');
 my $HUSHLIST_CONFIG_DIR = $ENV{HUSH_CONFIG_DIR} || catdir($HUSH_CONFIG_DIR, 'list');
 our $VERSION            = 20171031;
+
 my $rpc                 = Hush::RPC->new;
 
 sub _sanity_checks {
@@ -75,9 +76,8 @@ sub create_default_conf {
 }
 
 sub new {
-    my ($options)       = @_;
+    my ($rpc,$options)  = @_;
     my $hush_list       = {};
-    my $rpc             = Hush::RPC->new($options);
 
     # we only need a single RPC connection
     $hush_list->{rpc}   = $rpc;
