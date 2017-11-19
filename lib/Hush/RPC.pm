@@ -26,9 +26,17 @@ sub new {
             8232 => 'ZEC',
            18232 => 'TAZ',
         };
+        my $sites = {
+            "HUSH" => 'https://myhush.org',
+            "TUSH" => 'https://myhush.org',
+            "ZEC"  => 'https://z.cash',
+            "TAZ"  => 'https://z.cash',
+        };
         my $coin = $coins->{$port} || 'cryptocoin';
+        my $site = $sites->{$coin} || 'https://github.com/leto/hushlist';
         print "Unable to make RPC connection to $coin full node at $host:$port !\n";
         print "Your $coin full node is not running, or not accessible at that port :(\n";
+        print "See $site for more information about this privacy coin\n";
         exit(1);
     }
 }
