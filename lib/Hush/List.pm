@@ -276,10 +276,11 @@ sub send_message {
     my $list_addrs = { };
 
     # This must be a string to make JSON elder gods happy
-    my $amount     = "0.00"; # amount is hidden, so it does not identify list messages via metadata
+    my $amount  = "0.00"; # amount is hidden, so it does not identify list messages via metadata
+    debug("message=$message");
+    my $memo    = unpack("h*",$message);
     while (my ($addr, $contact) = each %contacts) {
-        my $memo    = sprintf("%x", $message);
-        debug("send_message: adding $contact => $addr to recipients and sending: $memo");
+        debug("send_message: adding $contact => $addr to recipients and sending: $message");
         $list_addrs->{$contact} = {
             address => $addr,
             amount  => $amount,
@@ -287,6 +288,7 @@ sub send_message {
             memo    => $memo,
         };
     }
+    warn Dumper [ $list_addrs ];
 
     barf "Max recipients of $MAX_RECIPIENTS exceeded" if (keys %contacts > $MAX_RECIPIENTS);
     debug("send_message: initiating z_sendmany");
