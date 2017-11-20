@@ -307,6 +307,7 @@ sub send_message {
 #       3. minconf               (numeric, optional, default=1) Only use funds confirmed at least this many times.
 #       4. fee                   (numeric, optional, default=0.0001) The fee amount to attach to this transaction.
 
+    my $rpc  = Hush::RPC->new;
     my $opid = $rpc->z_sendmany($from, [values $list_addrs]);
 
     if (defined $opid) {
