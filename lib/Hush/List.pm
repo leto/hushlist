@@ -307,11 +307,20 @@ sub send_message {
 #       3. minconf               (numeric, optional, default=1) Only use funds confirmed at least this many times.
 #       4. fee                   (numeric, optional, default=0.0001) The fee amount to attach to this transaction.
 
+    # TODO: fix
     my $rpc  = Hush::RPC->new;
     my $opid = $rpc->z_sendmany($from, [values $list_addrs]);
 
     if (defined $opid) {
         debug("send_message: z_sendmany opid=$opid from $from");
+        # omg we got an opid, lets see what is up
+        my @opids = ( $opid, 0 );
+        my $status = $rpc->z_getoperationstatus([@opids]);
+        if ($status) {
+            debug("send_message: $opid has status=$status");
+        } else {
+            debug("send_message: no status for opid=$opid");
+        }
     } else {
         debug("send_message: z_sendmany failed!");
     }
