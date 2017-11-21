@@ -314,7 +314,7 @@ sub send_message {
     if (defined $opid) {
         debug("send_message: z_sendmany opid=$opid from $from");
         # omg we got an opid, lets see what is up
-        my @opids = ( $opid, 0 );
+        my @opids = ( $opid );
         my $status = $rpc->z_getoperationstatus([@opids]);
         if ($status) {
             debug("send_message: $opid has status=$status");
