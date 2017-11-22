@@ -1,7 +1,29 @@
 # Hushlist: Censorship Resistant Metadata-Minimizing Multi-Blockchain Communication
 
+Hushlist uses the Hush cryptocoin blockchain, as well as other privacy coin
+blockchain to implement mailing-list style communication which inherit all of
+the beautiful properties that Hush inherits from Bitcoin and Zcash.
 
-Examples of using Hush:
+# Requirements
+
+Hushlist requires a computer with Perl 5.8+, and access to a Hush fullnode RPC server
+which is often run on localhost.
+
+Sending shielded transactions (involving zaddrs) can be very resource
+intensive, and at least 4GB of RAM is recommended, although 2GB may work on
+some newer versions and platforms.
+
+# Supported Blockchains
+
+* HUSH
+* TUSH (HUSH testnet)
+* ZEC
+* TAZ (ZEC testnet)
+* KMD (planned)
+* KMD-testnet (planned)
+
+
+# Examples
 
     # create a new Hush contact
     hushlist contact add alice z1234...
@@ -34,10 +56,21 @@ Examples of using Hush:
 # In development commands
 
 This will rely on z\_embedstring RPC which will hopefully be in the Hush 1.0.13 release,
-it is currently in the `dev` branch:
+it is currently in the `z_embedstring` branch:
 
     # make an already created private hushlist PUBLIC, i.e.
     # publish it's privkey to the blockchain. This costs HUSH, since
     # we need to send an xtn to the blockchain
     hushlist public listname
+
+# How Is This Different Than Hush Messenger?
+
+Hush Messenger has similar functions, but it more closely maps to "chat
+program" versus "mailing list software". Messenger also has a different tech
+stack (Javascript) and runs in the browser while Hushlist avoids the
+convenience of browsers to reduce it's attack surface.
+
+# License
+
+GPLv3
 
