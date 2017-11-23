@@ -14,7 +14,7 @@ sub new {
         user     => $ENV{HUSH_RPC_USERNAME} || "hush",
         password => $ENV{HUSH_RPC_PASSWORD} || "hushmegently",
         # rpc calls, how do they work?
-        #debug    => 1,
+        debug    => $ENV{HUSH_DEBUG} || 0,
     );
     my $info = $rpc->getinfo;
     if ($info) {
