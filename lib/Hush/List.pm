@@ -289,7 +289,29 @@ sub send_message {
     warn Dumper [ $list_addrs ];
 
     barf "Max recipients of $MAX_RECIPIENTS exceeded" if (keys %contacts > $MAX_RECIPIENTS);
+
+
     debug("send_message: initiating z_sendmany");
+
+    my $default_fee  = 1e-4;
+    my $fee          = $ENV{HUSHLIST_FEE} ? sprintf "%.8f", $ENV{HUSHLIST_FEE} : $default_fee;
+    my $balance      = $rpc->z_gettotalbalance;
+    my $zbalance     = $balance->{private};
+
+    # this is the total cost to send the current Hush
+    # transaction to N recipients eac with $fee
+    my $recipients = (keys %contacts);
+    my $total_cost = $fee * $recipients;
+    my $CURR = "HUSH";
+    debug("send_message: calculated total_cost=$total_cost $CURR for $recipients recipients");
+
+    if ($zbalance < $fee) {
+        debug("send_message: Insufficient zaddr balance to pay even one fee=$fee");
+        return;
+    }elsif ($zbalance < $total_cost) {
+        debug("send_message: Insufficient zaddr balance to pay full xtn fee=$total_cost to $recipients recipients with balance=$zbalance");
+        return;
+    }
 
     # this could blow up for a bajillion reasons...
     #try {
