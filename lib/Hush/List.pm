@@ -14,7 +14,6 @@ my $MAX_RECIPIENTS      = 54;
 my $HUSH_CONFIG_DIR     = $ENV{HUSH_CONFIG_DIR} || catdir($ENV{HOME},'.hush');
 my $HUSHLIST_CONFIG_DIR = $ENV{HUSH_CONFIG_DIR} || catdir($HUSH_CONFIG_DIR, 'list');
 our $VERSION            = 20171031;
-
 my $rpc                 = Hush::RPC->new;
 
 sub _sanity_checks {
@@ -31,7 +30,7 @@ sub _sanity_checks {
         } else {
             barf "Could not create $HUSHLIST_CONFIG_DIR, bailing out";
         }
-        create_default_conf($list_conf);
+        create_default_conf($rpc,$list_conf);
 
         if (mkdir catdir($HUSHLIST_CONFIG_DIR,'contacts')) {
             print "Created $HUSHLIST_CONFIG_DIR/contacts\n";
@@ -46,13 +45,13 @@ sub _sanity_checks {
             debug("detected existing $list_conf");
         } else {
             # no config file found, generate one
-            create_default_conf($list_conf);
+            create_default_conf($rpc,$list_conf);
         }
     }
 }
 
 sub create_default_conf {
-    my ($list_conf) = @_;
+    my ($rpc,$list_conf) = @_;
 
     # when we create a brand new conf, we create brand new funding+nym addrs
     my $funding_zaddr   = $rpc->z_getnewaddress;
@@ -229,8 +228,7 @@ sub remove_zaddr {
 
 # send a message to a Hush List, weeeeee!
 sub send_message {
-    my ($self,$name,$message) = @_;
-    my $rpc = $self->{rpc};
+    my ($self,$rpc, $name,$message) = @_;
 
     # TODO: better validation
     barf "Invalid Hush list name" unless $name =~ m/^([a-z0-9]+)$/i;
@@ -307,8 +305,6 @@ sub send_message {
 #       3. minconf               (numeric, optional, default=1) Only use funds confirmed at least this many times.
 #       4. fee                   (numeric, optional, default=0.0001) The fee amount to attach to this transaction.
 
-    # TODO: fix
-    my $rpc  = Hush::RPC->new;
     my $opid = $rpc->z_sendmany($from, [values $list_addrs]);
 
     if (defined $opid) {

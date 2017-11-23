@@ -6,7 +6,7 @@ use lib 'lib';
 use Hush::List;
 use Hush::Util qw/barf/;
 use Data::Dumper;
-use Hush::RPC; #hack
+use Hush::RPC;
 
 my $rpc           = Hush::RPC->new;
 my $chaininfo     = $rpc->getblockchaininfo;
@@ -115,5 +115,5 @@ sub remove {
 sub send {
     my ($list_name,$memo) = @_;
 
-    $list->send_message($list_name, $memo);
+    $list->send_message($rpc, $list_name, $memo);
 }
