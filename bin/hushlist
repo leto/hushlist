@@ -61,6 +61,12 @@ sub help {
 }
 
 sub show {
+    my ($name,@args) = @_;
+    if ($name) {
+        my $status = $list->show($name);
+    } else {
+        my $status = $list->global_show;
+    }
 }
 
 sub usage {
@@ -99,11 +105,12 @@ sub status {
 }
 
 # make a hushlist public by publishing its privkey in OP_RETURN data
-# This operation costs HUSH!!!
-sub publi {
+# This operation costs HUSH and cannot be undone!!! It sends private
+# keys to the PUBLIC BLOCKCHAIN
+sub publicize {
     my ($name) = @_;
 
-    $list->public($name);
+    $list->publicize($name);
 }
 
 sub new {
