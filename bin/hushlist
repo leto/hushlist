@@ -33,6 +33,7 @@ my $COMMANDS  = {
     "new"     => \&new,
     "remove"  => \&remove,
     "send"    => \&send,
+    "show"    => \&show,
     "status"  => \&status,
     #"public"  => \&public,
 };
@@ -45,6 +46,7 @@ my %HELP      = (
     "remove"  => "Remove a Hushlist",
     "send"    => "Send a new new Hushlist memo",
     "status"  => "Get overview of Hushlists or a specific Hushlist",
+    "show"    => "Show Hushlist memos",
     #"public"  => "Make a private Hushlist public",
 );
 run();
@@ -56,6 +58,9 @@ sub help {
     for my $cmd (@cmds) {
         print "\t$cmd\t: $HELP{$cmd}\n";
     }
+}
+
+sub show {
 }
 
 sub usage {
