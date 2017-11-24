@@ -118,24 +118,35 @@ sub global_status {
     }
 }
 
+sub _hushlist_exists {
+    my ($name)   = @_;
+    my $list_dir =  catdir($HUSHLIST_CONFIG_DIR,$name);
+    return (-e $list_dir) ? 1 : 0;
+}
+
+sub exit_unless_hushlist_exists {
+    my ($name)   = @_;
+    if (!_hushlist_exists($name)) {
+        print "Hushlist $name does not exist!\n";
+        exit(1);
+    };
+}
+
 # show details about a particular hushlist
 sub status {
     my ($self,$name)   = @_;
 
-    my $list_dir           =  catdir($HUSHLIST_CONFIG_DIR,$name);
-    if (!-e $list_dir) {
-        barf "Hushlist $name does not exist!";
-    } else {
-        my $list_specific_conf = catfile($HUSHLIST_CONFIG_DIR,$name,'list.conf');
-        my %list_conf          = read_file( $list_specific_conf ) =~ /^(\w+)=(.*)$/mg ;
-        my $member_list        = catfile($HUSHLIST_CONFIG_DIR,$name,'members.txt');
-        my @members            = read_file($member_list);
-        my @nicknames          = map { m/^[^ ]+(.*)/ } @members;
-        my $num_members        = @members;
-        print "Hushlist '$name' has $num_members members, generated at $list_conf{generated}\n";
-        #map { print "\t - $_\n" } @nicknames;
-        map { print "\t - $_" } @members;
-    }
+    exit_unless_hushlist_exists($name);
+
+    my $list_specific_conf = catfile($HUSHLIST_CONFIG_DIR,$name,'list.conf');
+    my %list_conf          = read_file( $list_specific_conf ) =~ /^(\w+)=(.*)$/mg ;
+    my $member_list        = catfile($HUSHLIST_CONFIG_DIR,$name,'members.txt');
+    my @members            = read_file($member_list);
+    my @nicknames          = map { m/^[^ ]+(.*)/ } @members;
+    my $num_members        = @members;
+    print "Hushlist '$name' has $num_members members, generated at $list_conf{generated}\n";
+    #map { print "\t - $_\n" } @nicknames;
+    map { print "\t - $_" } @members;
 }
 
 sub new_list {
