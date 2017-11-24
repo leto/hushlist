@@ -34,13 +34,18 @@ my $COMMANDS  = {
     "remove"  => \&remove,
     "send"    => \&send,
     "status"  => \&status,
-    "public"  => \&public,
+    #"public"  => \&public,
 };
 # TODO: translations
 my %HELP      = (
     "add"     => "Add a contact to a Hushlist",
+    "contact" => "Manage Hushlist contacts",
+    "help"    => "Get your learn on",
     "new"     => "Create a new Hushlist",
+    "remove"  => "Remove a Hushlist",
     "send"    => "Send a new new Hushlist memo",
+    "status"  => "Get overview of Hushlists or a specific Hushlist",
+    #"public"  => "Make a private Hushlist public",
 );
 run();
 exit;
@@ -49,7 +54,7 @@ sub help {
     print "Available Hushlist commands:\n";
     my @cmds = sort keys %$COMMANDS;
     for my $cmd (@cmds) {
-        print "\t$cmd - $HELP{$cmd}\n";
+        print "\t$cmd\t: $HELP{$cmd}\n";
     }
 }
 
