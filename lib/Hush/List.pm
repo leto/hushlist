@@ -226,13 +226,15 @@ sub remove_zaddr {
     return $self;
 }
 
-# send a message to a Hush List, weeeeee!
-sub send_message {
-    my ($self,$rpc, $name,$message) = @_;
+# send a memo to a Hush List, weeeeee!
+sub send_memo {
+    my ($self,$rpc, $name,$memo) = @_;
 
     # TODO: better validation
     barf "Invalid Hush list name" unless $name =~ m/^([a-z0-9]+)$/i;
-    barf "Hush message cannot be empty" unless $message;
+    barf "Hush memo cannot be empty" unless $memo;
+
+    my $debug = sub { debug("send_memo: @_") };
 
     # each hush list has a sending_zaddr defined at time of creation
     # which is used to send to this list
@@ -254,7 +256,7 @@ sub send_message {
         barf "No members file found for Hushlist $name!";
     }
     my %list_members   = read_file( $list_members_file ) =~ /^(.*)$/mg ;
-    debug("send_message: list_members=" . join(",",keys %list_members));
+    $debug->("list_members=" . join(",",keys %list_members));
     use Data::Dumper;
 
     # Now that we have all the list member pseudonyms, look them
@@ -268,30 +270,30 @@ sub send_message {
     # grab all contacts
     # TODO: serialize/make more effiecient/etc
     my %contacts   = read_file( $contacts_file ) =~ /^([a-z0-9]+) (.*)$/mgi ;
-    debug("send_message: contacts=" . join(",",keys %contacts));
+    $debug->("contacts=" . join(",",keys %contacts));
     # this is the subset of contacts that we are sending to on this hushlist
     # with proper amount/memo keys to appease the z_sendmany gods
     my $list_addrs = { };
 
     # This must be a string to make JSON elder gods happy
-    my $amount  = "0.00"; # amount is hidden, so it does not identify list messages via metadata
-    debug("message=$message");
-    my $memo    = unpack("h*",$message);
+    my $amount  = "0.00"; # amount is hidden in (z,z) xtns, so it does not identify list messages via metadata
+    my $raw_memo  = unpack("h*",$memo); # backend wants hex-encoded memo-field
+    $debug->("memo=$memo");
+    $debug->("raw_memo=$memo");
+
     while (my ($addr, $contact) = each %contacts) {
-        debug("send_message: adding $contact => $addr to recipients and sending: $message");
+        $debug->("adding $contact => $addr to recipients and sending: $memo");
         $list_addrs->{$contact} = {
-            address => $addr,
-            amount  => $amount,
-            # backend wants hex-encoded memo-field
-            memo    => $memo,
+            address             => $addr,
+            amount              => $amount,
+            memo                => $raw_memo,
         };
     }
     warn Dumper [ $list_addrs ];
 
     barf "Max recipients of $MAX_RECIPIENTS exceeded" if (keys %contacts > $MAX_RECIPIENTS);
 
-
-    debug("send_message: initiating z_sendmany");
+    $debug->("initiating z_sendmany");
 
     my $default_fee  = 1e-4;
     my $fee          = $ENV{HUSHLIST_FEE} ? sprintf "%.8f", $ENV{HUSHLIST_FEE} : $default_fee;
@@ -303,13 +305,13 @@ sub send_message {
     my $recipients = (keys %contacts);
     my $total_cost = $fee * $recipients;
     my $CURR = "HUSH";
-    debug("send_message: calculated total_cost=$total_cost $CURR for $recipients recipients");
+    $debug->("calculated total_cost=$total_cost $CURR for $recipients recipients");
 
     if ($zbalance < $fee) {
-        debug("send_message: Insufficient zaddr balance to pay even one fee=$fee");
+        $debug->("Insufficient zaddr balance to pay even one fee=$fee");
         return;
     }elsif ($zbalance < $total_cost) {
-        debug("send_message: Insufficient zaddr balance to pay full xtn fee=$total_cost to $recipients recipients with balance=$zbalance");
+        $debug->("Insufficient zaddr balance to pay full xtn fee=$total_cost to $recipients recipients with balance=$zbalance");
         return;
     }
 
@@ -330,17 +332,17 @@ sub send_message {
     my $opid = $rpc->z_sendmany($from, [values $list_addrs]);
 
     if (defined $opid) {
-        debug("send_message: z_sendmany opid=$opid from $from");
+        $debug->("z_sendmany opid=$opid from $from");
         # omg we got an opid, lets see what is up
         my @opids = ( $opid );
         my $status = $rpc->z_getoperationstatus([@opids]);
         if ($status) {
-            debug("send_message: $opid has status=$status");
+            $debug->("$opid has status=$status");
         } else {
-            debug("send_message: no status for opid=$opid");
+            $debug->("no status for opid=$opid");
         }
     } else {
-        debug("send_message: z_sendmany failed!");
+        $debug->("z_sendmany failed!");
     }
 
     return $self;
@@ -348,6 +350,5 @@ sub send_message {
 
 sub new_taddr {}
 sub new_zaddr {}
-
 
 1;

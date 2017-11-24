@@ -14,12 +14,12 @@ my $walletinfo    = $rpc->getwalletinfo;
 my $chain         = $chaininfo->{chain};
 my $blocks        = $chaininfo->{blocks};
 my $balance       = $rpc->z_gettotalbalance;
-my $tbalance      = sprintf "%.6f", $balance->{transparent};
-my $zbalance      = sprintf "%.6f", $balance->{private};
+my $tbalance      = sprintf "%.8f", $balance->{transparent};
+my $zbalance      = sprintf "%.8f", $balance->{private};
 my $total_balance = $balance->{total};
 my $blockchain    = "HUSH";
 
-print "Hushlist running on $blockchain ${chain}net, $blocks blocks\n";
+print "Hushlist v$Hush::List::VERSION running on $blockchain ${chain}net, $blocks blocks\n";
 print "Balances: transparent $tbalance HUSH, private $zbalance HUSH\n";
 
 # we only need one
@@ -27,19 +27,35 @@ my $options   = {};
 my $list      = Hush::List->new($rpc, $options);
 my $command   = shift || help();
 my $COMMANDS  = {
-    "add"     =>   \&add,
-    "contact" =>   \&contact,
-    "new"     =>   \&new,
-    "remove"  =>   \&remove,
-    "send"    =>   \&send,
-    "status"  =>   \&status,
-    "public"  =>   \&public,
+    "add"     => \&add,
+    "contact" => \&contact,
+    "help"    => \&help,
+    "new"     => \&new,
+    "remove"  => \&remove,
+    "send"    => \&send,
+    "status"  => \&status,
+    "public"  => \&public,
 };
+# TODO: translations
+my %HELP      = (
+    "add"     => "Add a contact to a Hushlist",
+    "new"     => "Create a new Hushlist",
+    "send"    => "Send a new new Hushlist memo",
+);
 run();
 exit;
 
 sub help {
-    print "It would be nice to give some help\n";
+    print "Available Hushlist commands:\n";
+    my @cmds = sort keys %$COMMANDS;
+    for my $cmd (@cmds) {
+        print "\t$cmd - $HELP{$cmd}\n";
+    }
+}
+
+sub usage {
+    print "Usage: $0 command [subcommand] [options]\n";
+    print "$0 help for more details :)\n";
 }
 
 sub contact {
@@ -96,7 +112,7 @@ sub run {
     if ($cmd) {
         $cmd->(@ARGV);
     } else {
-        help();
+        usage();
     }
 }
 
@@ -115,5 +131,5 @@ sub remove {
 sub send {
     my ($list_name,$memo) = @_;
 
-    $list->send_message($rpc, $list_name, $memo);
+    $list->send_memo($rpc, $list_name, $memo);
 }
