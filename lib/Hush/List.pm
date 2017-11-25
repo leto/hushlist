@@ -133,6 +133,26 @@ sub exit_unless_hushlist_exists {
 }
 
 # show details about a particular hushlist
+sub show {
+    my ($self,$name)   = @_;
+
+    exit_unless_hushlist_exists($name);
+
+    my $list_specific_conf = catfile($HUSHLIST_CONFIG_DIR,$name,'list.conf');
+    my %list_conf          = read_file( $list_specific_conf ) =~ /^(\w+)=(.*)$/mg ;
+
+    print "Hushlist: $name\n";
+    print "Recents memos:\n";
+    my $memos_exist = 0;
+
+    # TODO: detect the last N memos to our zaddr for this list
+    if ($memos_exist) {
+    } else {
+        print "No memos found!\n";
+    }
+}
+
+# show details about a particular hushlist
 sub status {
     my ($self,$name)   = @_;
 
