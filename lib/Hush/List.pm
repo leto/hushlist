@@ -144,6 +144,8 @@ sub show {
     print "Hushlist: $name\n";
     print "Recents memos:\n";
     my $memos_exist = 0;
+    # show the last 10 memos with env var over-ride
+    my $N           = $ENV{HUSHLIST_NUM_MEMOS} || 10;
 
     # TODO: detect the last N memos to our zaddr for this list
     if ($memos_exist) {
