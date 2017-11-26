@@ -1,13 +1,14 @@
 # Hushlist: Censorship Resistant Metadata-Minimizing Multi-Blockchain Communication
 
-Hushlist uses the Hush cryptocoin blockchain, as well as other privacy coin
-blockchain to implement mailing-list style communication which inherit all of
+Hushlist uses the Hush cryptocoin blockchain, as well as other Zcash-fork privacy coin
+blockchains to implement mailing-list style communication which inherit all of
 the beautiful properties that Hush inherits from Bitcoin and Zcash.
 
 # Requirements
 
 Hushlist requires a computer with Perl 5.8+, and access to a Hush fullnode RPC server
-which is often run on localhost.
+which is often run on localhost. Hushlist supports all platforms that Hush currently
+supports, which is Linux, Mac and Windows.
 
 Sending shielded transactions (involving zaddrs) can be very resource
 intensive, and at least 4GB of RAM is recommended, although 2GB may work on
@@ -16,12 +17,10 @@ some newer versions and platforms.
 # Supported Blockchains
 
 * HUSH
-* TUSH (HUSH testnet)
-* ZEC
-* TAZ (ZEC testnet)
-* KMD (planned)
-* KMD-testnet (planned)
-
+* TUSH  (HUSH testnet)
+* Zcash (ZEC)
+* TAZ   (ZEC testnet)
+* Komodo (KMD) - planned
 
 # Examples
 
@@ -29,10 +28,10 @@ some newer versions and platforms.
     hushlist contact add alice z1234...
     hushlist contact add bob z1456....
 
-    # see an overview of your local hushlist infoz
+    # see an overview of your local Hushlists
     hushlist status
 
-    # create a new private hushlist, which exists locally only
+    # create a new private Hushlist, which exists locally only
     # and has no cost associated, since nothing is sent to the blockchain
     hushlist new listname
 
