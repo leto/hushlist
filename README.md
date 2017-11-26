@@ -67,10 +67,13 @@ it is currently in the `z_embedstring` branch:
 
 Hush Messenger has similar functions, but it more closely maps to "chat
 program" versus "mailing list software". Messenger also has a different tech
-stack (Javascript) and runs in the browser while Hushlist avoids the
+stack (Javascript vs Perl) and runs in the browser while Hushlist avoids the
 convenience of browsers to reduce it's attack surface.
+
+Hushlist is happy to be one of the first Hush Applications with Hush Messenger
+and hopes that each project can learn from the other and cross-pollinate ideas
+which will turn into more options for Hush users.
 
 # License
 
 GPLv3
-
