@@ -5,6 +5,7 @@ use Hush::RPC;
 use Try::Tiny;
 use File::Spec::Functions;
 use Hush::Util qw/barf/;
+use Hush::Contact;
 use File::Slurp;
 use Hush::Logger qw/debug/;
 use JSON;
@@ -16,43 +17,6 @@ my $HUSH_CONFIG_DIR     = $ENV{HUSH_CONFIG_DIR} || catdir($ENV{HOME},'.hush');
 my $HUSHLIST_CONFIG_DIR = $ENV{HUSH_CONFIG_DIR} || catdir($HUSH_CONFIG_DIR, 'list');
 our $VERSION            = 20171031;
 my $rpc                 = Hush::RPC->new;
-
-sub contact {
-    my $cmd = shift || '';
-    my $subcommands = {
-        "add" => sub {
-            # add a hush contact, yay
-            my ($cmd,$name,$zaddr) = @ARGV;
-            #barf Dumper [ $cmd, $name, $zaddr ];
-            #TODO: give user ability to choose
-            my $chain = "hush";
-            my $contacts_file = catdir($HUSHLIST_CONFIG_DIR,"$chain-contacts.txt");
-
-            if (-e $contacts_file) {
-                my %contacts   = read_file( $contacts_file ) =~ /^(z[a-z0-9]+) (.*)$/mgi ;
-                # TODO: check if zaddr OR nickname exists
-                if ($contacts{$zaddr}) {
-                } else {
-                    # TODO: see if this contact exists already in this chain
-                    open my $fh, ">>", $contacts_file or barf "Could not write file $contacts_file ! : $!";
-                    #TODO: validation?
-                    print $fh "$zaddr $name\n";
-                    close $fh;
-                }
-            }
-        },
-        "rm" => sub {
-            my ($cmd,$name,$zaddr) = @ARGV;
-            barf Dumper [ $cmd, $name, $zaddr ];
-        },
-    };
-    my $subcmd = $subcommands->{$cmd};
-    if ($subcmd) {
-        $subcmd->();
-    } else {
-        barf "Invalid hushlist contact subcommand!";
-    }
-}
 
 
 sub _sanity_checks {
