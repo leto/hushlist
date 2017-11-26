@@ -44,13 +44,14 @@ some newer versions and platforms.
     hushlist send listname --chain tush "If wishes were fishes, we'd all cast nets. -- Stilgar"
 
     # show overview of lists and messages
-    hushlist log
+    hushlist show
 
     # show most recent messages for listname
-    hushlist log listname
+    hushlist show listname
 
-    # donate 5 HUSH to the nice dev Duke Leto who write this software
+    # donate to the nice dev who wrote this, from your main hushlist zaddr
     hushlist donate 5 hush
+    hushlist donate 0.5 zec
 
 # In development commands
 
