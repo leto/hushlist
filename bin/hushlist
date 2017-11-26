@@ -28,7 +28,7 @@ my $list      = Hush::List->new($rpc, $options);
 my $command   = shift || help();
 my $COMMANDS  = {
     "add"     => \&add,
-    "contact" => \&contact,
+    "contact" => \&Hush::List::contact,
     "help"    => \&help,
     "new"     => \&new,
     "remove"  => \&remove,
@@ -72,27 +72,6 @@ sub show {
 sub usage {
     print "Usage: $0 command [subcommand] [options]\n";
     print "$0 help for more details :)\n";
-}
-
-sub contact {
-    my $cmd = shift || '';
-    my $subcommands = {
-        "add" => sub {
-            # add a hush contact, yay
-            my ($cmd,$name,$zaddr) = @ARGV;
-            barf Dumper [ $cmd, $name, $zaddr ];
-        },
-        "rm" => sub {
-            my ($cmd,$name,$zaddr) = @ARGV;
-            barf Dumper [ $cmd, $name, $zaddr ];
-        },
-    };
-    my $subcmd = $subcommands->{$cmd};
-    if ($subcmd) {
-        $subcmd->();
-    } else {
-        barf "Invalid hushlist contact subcommand!";
-    }
 }
 
 sub status {
