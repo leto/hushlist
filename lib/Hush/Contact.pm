@@ -2,6 +2,12 @@ package Hush::Contact;
 use strict;
 use warnings;
 use Hush::Util qw/barf/;
+use Data::Dumper;
+use File::Spec::Functions;
+use Hush::Logger qw/debug/;
+
+my $HUSH_CONFIG_DIR     = $ENV{HUSH_CONFIG_DIR} || catdir($ENV{HOME},'.hush');
+my $HUSHLIST_CONFIG_DIR = $ENV{HUSH_CONFIG_DIR} || catdir($HUSH_CONFIG_DIR, 'list');
 
 sub contact {
     my $cmd = shift || '';

@@ -5,11 +5,11 @@ use Hush::RPC;
 use Try::Tiny;
 use File::Spec::Functions;
 use Hush::Util qw/barf/;
-use Hush::Contact;
 use File::Slurp;
 use Hush::Logger qw/debug/;
-use JSON;
+use Hush::Contact;
 use Data::Dumper;
+use JSON;
 
 # as per z_sendmany rpc docs
 my $MAX_RECIPIENTS      = 54;
@@ -17,7 +17,6 @@ my $HUSH_CONFIG_DIR     = $ENV{HUSH_CONFIG_DIR} || catdir($ENV{HOME},'.hush');
 my $HUSHLIST_CONFIG_DIR = $ENV{HUSH_CONFIG_DIR} || catdir($HUSH_CONFIG_DIR, 'list');
 our $VERSION            = 20171031;
 my $rpc                 = Hush::RPC->new;
-
 
 sub _sanity_checks {
     if (!-e $HUSH_CONFIG_DIR ) {
@@ -135,7 +134,10 @@ sub exit_unless_hushlist_exists {
     };
 }
 
-# show details about a particular hushlist
+# show details about a particular (hushlist,zaddr) pair
+# NOTE: We assume that we only use one zaddr per hushlist for
+# maximim metadata privacy, that is what we do, but other/custom software
+# could break that assumption
 sub show {
     my ($self,$name)   = @_;
 
@@ -143,19 +145,60 @@ sub show {
 
     my $list_specific_conf = catfile($HUSHLIST_CONFIG_DIR,$name,'list.conf');
     my %list_conf          = read_file( $list_specific_conf ) =~ /^(\w+)=(.*)$/mg ;
+    my $sending_zaddr      = $list_conf{sending_zaddr};
+
+    # todo: validate
+    barf "No sending_zaddr found for Hushlist $name!" unless $sending_zaddr;
 
     print "Hushlist: $name\n";
     print "Recents memos:\n";
-    my $memos_exist = 0;
     # show the last 10 memos with env var over-ride
     my $N           = $ENV{HUSHLIST_NUM_MEMOS} || 10;
 
     # TODO: detect the last N memos to our zaddr for this list
-    if ($memos_exist) {
+    # 1) look for xtns to zaddr via RPC
+    # 2) any xtns TO this zaddr are Hushlist memos
+    # 3) iterate over these and grab memo field (only available locally on the
+    # full node which has the xtn, unles txindex=1 on hush full node!)
+    my $memos = find_memos($name);
+
+    if ($memos) {
     } else {
         print "No memos found!\n";
     }
 }
+
+sub find_memos {
+    my ($name,$zaddr) = @_;
+    #List transactions 100 to 120
+    #> zcash-cli listtransactions "*" 20 100
+    # these seem to be an array from oldest to newest
+    my $max_xtns = 10000;
+    my @xtns = $rpc->listtransactions("*", $max_xtns, 0);
+
+    if (@xtns) {
+        my $num_xtns = @xtns;
+        debug("find_memos: found $num_xtns transactions for zaddr=$zaddr");
+        if (@xtns == $max_xtns) {
+            #TODO: get latest xtns if more than max
+            my @xtns = $rpc->listtransactions("*", $max_xtns, $max_xtns);
+        }
+
+        # reverse sort our found xtns by blocktime
+        @xtns = sort { $b->{blocktime} <=> $a->{blocktime} } @xtns;
+
+        # get a list of all xtn ids
+        my @txids = map { $_->{txid} } @xtns;
+
+        # TODO: grab memo field by using RPC method to get all xtn data
+
+
+    } else {
+        debug("find_memos: No memos found for $name + $zaddr");
+    }
+    return;
+}
+
 
 # show details about a particular hushlist
 sub status {
