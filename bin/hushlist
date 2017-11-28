@@ -9,7 +9,6 @@ use Data::Dumper;
 use Hush::RPC;
 use Hush::App;
 
-my $rpc       = Hush::RPC->new;
-my $command   = shift || help();
+my $command   = shift;
 Hush::App::run($command);
 exit;

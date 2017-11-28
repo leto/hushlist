@@ -177,30 +177,17 @@ sub show {
 
 sub find_memos {
     my ($name,$zaddr) = @_;
-    #List transactions 100 to 120
-    #> zcash-cli listtransactions "*" 20 100
-    # these seem to be an array from oldest to newest
-    my $max_xtns = 10000;
-    my @xtns = $rpc->listtransactions("*", $max_xtns, 0);
+
+    my @xtns = $rpc->z_listreceivedbyaddress($zaddr);
 
     if (@xtns) {
-        my $num_xtns = @xtns;
-        debug("find_memos: found $num_xtns transactions for zaddr=$zaddr");
-        if (@xtns == $max_xtns) {
-            #TODO: get latest xtns if more than max
-            my @xtns = $rpc->listtransactions("*", $max_xtns, $max_xtns);
-        }
-
-        # reverse sort our found xtns by blocktime
-        @xtns = sort { $b->{blocktime} <=> $a->{blocktime} } @xtns;
-
-        # get a list of all xtn ids
-        my @txids = map { $_->{txid} } @xtns;
-
-        # TODO: grab memo field by using RPC method to get all xtn data
         # TODO: need local shielded balance to get data => need (t,z) xtn
 
-        my @memos = ();
+
+        # TODO: good datastructure for memo data
+        for my $xtn (@xtns) {
+            printf "txid=%s memo=%s\n", $xtn->{txid}, $xtn->{memo};
+        }
         return @memos;
     } else {
         debug("find_memos: No memos found for $name + $zaddr");

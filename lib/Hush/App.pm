@@ -51,7 +51,6 @@ sub show_status {
 
 my $options   = {};
 my $list      = Hush::List->new($rpc, $options);
-my $command   = shift || help();
 
 sub run {
     my ($command) = @_;
@@ -134,3 +133,4 @@ sub new {
     print "hushlist '$name' created, enjoy your private comms ;)\n";
 }
 
+1;
