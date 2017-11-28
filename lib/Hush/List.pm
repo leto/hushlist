@@ -154,7 +154,7 @@ sub show {
     my $sending_zaddr      = $list_conf{sending_zaddr};
 
     # todo: validate
-    barf "No sending_zaddr found for Hushlist $name!" unless is_valid_zaddr($sending_zaddr);
+    barf "Invalid sending_zaddr: '$sending_zaddr' found for Hushlist $name!" unless is_valid_zaddr($sending_zaddr);
 
     print "Hushlist: $name\n";
     print "Recents memos:\n";
@@ -166,9 +166,10 @@ sub show {
     # 2) any xtns TO this zaddr are Hushlist memos
     # 3) iterate over these and grab memo field (only available locally on the
     # full node which has the xtn, unles txindex=1 on hush full node!)
-    my $memos = find_memos($name);
+    my @memos = find_memos($name);
 
-    if ($memos) {
+    if (@memos) {
+        print "Found memos!\n";
     } else {
         print "No memos found!\n";
     }
@@ -197,8 +198,10 @@ sub find_memos {
         my @txids = map { $_->{txid} } @xtns;
 
         # TODO: grab memo field by using RPC method to get all xtn data
+        # TODO: need local shielded balance to get data => need (t,z) xtn
 
-
+        my @memos = ();
+        return @memos;
     } else {
         debug("find_memos: No memos found for $name + $zaddr");
     }
