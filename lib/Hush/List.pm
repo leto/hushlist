@@ -134,6 +134,12 @@ sub exit_unless_hushlist_exists {
     };
 }
 
+sub is_valid_zaddr {
+    my ($zaddr) = @_;
+    # TODO: only base58 is valid
+    return ($zaddr =~ m/^zc[a-z0-9]{94}/i) ? 1 : 0;
+}
+
 # show details about a particular (hushlist,zaddr) pair
 # NOTE: We assume that we only use one zaddr per hushlist for
 # maximim metadata privacy, that is what we do, but other/custom software
@@ -148,7 +154,7 @@ sub show {
     my $sending_zaddr      = $list_conf{sending_zaddr};
 
     # todo: validate
-    barf "No sending_zaddr found for Hushlist $name!" unless $sending_zaddr;
+    barf "No sending_zaddr found for Hushlist $name!" unless is_valid_zaddr($sending_zaddr);
 
     print "Hushlist: $name\n";
     print "Recents memos:\n";
