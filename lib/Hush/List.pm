@@ -183,8 +183,9 @@ sub find_memos {
     if (@xtns) {
         # TODO: need local shielded balance to get data => need (t,z) xtn
 
+        my @memos =  map { Hush::Memo->new($rpc, $_) } @xtns;
 
-        # TODO: good datastructure for memo data
+        # debugging
         for my $xtn (@xtns) {
             printf "txid=%s memo=%s\n", $xtn->{txid}, $xtn->{memo};
         }

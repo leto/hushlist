@@ -10,9 +10,9 @@ use JSON;
 sub new {
     my ($rpc,$options) = @_;
     my $memo           = {
-        txid   => 0,
-        amount => 0.00,
-        memo   => "",
+        txid   => $options->{txid}   || 0,
+        amount => $options->{amount} || 0.00,
+        memo   => $options->{memo}   || "",
     };
 
     return bless $memo, 'Hush::Memo';
