@@ -5,6 +5,7 @@ use Hush::Util qw/barf/;
 use Data::Dumper;
 use File::Spec::Functions;
 use Hush::Logger qw/debug/;
+use File::Slurp;
 
 my $HUSH_CONFIG_DIR     = $ENV{HUSH_CONFIG_DIR} || catdir($ENV{HOME},'.hush');
 my $HUSHLIST_CONFIG_DIR = $ENV{HUSH_CONFIG_DIR} || catdir($HUSH_CONFIG_DIR, 'list');

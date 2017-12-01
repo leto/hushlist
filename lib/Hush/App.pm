@@ -10,7 +10,7 @@ use Hush::RPC;
 
 my $COMMANDS  = {
     "add"     => \&add,
-    "contact" => \&Hush::List::contact,
+    "contact" => \&Hush::Contact::contact,
     "help"    => \&help,
     "new"     => \&new,
     "remove"  => \&remove,
