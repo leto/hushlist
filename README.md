@@ -1,8 +1,9 @@
 # Hushlist: Censorship Resistant Metadata-Minimizing Multi-Blockchain Communication
 
-Hushlist uses the Hush cryptocoin blockchain, as well as other Zcash-fork privacy coin
-blockchains to implement mailing-list style communication which inherit all of
-the beautiful properties that Hush inherits from Bitcoin and Zcash.
+Hushlist uses the Hush blockchain, as well as other Zcash forks
+to implement anonymous and pseudonymous mailing lists using the encrypted
+512 byte memo field of the Zcash Protocol. Hush inherits all RPCs
+from Bitcoin 0.11.2 and Zcash, which are used to implement Hushlist.
 
 # Requirements
 
@@ -11,8 +12,8 @@ which is often run on localhost. Hushlist supports all platforms that Hush curre
 supports, which is Linux, Mac and Windows.
 
 Sending shielded transactions (involving zaddrs) can be very resource
-intensive, and at least 4GB of RAM is recommended, although 2GB may work on
-some newer versions and platforms.
+intensive, and at least 4GB of RAM is recommended, although 2GB may work in
+some situations, depending on hardware, software, virtual machine use and OS.
 
 # Supported Blockchains
 
@@ -25,19 +26,22 @@ some newer versions and platforms.
 # Examples
 
     # create a new Hush contact
-    hushlist contact add alice z1234...
-    hushlist contact add bob z1456....
+    hushlist contact add chani z1234...
+    hushlist contact add stilgar z1456....
 
     # see an overview of your local Hushlists
     hushlist status
 
     # create a new private Hushlist, which exists locally only
     # and has no cost associated, since nothing is sent to the blockchain
-    hushlist new listname
+    hushlist new fremen
 
     # see the status of a list
-    hushlist status listname
-    hushlist add listname alice bob
+    hushlist status fremen
+
+    # add one or more people to a Hushlist
+    hushlist add fremen chani stilgar
+
     hushlist send listname "A beginning is the time for taking the most delicate care that the balances are correct."
 
     # send using a non-default chain
