@@ -4,7 +4,7 @@ use warnings;
 use Hush::RPC;
 use Try::Tiny;
 use File::Spec::Functions;
-use Hush::Util qw/barf/;
+use Hush::Util qw/barf is_valid_zaddr/;
 use File::Slurp;
 use Hush::Logger qw/debug/;
 use Hush::Contact;
@@ -132,12 +132,6 @@ sub exit_unless_hushlist_exists {
         print "Hushlist $name does not exist!\n";
         exit(1);
     };
-}
-
-sub is_valid_zaddr {
-    my ($zaddr) = @_;
-    # TODO: only base58 is valid, and length
-    return ($zaddr =~ m/^zc[A-z0-9]+$/) ? 1 : 0;
 }
 
 # show details about a particular (hushlist,zaddr) pair

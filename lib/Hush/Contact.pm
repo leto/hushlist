@@ -1,7 +1,7 @@
 package Hush::Contact;
 use strict;
 use warnings;
-use Hush::Util qw/barf/;
+use Hush::Util qw/barf is_valid_zaddr/;
 use Data::Dumper;
 use File::Spec::Functions;
 use Hush::Logger qw/debug/;
@@ -16,7 +16,10 @@ sub contact {
         "add" => sub {
             # add a hush contact, yay
             my ($cmd,$name,$zaddr) = @ARGV;
-            #barf Dumper [ $cmd, $name, $zaddr ];
+
+            barf "Invalid zaddr=$zaddr" unless is_valid_zaddr($zaddr);
+
+            barf Dumper [ $cmd, $name, $zaddr ];
             #TODO: give user ability to choose
             my $chain = "hush";
             my $contacts_file = catdir($HUSHLIST_CONFIG_DIR,"$chain-contacts.txt");
