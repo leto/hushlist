@@ -41,9 +41,14 @@ sub contact {
         },
         "rm" => sub {
             my ($cmd,$name,$zaddr) = @ARGV;
+
+            barf "Hushlist contact name cannot by empty!" unless $name;
+            barf "Invalid zaddr=$zaddr for Hushlist contact $name" unless is_valid_zaddr($zaddr);
+
             barf Dumper [ $cmd, $name, $zaddr ];
         },
     };
+
     my $subcmd = $subcommands->{$cmd};
     if ($subcmd) {
         $subcmd->();
