@@ -17,9 +17,10 @@ sub contact {
             # add a hush contact, yay
             my ($cmd,$name,$zaddr) = @ARGV;
 
-            barf "Invalid zaddr=$zaddr" unless is_valid_zaddr($zaddr);
+            barf "Hushlist contact name cannot by empty!" unless $name;
+            barf "Invalid zaddr=$zaddr for Hushlist contact $name" unless is_valid_zaddr($zaddr);
 
-            barf Dumper [ $cmd, $name, $zaddr ];
+            warn Dumper [ $cmd, $name, $zaddr ];
             #TODO: give user ability to choose
             my $chain = "hush";
             my $contacts_file = catdir($HUSHLIST_CONFIG_DIR,"$chain-contacts.txt");
