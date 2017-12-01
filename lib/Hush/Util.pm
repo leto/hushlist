@@ -9,7 +9,7 @@ our @EXPORT_OK = qw/
 /;
 use Time::HiRes qw/gettimeofday tv_interval/;
 
-sub now { [gettimeofday] }
+sub now  { [gettimeofday] }
 sub barf { die longmess(@_); }
 
 sub timing {
@@ -18,9 +18,15 @@ sub timing {
 }
 
 sub is_valid_zaddr {
-    my ($zaddr) = @_;
+    my ($z) = @_;
+    #warn "zaddr=$z";
+
     # TODO: only base58 is valid
-    return ($zaddr =~ m/^zc[A-z0-9]{94,94}$/) ? 1 : 0;
+    if ($z =~ m/^zc[a-z0-9]{93}$/i) {
+        return $z;
+    } else {
+        return 0;
+    }
 }
 
 
