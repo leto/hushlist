@@ -67,9 +67,10 @@ sub run {
 }
 
 sub add {
-    my ($list_name,$zaddr) = @_;
+    my ($list_name,$contact) = @_;
 
-    $list->add_zaddr($list_name,$zaddr);
+    # we add contacts to a list, not a zaddr
+    $list->add_contact($list_name,$contact);
 }
 
 sub remove {

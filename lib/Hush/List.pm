@@ -269,10 +269,15 @@ sub public {
     my ($self,$name) = @_;
 }
 
-sub add_zaddr {
-    my ($self,$name,$zaddr) = @_;
-    $zaddr||= '';
-    barf "Invalid zaddr=$zaddr" unless $zaddr =~ m/^z/;
+sub add_contact {
+    my ($self,$name,$contact) = @_;
+
+    #TODO validate
+    $name ||= '';
+    barf "Invalid Hushlist list name!" unless $name;
+
+    $contact||= '';
+    barf "Invalid Hushlist contact=$contact" unless is_valid_contact($contact);
 
     my $lists = $self->{lists};
     my $list  = $lists->{$name};
