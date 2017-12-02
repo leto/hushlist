@@ -277,13 +277,16 @@ sub add_contact {
     barf "Invalid Hushlist list name!" unless $name;
 
     $contact||= '';
-    barf "Invalid Hushlist contact=$contact" unless is_valid_contact($contact);
+    barf "Invalid Hushlist contact=$contact" unless $contact;
 
-    my $lists = $self->{lists};
-    my $list  = $lists->{$name};
+    #barf "Hush list $list does not exist" unless $list;
 
-    barf "Hush list $list does not exist" unless $list;
-    $list->{recipients}->{$zaddr}++;
+    # TODO: does contact exist already?
+    my $member_list        =  catfile($HUSHLIST_CONFIG_DIR,$name,'members.txt');
+    open my $fh, '>>', $member_list or barf "Could not open $member_list for writing";
+    print $fh $contact . "\n";
+    close $fh;
+
     return $self;
 }
 
