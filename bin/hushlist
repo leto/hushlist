@@ -1,12 +1,7 @@
 #!/usr/bin/env perl
 use strict;
 use warnings;
-use Try::Tiny;
 use lib 'lib';
-use Hush::List;
-use Hush::Util qw/barf/;
-use Data::Dumper;
-use Hush::RPC;
 use Hush::App;
 
 my $command   = shift;

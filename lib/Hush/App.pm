@@ -9,27 +9,29 @@ use Data::Dumper;
 use Hush::RPC;
 
 my $COMMANDS  = {
-    "add"     => \&add,
-    "contact" => \&Hush::Contact::contact,
-    "help"    => \&help,
-    "new"     => \&new,
-    "remove"  => \&remove,
-    "send"    => \&send,
-    "show"    => \&show,
-    "status"  => \&status,
-    #"public"  => \&public,
+    "add"       => \&add,
+    "contact"   => \&Hush::Contact::contact,
+    "help"      => \&help,
+    "new"       => \&new,
+    "remove"    => \&remove,
+    "send"      => \&send,
+    "send-file" => \&send_file,
+    "show"      => \&show,
+    "status"    => \&status,
+    #"public"   => \&public,
 };
 # TODO: translations
 my %HELP      = (
-    "add"     => "Add a contact to a Hushlist",
-    "contact" => "Manage Hushlist contacts",
-    "help"    => "Get your learn on",
-    "new"     => "Create a new Hushlist",
-    "remove"  => "Remove a Hushlist",
-    "send"    => "Send a new new Hushlist memo",
-    "status"  => "Get overview of Hushlists or a specific Hushlist",
-    "show"    => "Show Hushlist memos",
-    #"public"  => "Make a private Hushlist public",
+    "add"       => "Add a contact to a Hushlist",
+    "contact"   => "Manage Hushlist contacts",
+    "help"      => "Get your learn on",
+    "new"       => "Create a new Hushlist",
+    "remove"    => "Remove a Hushlist",
+    "send"      => "Send a new Hushlist memo, specified on command-line",
+    "send-file" => "Send a new Hushlist memo from a file on disk",
+    "status"    => "Get overview of Hushlists or a specific Hushlist",
+    "show"      => "Show Hushlist memos",
+    #"public"   => "Make a private Hushlist public",
 );
 
 my $rpc           = Hush::RPC->new;
@@ -77,8 +79,26 @@ sub remove {
     my ($list_name,$zaddr) = @_;
 
     $list->remove_zaddr($list_name,$zaddr);
+    return $list;
 }
 
+# send a Hushlist memo from a file
+sub send_file {
+    my ($list_name,$file) = @_;
+
+    barf "You must specify a file to attach" unless $file;
+
+    if (-e $file) {
+        my $memo     = read_file($file);
+        $list->send_memo($rpc, $list_name, $memo);
+    } else {
+        barf "Cannot find $file to attach to Hushlist memo to $list_name!";
+    }
+    return $list;
+}
+
+# send a Hushlist memo to list of contacts on the chain
+# specified for this list
 sub send {
     my ($list_name,$memo) = @_;
 

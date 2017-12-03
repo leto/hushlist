@@ -312,6 +312,11 @@ sub send_memo {
     barf "Invalid Hush list name" unless $name =~ m/^([a-z0-9]+)$/i;
     barf "Hush memo cannot be empty" unless $memo;
 
+    my $MAX_MEMO = 512;
+    my $length   = length($memo);
+
+    barf("Hushlist memo too large! $length > $MAX_MEMO") if ($length > $MAX_MEMO);
+
     my $debug = sub { debug("send_memo: @_") };
 
     # each hush list has a sending_zaddr defined at time of creation
