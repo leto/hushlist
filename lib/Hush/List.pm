@@ -151,7 +151,7 @@ sub show {
     my $sending_zaddr      = $list_conf{zfrom} || $list_conf{tfrom} || $list_conf{sending_zaddr};
 
     # todo: validate
-    barf "Invalid sending_zaddr: '$sending_zaddr' found for Hushlist $name!" unless is_valid_zaddr($sending_zaddr);
+    #barf "Invalid sending_zaddr: '$sending_zaddr' found for Hushlist $name!" unless is_valid_zaddr($sending_zaddr);
 
     print "Hushlist: $name\n";
     print "Recents memos:\n";
