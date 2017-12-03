@@ -7,6 +7,7 @@ use Hush::List;
 use Hush::Util qw/barf/;
 use Data::Dumper;
 use Hush::RPC;
+use File::Slurp;
 
 my $COMMANDS  = {
     "add"       => \&add,
@@ -86,6 +87,7 @@ sub remove {
 sub send_file {
     my ($list_name,$file) = @_;
 
+    barf "You must specify a Hushlist to send to" unless $list_name;
     barf "You must specify a file to attach" unless $file;
 
     if (-e $file) {

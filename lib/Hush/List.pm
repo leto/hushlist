@@ -317,7 +317,8 @@ sub send_memo {
 
     barf("Hushlist memo too large! $length > $MAX_MEMO") if ($length > $MAX_MEMO);
 
-    my $debug = sub { debug("send_memo: @_") };
+    #my $debug = sub { debug("send_memo: @_") };
+    my $debug = sub { warn "send_memo: @_" };
 
     # each hush list has a sending_zaddr defined at time of creation
     # which is used to send to this list
@@ -338,9 +339,8 @@ sub send_memo {
     unless (-e $list_members_file) {
         barf "No members file found for Hushlist $name!";
     }
-    my %list_members   = read_file( $list_members_file ) =~ /^(.*)$/mg ;
+    my %list_members   = map { $_ => 1 } (read_file( $list_members_file ));
     $debug->("list_members=" . join(",",keys %list_members));
-    use Data::Dumper;
 
     # Now that we have all the list member pseudonyms, look them
     # up in the appropriate chain
@@ -360,17 +360,27 @@ sub send_memo {
 
     # This must be a string to make JSON elder gods happy
     my $amount  = "0.00"; # amount is hidden in (z,z) xtns, so it does not identify list messages via metadata
+
+    # override default amount with the amount key in this lists config file
+    if ($list_conf{amount}) {
+        $amount = $list_conf{amount} . "";
+    }
+
     my $raw_memo  = unpack("h*",$memo); # backend wants hex-encoded memo-field
     $debug->("memo=$memo");
     $debug->("raw_memo=$memo");
 
     while (my ($addr, $contact) = each %contacts) {
         $debug->("adding $contact => $addr to recipients and sending: $memo");
-        $list_addrs->{$contact} = {
-            address             => $addr,
-            amount              => $amount,
-            memo                => $raw_memo,
-        };
+
+        # if this contact exists on this list, add them to recipient list for z_sendmany
+        if ($list_members{$contact}) {
+            $list_addrs->{$contact} = {
+                address             => $addr,
+                amount              => $amount,
+                memo                => $raw_memo,
+            };
+        }
     }
     warn Dumper [ $list_addrs ];
 
@@ -382,14 +392,16 @@ sub send_memo {
     my $fee          = $ENV{HUSHLIST_FEE} ? sprintf "%.8f", $ENV{HUSHLIST_FEE} : $default_fee;
     my $balance      = $rpc->z_gettotalbalance;
     my $zbalance     = $balance->{private};
+    my $tbalance     = $balance->{transparent};
 
     # this is the total cost to send the current Hush
-    # transaction to N recipients eac with $fee
+    # transaction to N recipients each with $fee
     my $recipients = (keys %contacts);
     my $total_cost = $fee * $recipients;
-    my $CURR = "HUSH";
+    my $CURR       = "HUSH";
     $debug->("calculated total_cost=$total_cost $CURR for $recipients recipients");
 
+    #TODO: taddr balance sometimes
     if ($zbalance < $fee) {
         $debug->("Insufficient zaddr balance to pay even one fee=$fee");
         return;
@@ -398,8 +410,6 @@ sub send_memo {
         return;
     }
 
-    # this could blow up for a bajillion reasons...
-    #try {
 #       z_sendmany
 #       Arguments:
 #       1. "fromaddress"         (string, required) The taddr or zaddr to send the funds from.
@@ -412,7 +422,8 @@ sub send_memo {
 #       3. minconf               (numeric, optional, default=1) Only use funds confirmed at least this many times.
 #       4. fee                   (numeric, optional, default=0.0001) The fee amount to attach to this transaction.
 
-    my $opid = $rpc->z_sendmany($from, [values $list_addrs]);
+    my $minconf = 1;
+    my $opid    = $rpc->z_sendmany($from, [values $list_addrs], $minconf, $fee);
 
     if (defined $opid) {
         $debug->("z_sendmany opid=$opid from $from");
