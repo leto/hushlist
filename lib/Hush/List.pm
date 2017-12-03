@@ -134,10 +134,12 @@ sub exit_unless_hushlist_exists {
     };
 }
 
-# show details about a particular (hushlist,zaddr) pair
-# NOTE: We assume that we only use one zaddr per hushlist for
+# show details about a particular (hushlist,addr) pair
+# NOTE: We assume that we only use one addr per hushlist for
 # maximim metadata privacy, that is what we do, but other/custom software
-# could break that assumption
+# could break that assumption. The user is encouraged to create 2 local
+# hushlists, with the same contacts, but different sending address (perhaps one
+# taddr and one zaddr) if they want to send from multiple addresses
 sub show {
     my ($self,$name)   = @_;
 
@@ -145,7 +147,8 @@ sub show {
 
     my $list_specific_conf = catfile($HUSHLIST_CONFIG_DIR,$name,'list.conf');
     my %list_conf          = read_file( $list_specific_conf ) =~ /^(\w+)=(.*)$/mg ;
-    my $sending_zaddr      = $list_conf{sending_zaddr};
+    #TODO: write out new keys zfrom/tfrom
+    my $sending_zaddr      = $list_conf{zfrom} || $list_conf{tfrom} || $list_conf{sending_zaddr};
 
     # todo: validate
     barf "Invalid sending_zaddr: '$sending_zaddr' found for Hushlist $name!" unless is_valid_zaddr($sending_zaddr);
@@ -306,7 +309,7 @@ sub remove_zaddr {
 
 # send a memo to a Hush List, weeeeee!
 sub send_memo {
-    my ($self,$rpc, $name,$memo) = @_;
+    my ($self,$rpc,$name,$memo) = @_;
 
     # TODO: better validation
     barf "Invalid Hush list name" unless $name =~ m/^([a-z0-9]+)$/i;
@@ -328,7 +331,7 @@ sub send_memo {
     }
 
     my %list_conf          = read_file( $list_specific_conf ) =~ /^(\w+)=(.*)$/mg ;
-    my $from               = $list_conf{sending_zaddr};
+    my $from               = $list_conf{zfrom} || $list_conf{tfrom} || $list_conf{sending_zaddr};
     # default should probably be TUSH, but meh...
     my $chain              = $list_conf{chain} || 'hush';
 
@@ -339,8 +342,12 @@ sub send_memo {
     unless (-e $list_members_file) {
         barf "No members file found for Hushlist $name!";
     }
-    my %list_members   = map { $_ => 1 } (read_file( $list_members_file ));
-    $debug->("list_members=" . join(",",keys %list_members));
+    my @list_members   = read_file( $list_members_file );
+    # we sometimes get a trailing newline, sigh
+    chomp @list_members;
+    my %list_members   = map { $_ => 1 } @list_members;
+    #$debug->("list_members=" . join(",",@list_members));
+    warn Dumper [ @list_members ];
 
     # Now that we have all the list member pseudonyms, look them
     # up in the appropriate chain
@@ -371,10 +378,11 @@ sub send_memo {
     $debug->("raw_memo=$memo");
 
     while (my ($addr, $contact) = each %contacts) {
-        $debug->("adding $contact => $addr to recipients and sending: $memo");
+        print "contact $contact has $addr\n";
 
         # if this contact exists on this list, add them to recipient list for z_sendmany
         if ($list_members{$contact}) {
+            $debug->("adding $contact => $addr to recipients");
             $list_addrs->{$contact} = {
                 address             => $addr,
                 amount              => $amount,
@@ -389,24 +397,26 @@ sub send_memo {
     $debug->("initiating z_sendmany");
 
     my $default_fee  = 1e-4;
+    my $CURR         = "HUSH";
     my $fee          = $ENV{HUSHLIST_FEE} ? sprintf "%.8f", $ENV{HUSHLIST_FEE} : $default_fee;
     my $balance      = $rpc->z_gettotalbalance;
     my $zbalance     = $balance->{private};
     my $tbalance     = $balance->{transparent};
+    my $recipients   = (keys %$list_addrs);
 
     # this is the total cost to send the current Hush
     # transaction to N recipients each with $fee
-    my $recipients = (keys %contacts);
     my $total_cost = $fee * $recipients;
-    my $CURR       = "HUSH";
     $debug->("calculated total_cost=$total_cost $CURR for $recipients recipients");
 
-    #TODO: taddr balance sometimes
-    if ($zbalance < $fee) {
-        $debug->("Insufficient zaddr balance to pay even one fee=$fee");
+    # decide on which balance to look at
+    my $available_balance = ($from =~ m/^zc/) ? $zbalance : $tbalance;
+
+    if ($available_balance < $fee) {
+        $debug->("Insufficient balance to pay even one fee=$fee");
         return;
-    }elsif ($zbalance < $total_cost) {
-        $debug->("Insufficient zaddr balance to pay full xtn fee=$total_cost to $recipients recipients with balance=$zbalance");
+    }elsif ($available_balance < $total_cost) {
+        $debug->("Insufficient balance to pay full xtn fee=$total_cost to $recipients recipients with balance=$available_balance");
         return;
     }
 
