@@ -6,6 +6,7 @@ use Try::Tiny;
 use File::Spec::Functions;
 use Hush::Util qw/barf is_valid_zaddr/;
 use File::Slurp;
+use Hush::Memo;
 use Hush::Logger qw/debug/;
 use Hush::Contact;
 use Data::Dumper;
@@ -163,7 +164,8 @@ sub show {
     # 2) any xtns TO this zaddr are Hushlist memos
     # 3) iterate over these and grab memo field (only available locally on the
     # full node which has the xtn, unles txindex=1 on hush full node!)
-    my @memos = find_memos($name);
+    #TODO: sometimes you can send from a taddr
+    my @memos = find_memos($name, $sending_zaddr);
 
     if (@memos) {
         print "Found memos!\n";
@@ -175,6 +177,7 @@ sub show {
 sub find_memos {
     my ($name,$zaddr) = @_;
 
+    #warn "looking up xtns for $zaddr";
     my @xtns = $rpc->z_listreceivedbyaddress($zaddr);
 
     if (@xtns) {
@@ -183,8 +186,21 @@ sub find_memos {
         my @memos =  map { Hush::Memo->new($rpc, $_) } @xtns;
 
         # debugging
-        for my $xtn (@xtns) {
-            printf "txid=%s memo=%s\n", $xtn->{txid}, $xtn->{memo};
+        for my $xtn (map { $_->[0] } @xtns) {
+            #printf "txid=%s memo=%s\n", $xtn->{txid}, $xtn->{memo};
+            my $txid = $xtn->{txid};
+            my $memo = pack('h*', $xtn->{memo});
+            printf "=" x 80;
+            print "\n";
+            printf <<HEAD;
+Hushlist '$name' Memo
+txid=$txid
+---
+
+HEAD
+            printf "$memo\n";
+            printf "=" x 80;
+            print "\n";
         }
         return @memos;
     } else {
