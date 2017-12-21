@@ -1,15 +1,15 @@
 # Hushlist: Censorship Resistant Metadata-Minimizing Multi-Blockchain Communication
 
-Hushlist uses the Hush blockchain, as well as other Zcash forks
+Hushlist uses the Hush blockchain (Zcash and some other forks will be supported)
 to implement anonymous and pseudonymous mailing lists using the encrypted
 512 byte memo field of the Zcash Protocol. Hush inherits all RPCs
 from Bitcoin 0.11.2 and Zcash, which are used to implement Hushlist.
 
 # Requirements
 
-Hushlist requires a computer with Perl 5.8+, and access to a Hush fullnode RPC server
+Hushlist requires a computer with Perl 5.8+, and access to a fullnode RPC server
 which is often run on localhost. Hushlist supports all platforms that Hush currently
-supports, which is Linux, Mac and Windows.
+supports, which is Linux, Mac and Windows. A testnet (TUSH) node can also be used.
 
 Sending shielded transactions (involving zaddrs) can be very resource
 intensive, and at least 4GB of RAM is recommended, although 2GB may work in
