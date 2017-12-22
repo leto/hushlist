@@ -853,6 +853,26 @@ $ 0.0 $ and the default fee is currently $ 0.0001 $ but these numbers are subjec
 
 \HushList supports file attachments and embedding arbitrary binary data, it is not limited to ASCII.
 
+\nsection{Design of \HushList}
+
+The design of \HushList is inspired by Git. This document specifies a protocol and the authors provide a reference implementation of this protocol in cross-platform Perl which can be easily installed on millions of computers around the world via CPAN and other methods.
+
+\HushList should work across any platform that supports Perl and Hush (or your other coin).
+
+The reference implemenation is written in a maintainable and testable way such that it
+can easily evolve as the Protocol evolves.
+
+It is hoped that in the future there will be many implementations of \HushList, running on
+various blockchains and using various software stacks. The design of \HushList is compatible with Simple Payment Verification (SPV) light wallets and a future version of \HushList will learn to speak an ElectrumX backend server.
+
+\nsection{Reference Implementation}
+
+The reference implementation is developed as Free Software on Github at the following URL:
+
+https://github.com/leto/hushlist
+
+This code is still in active development, consider it EXPERIMENTAL and ONLY FOR DEVELOPERS at this point pending a security review.
+
 \nsection{Account Funding}
 
 On first run, \HushList creates a new shielded zaddress $z_F$ to fund transparent addresses for pseudonymous sending.
@@ -893,7 +913,9 @@ One may send to a \HushList from a taddr (pen name, psuedonym) or zaddr
 (anonymous shielded address) which is implemented in the client via
 the z\_sendmany RPC command. Up to 54 recepients may be in a single shielded
 transaction. v1 of HushList only supports HushLists of this size, but v2
-may implement larger HushLists.
+may implement larger HushLists by breaking large recipient lists into multiple sends.
+
+One may send a string of text via the *send* subcommand or send the contents of a file via the *send-file* subcommand.
 
 \nsection{Receiving Messages}
 
