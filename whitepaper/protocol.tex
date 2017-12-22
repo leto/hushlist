@@ -176,7 +176,9 @@ electronic commerce and payment, financial privacy, proof of work, zero knowledg
 \newcommand{\ZEC}{\termbf{ZEC}}
 \newcommand{\HUSH}{\termbf{HUSH}}
 \newcommand{\zatoshi}{\term{zatoshi}}
+\newcommand{\puposhi}{\term{puposhi}}
 \newcommand{\zcashd}{\textsf{zcashd}\,}
+\newcommand{\hushd}{\textsf{hushd}\,}
 
 \newcommand{\MUST}{\conformance{MUST}}
 \newcommand{\MUSTNOT}{\conformance{MUST NOT}}
@@ -894,6 +896,15 @@ If there are no taddr or zaddr funds in the entire wallet, \HushList \SHOULD pre
 \HushList maintains a database of contacts which use the address as the unique ID and additional metadata. Since \HushList supports multiple blockchains, it \MUST have a contact database
 for each chain. Each chain \MUST have it's own contact namespace, so you can have Bob on Hush and Bob and Zcash and they will not conflict.
 
+\HushList internally associates lists to Contacts, not the address of a contact. This allows the user to update the address of a contact in one place and things work correctly the next time the address of that contact is looked up. Lists contain Contacts and Contacts have addresses.
+
+A \HushList contact may only have ONE address, either taddr or zaddr, but not both.
+
+To have a taddr and zaddr for a person, you can simply create two contacts, such
+as tBob and zBob. In terms of the metadata that is revealed when communicating with
+tBob or zBob, they are quite different, and it is healthy for metadata minimization
+to consider them as two different contacts.
+
 \nsection{List Creation}
 
 ...
@@ -917,14 +928,17 @@ may implement larger HushLists by breaking large recipient lists into multiple s
 
 One may send a string of text via the *send* subcommand or send the contents of a file via the *send-file* subcommand.
 
+Each HushList has a dedicated default chain that it is attached to. When looking up
+\HushList contacts for a given list, their address on that chain will be retreived.
+
 \nsection{Receiving Messages}
 
 At any time later, after the transaction has entered the blockchain, memos
 sent to a given address can be downloaded and viewed by those parties who
 have valid private keys or viewing keys.
 
-The client will poll the local full node periodically at a user specifiable
-default interval the same as the average block time for the chain in question.
+Clients can poll the local full node periodically at a user specifiable
+default interval OR, by default, the same as the average block time for the chain in question.
 For the \Hush chain, this is 2.5 minutes.
 
 \nsection{Costs}
