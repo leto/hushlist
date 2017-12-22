@@ -754,7 +754,7 @@ electronic commerce and payment, financial privacy, proof of work, zero knowledg
 \begin{abstract}
 \normalsize \noindent \textbf{Abstract.}
 
-HushList is a protocol for anonymous mailing lists using the encrypted memo
+\HushList is a protocol for anonymous mailing lists using the encrypted memo
 field of the \Zcash protocol.  It supports anonymous and pseudonymous senders, receivers and Hushlist creators, as
 well as public and private lists.  The HushList protocol can run on any fork of \Zcash that has a compatible 512
 byte memo field, though certain advanced features might not be fully supported
@@ -949,11 +949,12 @@ The symbol $\bot$ is used to indicate unavailable information or a failed decryp
 
 \nsection{Account Funding}
 
-On first run, \HushList creates a new shielded zaddress for use by the user for
-anonymous sending and to fund transparent addresses for pseudonymous sending.
+On first run, \HushList creates a new shielded zaddress $z_F$ to fund transparent addresses for pseudonymous sending.
+
 It may be funded by the user from any taddr or zaddr with no loss of privacy.
+
 For each pseudonym the user sends from (may be globally used or per-list), a
-taddr is created and funded from the primary zaddr for the user.
+taddr $t_l$ is created and a de-shielding transaction is done from $ z_F \rightarrow t_l $.
 
 \nsection{List Creation}
 
@@ -962,7 +963,7 @@ taddr is created and funded from the primary zaddr for the user.
 \nsection{List Subscription}
 
 When the private key for a list is imported into HushList, either from the
-blockchain, uri or manual entry, the private key is added to the user's wallet,
+blockchain, URI or manual entry, the private key is added to the user's wallet,
 along with a user entered or approved name and description for the list (if
 provided in on-chain or uri encoded metadata). HushList creates a unique
 taddr + zaddr for each list so that the user may choose to send each message
@@ -980,16 +981,18 @@ may implement larger HushLists.
 
 At any time later, after the transaction has entered the blockchain, memos
 sent to a given address can be downloaded and viewed by those parties who
-have valid private keys.
+have valid private keys or viewing keys.
 
 The client will poll the local full node periodically at a user specifiable
 default interval the same as the average block time for the chain in question.
+For the \Hush chain, this is 2.5 minutes.
 
 \nsection{Costs}
 
 Sending \HushList memos requires making a financial transaction and by default,
 \HushList sends the recipient a transaction for 0.0 \HUSH (or \ZEC etc) with
-the default network fee (currently 0.0001 for \ZEC+\HUSH). The fee amount can
+the default network fee (currently 0.0001 for \ZEC+\HUSH). The fee amount \MUST
+be configurable by the user. In the reference implementation of \HushList it
 be changed via the HUSHLIST\_FEE environment variable.
 
 \nsection{References}
