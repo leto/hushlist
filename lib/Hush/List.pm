@@ -414,7 +414,7 @@ sub send_memo {
 
     my $default_fee  = 1e-4;
     my $CURR         = "HUSH";
-    my $fee          = $ENV{HUSHLIST_FEE} ? sprintf "%.8f", $ENV{HUSHLIST_FEE} : $default_fee;
+    my $fee          = defined $ENV{HUSHLIST_FEE} ? sprintf "%.8f", $ENV{HUSHLIST_FEE} : $default_fee;
     my $balance      = $rpc->z_gettotalbalance;
     my $zbalance     = $balance->{private};
     my $tbalance     = $balance->{transparent};
