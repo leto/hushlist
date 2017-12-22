@@ -83,7 +83,7 @@
 \newcommand{\docversion}{Version unavailable (check protocol.ver)}
 \InputIfFileExists{protocol.ver}{}{}
 
-\newcommand{\doctitle}{Hushlist Protocol Specification}
+\newcommand{\doctitle}{HushList Protocol Specification}
 \newcommand{\leadauthor}{David Mercer}
 \newcommand{\coauthora}{Duke Leto}
 
@@ -960,6 +960,12 @@ Since \HushList memos have, by default, an amount of $ 0.0 $.
 
 For each \HushList the user wants to be part of, \HushList \MUST create a brand new zaddress $ z_L $
 (it \MUSTNOT reuse an existing address) and fund that address via a shielded $z \rightarrow z$ transaction between $z_F \rightarrow z_L$.
+
+
+\nsection{\HushList Contacts}
+
+\HushList maintains a database of contacts which use the address as the unique ID and additional metadata. Since \HushList supports multiple blockchains, it \MUST have a contact database
+for each chain. Each chain \MUST have it's own contact namespace, so you can have Bob on Hush and Bob and Zcash and they will not conflict.
 
 \nsection{List Creation}
 
