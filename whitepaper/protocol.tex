@@ -867,6 +867,7 @@ Since \HushList memos have, by default, an amount of $ 0.0 $.
 For each \HushList the user wants to be part of, \HushList \MUST create a brand new zaddress $ z_L $
 (it \MUSTNOT reuse an existing address) and fund that address via a shielded $z \rightarrow z$ transaction between $z_F \rightarrow z_L$.
 
+If there are no taddr or zaddr funds in the entire wallet, \HushList \SHOULD present the user a taddr + zaddr which can be used to "top up" the current \HushList wallet from another wallet/exchange/etc.
 
 \nsection{\HushList Contacts}
 
