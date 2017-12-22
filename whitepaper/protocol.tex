@@ -962,9 +962,21 @@ For each pseudonym the user sends from (may be globally used or per-list), a
 taddr is created and funded from the primary zaddr for the user.
 
 \nsection{List Creation}
+
+...
+
+\nsection{List Subscription}
+
+When the private key for a list is imported into HushList, either from the
+blockchain, uri or manual entry, the private key is added to the user's wallet,
+along with a user entered or approved name and description for the list (if
+provided in on-chain or uri encoded metadata). HushList creates a unique
+taddr + zaddr for each list so that the user may choose to send each message
+to the list psuedonymously or anonymously or a mixture of both.
+
 \nsection{Sending To A List}
 
-One may send to a \HushList from a taddr (pen name, psedonym) or zaddr
+One may send to a \HushList from a taddr (pen name, psuedonym) or zaddr
 (anonymous shielded address) which is implemented in the client via
 the z\_sendmany RPC command. Up to 54 recepients may be in a single shielded
 transaction. v1 of HushList only supports HushLists of this size, but v2
