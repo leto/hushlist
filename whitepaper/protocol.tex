@@ -954,7 +954,12 @@ On first run, \HushList creates a new shielded zaddress $z_F$ to fund transparen
 It may be funded by the user from any taddr or zaddr with no loss of privacy.
 
 For each pseudonym the user sends from (may be globally used or per-list), a
-taddr $t_l$ is created and a de-shielding transaction is done from $ z_F \rightarrow t_l $.
+taddr $t_L$ is created and a de-shielding transaction is done from $ z_F \rightarrow t_L $ which
+will allow the user to send memos to the given \HushList on behalf of the $t_L$ pseudonym.
+Since \HushList memos have, by default, an amount of $ 0.0 $.
+
+For each \HushList the user wants to be part of, \HushList \MUST create a brand new zaddress $ z_L $
+(it \MUSTNOT reuse an existing address) and fund that address via a shielded $z \rightarrow z$ transaction between $z_F \rightarrow z_L$.
 
 \nsection{List Creation}
 
