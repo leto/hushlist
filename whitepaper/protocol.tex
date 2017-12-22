@@ -744,7 +744,7 @@ electronic commerce and payment, financial privacy, proof of work, zero knowledg
 \title{\doctitle \\
 \Large \docversion}
 \author{
-\Large \leadauthor\hairspace\thanks{\;Hush Core, Zcash Core, Bitcoin Core} \\
+\Large \leadauthor\hairspace\thanks{\;Hush Core Developers} \\
 \Large \coauthora\affiliation }
 \date{\today}
 \maketitle
@@ -754,12 +754,15 @@ electronic commerce and payment, financial privacy, proof of work, zero knowledg
 \begin{abstract}
 \normalsize \noindent \textbf{Abstract.}
 
-\HushList is a protocol for anonymous mailing lists using the encrypted memo
+\HushList is a protocol for mailing lists using the encrypted memo
 field of the \Zcash protocol.  It supports anonymous and pseudonymous senders, receivers and Hushlist creators, as
-well as public and private lists.  The HushList protocol can run on any fork of \Zcash that has a compatible 512
-byte memo field, though certain advanced features might not be fully supported
+well as public and private lists.  The HushList protocol can run on any fork of \Zcash that has a compatible memo field, though certain advanced features might not be fully supported
 on all chains.  HushList is developed and tested on the Hush and Zcash mainnets as well as
 testnets (TUSH and TAZ), next to be tested is Komodo (KMD).
+
+In addition to the above properties, \HushList provides users with censorship-resistant
+storage and retrieval, since every \Hush full node will have an encrypted copy of every
+\HushList memo. Furthermore, sending and receiving via one or more blockchains is a serious deviation from traditional server-client design which easily allows a Man-In-The-Middle Attack and Deep Packet Inspection (DPI). Network traffic monitoring and correlation is made much harder, because there is no longer a packet with a timestamp and "selectors" going from one unique IP to another unique IP via a very predictable network route.
 
 \Zcash is an implementation of the \term{Decentralized Anonymous Payment}
 scheme \Zerocash, with security fixes and adjustments
@@ -841,6 +844,14 @@ work as in \Bitcoin \cite{Bitcoin-Protocol}. It also contains a sequence of zero
 more \joinSplitDescriptions. Each of these describes a \joinSplitTransfer
 which takes in a \transparent value and up to two input \notes, and produces a
 \transparent value and up to two output \notes.
+
+Each \HushList \MUST have a default blockchain that it is attached to, and the default
+chain \SHOULD be HUSH. The user \MUST be able to set their GLOBAL default chain (not implemented yet) as well as a default chain for each list.
+
+Each list also has a tadd+zaddr dedicated to that list, so the user has dedicated addresses to send psuedo/anon messages, as well as default fee and amount. The default amount is
+$ 0.0 $ and the default fee is currently $ 0.0001 $ but these numbers are subject to change.
+
+\HushList supports file attachments and embedding arbitrary binary data, it is not limited to ASCII.
 
 \nsection{Notation}
 
