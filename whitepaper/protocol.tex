@@ -920,6 +920,8 @@ By default, \HushList \MUST refuse to publicize the PRIVATE KEY of an address th
 
 Very recent developments in \Zcash might allow the potential to use "viewing keys" in the fture, but as this feature has not been fully merged to master at this time and lacks a RPC interface, \HushList chooses to use PRIVATE KEYS which are core \Zcash protocol that is well-supported in all forks. If "viewing keys" are one day to be used, that feature will need to be merged into multiple \Zcash forks, which does not seem likely in the near-term.
 
+Since creating a private \HushList requires making a transaction on the network to store data in the memo-field, it has a cost. This cost will be the fee of the transaction, most likely around 0.0001 but each chain is different and fees obviously change as blockchains get more active.
+
 \nsection{List Subscription}
 
 When the private key for a list is imported into HushList, either from the
@@ -931,6 +933,9 @@ to the list psuedonymously or anonymously or a mixture of both. There is no
 loss of privacy to send memos to the same \HushList with a psuedonym tAlice
 and an anon handle zBob if the user so chooses.
 
+Subscribing to a \HushList is completely free, it is simply the act of importing
+data to your local wallet.
+
 \nsection{Sending To A List}
 
 One may send to a \HushList from a taddr (pen name, psuedonym) or zaddr
@@ -939,7 +944,7 @@ the z\_sendmany RPC command. Up to 54 recepients may be in a single shielded
 transaction. v1 of HushList only supports HushLists of this size, but v2
 may implement larger HushLists by breaking large recipient lists into multiple sends.
 
-One may send a string of text via the *send* subcommand or send the contents of a file via the *send-file* subcommand.
+One may send a string of text via the *send* subcommand or send the contents of a file via the *send-file* subcommand. If one sends a string of text, there is no metadata related to that at all, locally. It only exists encrypted in a memo field on the chain. If one uses the *send-file* command, it may be prudent to securely delete the file from the filesystem after it is sent, depending on the needs of the user.
 
 Each HushList has a dedicated default chain that it is attached to. When looking up
 \HushList contacts for a given list, their address on that chain will be retreived.
@@ -964,7 +969,10 @@ Sending \HushList memos requires making a financial transaction and by default,
 \HushList sends the recipient a transaction for 0.0 \HUSH (or \ZEC etc) with
 the default network fee (currently 0.0001 for \ZEC+\HUSH). The fee amount \MUST
 be configurable by the user. In the reference implementation of \HushList it
-be changed via the HUSHLIST\_FEE environment variable.
+be changed via the HUSHLIST\_FEE environment variable. Additionally, every \HushList
+has it's own configurable fee declared in the configuration file for that list. The
+user may set a higher fee on some lists to ensure faster delivery while using lower
+fees on other lists which are not as time sensitive.
 
 \nsection{References}
 
