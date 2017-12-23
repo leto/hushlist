@@ -993,16 +993,33 @@ a non-zero amount of 0.055555 HUSH. It is viewable on the Hush block explorer he
 
 https://explorer.myhush.org/tx/30a38c7ba0929efb7cd54d3b724d9eb1d9cb03f35381a94d889bc4cffb0593bf
 
-One may note that the zaddr zcZpJreyJqmNJ3fUJekvbnyuxuJe9eAURAHrMCvN2Nr7VuWjakb1LEw6j2etPcCnr45BRot7MaMbipuS5da162BfuUkFGLj does not appear anywhere in the explorer, because
+One may note that the zaddr
+
+zcZpJreyJqmNJ3fUJekvbnyuxuJe9eAURAHrMCvN2Nr7VuWjakb1LEw6j2etPcCnr45BRot7MaMbipuS5da162BfuUkFGLj
+
+does not appear anywhere in the explorer, because
 shielded addresses never show up directly in the public blockchain. Network transaction
 analysis is not possible on zaddrs. The explorer only
 shows that a JoinSplit occured and that change was given to a taddr.
 
-The transaction
-does leak the metadata of the amount, since it was a de-shielding transaction, from $ t \rightarrow z $. All \HushList memos have amount=0.0 by default so this is not normally a concern. 
-
 Nevertheless, the follow text is forever embedded in the 512 byte memo field of the above
 transaction
+
+	A beginning is the time for taking the most delicate care that the balances are correct.
+	 -- "Manual of Muad'Dib" by the Princess Irulan
+
+	Once men turned their thinking over to machines in the hope that this would set them free. But that only permitted other men with machines to enslave them.
+	 -- Reverend Mother Gaius Helen Mohiam
+
+	Polish comes from the cities; wisdom from the desert.
+	 -- Arrakeen villager saying
+
+	Be prepared to appreciate what you meet.
+	 -- Fremen proverb
+
+Note that the transaction
+does leak the metadata of the amount, since it was a de-shielding transaction, from $ t \rightarrow z $. All \HushList memos have amount=0.0 by default so this is not normally a concern. 
+
 
 \nsection{Metadata Analysis}
 
