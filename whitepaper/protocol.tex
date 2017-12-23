@@ -963,6 +963,14 @@ Clients can poll the local full node periodically at a user specifiable
 default interval OR, by default, the same as the average block time for the chain in question.
 For the \Hush chain, this is 2.5 minutes.
 
+If for any reason a \HushList user wants to PROVE with cryptographic certaintity that
+they knew certain information at a certain time, all they would need to do is publish
+the PRIVATE KEY of an address which made the transaction that contains the information.
+
+This is the so-called "investigative journalist" or "whistle-blower" use case. An
+individual can send themselves \HushList memos "just in case" they need to prove
+something in the future. This can be considered "data as insurance".
+
 \nsection{Costs}
 
 Sending \HushList memos requires making a financial transaction and by default,
