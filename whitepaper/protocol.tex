@@ -858,7 +858,11 @@ $ 0.0 $ and the default fee is currently $ 0.0001 $ but these numbers are subjec
 
 \nsection{Design of \HushList}
 
-The design of \HushList is inspired by Git. This document specifies a protocol and the authors provide a reference implementation of this protocol in cross-platform Perl which can be easily installed on millions of computers around the world via CPAN and other methods.
+The design of \HushList is inspired by Git. The reference implementation is a command-line
+program which is a very thin wrapper around an API, which is implemented as a various Perl modules. \HushList uses many of the same subcommands as Git which have intuitive meanings,
+which provide "easy-onramps" to learn how to use the CLI.
+
+This document specifies a protocol and the authors provide a reference implementation of this protocol in cross-platform Perl which can be easily installed on millions of computers around the world via CPAN and other methods.
 
 \HushList should work across any platform that supports Perl and Hush (or your other coin).
 
