@@ -174,6 +174,7 @@ electronic commerce and payment, financial privacy, proof of work, zero knowledg
 \newcommand{\Bitcoin}{\termbf{Bitcoin}}
 \newcommand{\CryptoNote}{\termbf{CryptoNote}}
 \newcommand{\ZEC}{\termbf{ZEC}}
+\newcommand{\KMD}{\termbf{KMD}}
 \newcommand{\HUSH}{\termbf{HUSH}}
 \newcommand{\zatoshi}{\term{zatoshi}}
 \newcommand{\puposhi}{\term{puposhi}}
@@ -884,9 +885,9 @@ It may be funded by the user from any taddr or zaddr with no loss of privacy.
 For each pseudonym the user sends from (may be globally used or per-list), a
 taddr $t_L$ is created and a de-shielding transaction is done from $ z_F \rightarrow t_L $ which
 will allow the user to send memos to the given \HushList on behalf of the $t_L$ pseudonym.
-Since \HushList memos have, by default, an amount of $ 0.0 $.
+Since \HushList memos have, by default, an amount of $ 0.0 $, all the costs associated with using \HushList are network costs. Users may additionally add a non-zero amount to a \HushList memo.
 
-For each \HushList the user wants to be part of, \HushList \MUST create a brand new zaddress $ z_L $
+For each \HushList the user wants to be part of, \HushList will create a brand new zaddress $ z_L $
 (it \MUSTNOT reuse an existing address) and fund that address via a shielded $z \rightarrow z$ transaction between $z_F \rightarrow z_L$.
 
 If there are no taddr or zaddr funds in the entire wallet, \HushList \SHOULD present the user a taddr + zaddr which can be used to "top up" the current \HushList wallet from another wallet/exchange/etc.
@@ -907,7 +908,17 @@ to consider them as two different contacts.
 
 \nsection{List Creation}
 
-...
+A private \HushList is simply a list of contacts stored locally and costs nothing. The
+\Zcash protocol itself has a max of 54 recipients currently, so \HushList implementations
+should not allow lists with more than 54 recipients at this time.
+
+A public \HushList means publishing the PRIVATE KEY of a taddr (or potentially a zaddr)
+such that this address is no longer owned by a single individual. By intentially
+publishing the PRIVATE KEY in a public place, the owner has put all FUNDS and more importantly, the metadata of all transactions to that address, in the public domain.
+
+By default, \HushList \MUST refuse to publicize the PRIVATE KEY of an address that has non-zero balance. \HushList implementations \SHOULD protect users from accidental monetary loss in every way possible. Even so, a user could accidentally send funds to an address that has been publicized and this very real confusion is still looking for good answers.
+
+Very recent developments in \Zcash might allow the potential to use "viewing keys" in the fture, but as this feature has not been fully merged to master at this time and lacks a RPC interface, \HushList chooses to use PRIVATE KEYS which are core \Zcash protocol that is well-supported in all forks. If "viewing keys" are one day to be used, that feature will need to be merged into multiple \Zcash forks, which does not seem likely in the near-term.
 
 \nsection{List Subscription}
 
@@ -916,7 +927,9 @@ blockchain, URI or manual entry, the private key is added to the user's wallet,
 along with a user entered or approved name and description for the list (if
 provided in on-chain or uri encoded metadata). HushList creates a unique
 taddr + zaddr for each list so that the user may choose to send each message
-to the list psuedonymously or anonymously or a mixture of both.
+to the list psuedonymously or anonymously or a mixture of both. There is no
+loss of privacy to send memos to the same \HushList with a psuedonym tAlice
+and an anon handle zBob if the user so chooses.
 
 \nsection{Sending To A List}
 
@@ -930,6 +943,10 @@ One may send a string of text via the *send* subcommand or send the contents of 
 
 Each HushList has a dedicated default chain that it is attached to. When looking up
 \HushList contacts for a given list, their address on that chain will be retreived.
+
+A unique feature of \HushList is that speech=money, so you may always attach a
+non-zero amount of \HUSH,\ZEC,\KMD/etc to each memo to a \HushList. Currently you must
+send each member of a \HushList the same amount in one memo, but you may send different amounts in different memos.
 
 \nsection{Receiving Messages}
 
