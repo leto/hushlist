@@ -986,6 +986,35 @@ has it's own configurable fee declared in the configuration file for that list. 
 user may set a higher fee on some lists to ensure faster delivery while using lower
 fees on other lists which are not as time sensitive.
 
+\nsection{Examples}
+
+The first \HushList memo was a $ t \rightarrow z $ transaction which also included
+a non-zero amount of 0.055555 HUSH. It is viewable on the Hush block explorer here:
+
+https://explorer.myhush.org/tx/30a38c7ba0929efb7cd54d3b724d9eb1d9cb03f35381a94d889bc4cffb0593bf
+
+One may note that the zaddr zcZpJreyJqmNJ3fUJekvbnyuxuJe9eAURAHrMCvN2Nr7VuWjakb1LEw6j2etPcCnr45BRot7MaMbipuS5da162BfuUkFGLj does not appear anywhere in the explorer, because
+shielded addresses never show up directly in the public blockchain. Network transaction
+analysis is not possible on zaddrs. The explorer only
+shows that a JoinSplit occured and that change was given to a taddr.
+
+The transaction
+does leak the metadata of the amount, since it was a de-shielding transaction, from $ t \rightarrow z $. All \HushList memos have amount=0.0 by default so this is not normally a concern. 
+
+Nevertheless, the follow text is forever embedded in the 512 byte memo field of the above
+transaction
+
+\nsection{Metadata Analysis}
+
+The biggest concern for metadata leakage in \HushList is in de-shielding $t \rightarrow z$ transactions which leak amount metadata.
+
+The only time \HushList does a de-shielding transaction is when the local wallet has 0 shielded value and it must transfer value from a taddr OR when the user chooses to send from a psuedonymous taddr to a \HushList.
+
+The first case we call a "shielded top-up" and happens rarely but we would not want to always have the same default amount to "top-up" because that amount can be searched for on the public chain. For this reason, we add some noise to the exact amount of our topups. For instance, if the user wanted to move up to 1 HUSH, we would generate a random number between 0.9 and 1.0 and then subtract it from the top-up amount. Then all \HushList users wouldhave slightly different top-up amount instead of a few easily searchable amounts.
+
+In the second case, normal transactions will have amount=0 which will stand out and
+network transaction analysis is possible. If these psuedonyms choose to actually send non-zero amounts, network analsysis can be made harder since most \HushList messages use amount=0.
+
 \nsection{References}
 
 \begingroup
