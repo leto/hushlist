@@ -277,6 +277,8 @@ electronic commerce and payment, financial privacy, proof of work, zero knowledg
 \newcommand{\Transparent}{\titleterm{Transparent}}
 \newcommand{\transparentValuePool}{\term{transparent value pool}}
 \newcommand{\shielded}{\term{shielded}}
+\newcommand{\shieldedXTN}{\term{shielded} $ t \rightarrow z $ transaction}
+\newcommand{\shieldedXTNs}{\term{shielded} $ t \rightarrow z $ transactions}
 \newcommand{\shieldedNote}{\term{shielded note}}
 \newcommand{\shieldedNotes}{\term{shielded notes}}
 \newcommand{\xShielded}{\term{Shielded}}
@@ -870,7 +872,7 @@ The reference implemenation is written in a maintainable and testable way such t
 can easily evolve as the Protocol evolves.
 
 It is hoped that in the future there will be many implementations of \HushList, running on
-various blockchains and using various software stacks. The design of \HushList is compatible with Simple Payment Verification (SPV) light wallets and a future version of \HushList will learn to speak an ElectrumX backend server.
+various blockchains and using various software stacks. The design of \HushList is compatible with Simple Payment Verification (SPV) light wallets and a future version of \HushList will learn to speak to an ElectrumX backend server.
 
 \nsection{Reference Implementation}
 
@@ -993,33 +995,40 @@ a non-zero amount of 0.055555 HUSH. It is viewable on the Hush block explorer he
 
 https://explorer.myhush.org/tx/30a38c7ba0929efb7cd54d3b724d9eb1d9cb03f35381a94d889bc4cffb0593bf
 
-One may note that the zaddr
-
-zcZpJreyJqmNJ3fUJekvbnyuxuJe9eAURAHrMCvN2Nr7VuWjakb1LEw6j2etPcCnr45BRot7MaMbipuS5da162BfuUkFGLj
-
-does not appear anywhere in the explorer, because
+One may note that the zaddr associated with this transaction does not appear anywhere in the explorer, because
 shielded addresses never show up directly in the public blockchain. Network transaction
 analysis is not possible on zaddrs. The explorer only
 shows that a JoinSplit occured and that change was given to a taddr.
 
 Nevertheless, the follow text is forever embedded in the 512 byte memo field of the above
-transaction
+transaction:
 
+\begin{quote}
 	A beginning is the time for taking the most delicate care that the balances are correct.
+
 	 -- "Manual of Muad'Dib" by the Princess Irulan
+\end{quote}
 
+\begin{quote}
 	Once men turned their thinking over to machines in the hope that this would set them free. But that only permitted other men with machines to enslave them.
+
 	 -- Reverend Mother Gaius Helen Mohiam
+\end{quote}
 
+\begin{quote}
 	Polish comes from the cities; wisdom from the desert.
-	 -- Arrakeen villager saying
 
+	 -- Arrakeen villager saying
+\end{quote}
+
+\begin{quote}
 	Be prepared to appreciate what you meet.
+
 	 -- Fremen proverb
+\end{quote}
 
 Note that the transaction
-does leak the metadata of the amount, since it was a de-shielding transaction, from $ t \rightarrow z $. All \HushList memos have amount=0.0 by default so this is not normally a concern. 
-
+does leak the metadata of the amount, since it was a de-shielding transaction, from $ t \rightarrow z $. All \HushList memos have amount=0.0 by default so this is not normally a concern.
 
 \nsection{Metadata Analysis}
 
@@ -1031,6 +1040,29 @@ The first case we call a "shielded top-up" and happens rarely but we would not w
 
 In the second case, normal transactions will have amount=0 which will stand out and
 network transaction analysis is possible. If these psuedonyms choose to actually send non-zero amounts, network analsysis can be made harder since most \HushList messages use amount=0.
+
+\nsection{User Stories}
+
+"Pen Name" user story - Amanda
+
+Let Amanda have a transparent address $ t_A $ and let there be a PUBLIC \Hushlist with shielded address $ z_L $.
+
+Amanda sends \HushList memos from $t_A$ to a PUBLIC \HushList, ie.
+
+$ t_A \rightarrow z_L $.
+
+ Any person who is subscribed to this public \HushList will be able to see Amandas memos,
+yet Amandas identity is "psuedonymous", i.e. everybody knows that every message from $ t_A$ is the same person, but her identity remains unknown. If at any time in the future, Amanda would like to *cryptographically prove* that she is the identity behind $t_A$, all she must do is publish the PRIVATE KEY of $t_A$. If any transparent value resides in $t_A$, it can simply be moved to another address before publication.
+
+Of course Amanda is free to never reveal her identity and remain a psuedonym indefinitely.
+
+"Oppressed Minority" user story - Charlie
+
+"Security Researcher" user story - Dana
+
+"Whisteblower" user story - Martha
+
+"Censored Journalist" user story - Billy
 
 \nsection{References}
 
