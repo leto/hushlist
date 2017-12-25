@@ -277,6 +277,8 @@ electronic commerce and payment, financial privacy, proof of work, zero knowledg
 \newcommand{\Transparent}{\titleterm{Transparent}}
 \newcommand{\transparentValuePool}{\term{transparent value pool}}
 \newcommand{\shielded}{\term{shielded}}
+\newcommand{\shieldedXTN}{\term{shielded} $ t \rightarrow z $ transaction}
+\newcommand{\shieldedXTNs}{\term{shielded} $ t \rightarrow z $ transactions}
 \newcommand{\shieldedNote}{\term{shielded note}}
 \newcommand{\shieldedNotes}{\term{shielded notes}}
 \newcommand{\xShielded}{\term{Shielded}}
@@ -1026,7 +1028,7 @@ transaction:
 \end{quote}
 
 Note that the transaction
-does leak the metadata of the amount, since it was a de-shielding transaction, from $ t \rightarrow z $. All \HushList memos have amount=0.0 by default so this is not normally a concern. 
+does leak the metadata of the amount, since it was a de-shielding transaction, from $ t \rightarrow z $. All \HushList memos have amount=0.0 by default so this is not normally a concern.
 
 \nsection{Metadata Analysis}
 
@@ -1041,15 +1043,26 @@ network transaction analysis is possible. If these psuedonyms choose to actually
 
 \nsection{User Stories}
 
-"Pen Name" user story
+"Pen Name" user story - Amanda
 
-"Oppressed Minority" user story
+Let Amanda have a transparent address $ t_A $ and let there be a PUBLIC \Hushlist with shielded address $ z_L $.
 
-"Security Researcher" user story
+Amanda sends \HushList memos from $t_A$ to a PUBLIC \HushList, ie.
 
-"Whisteblower" user story
+$ t_A \rightarrow z_L $.
 
-"Censored Journalist" user story
+ Any person who is subscribed to this public \HushList will be able to see Amandas memos,
+yet Amandas identity is "psuedonymous", i.e. everybody knows that every message from $ t_A$ is the same person, but her identity remains unknown. If at any time in the future, Amanda would like to *cryptographically prove* that she is the identity behind $t_A$, all she must do is publish the PRIVATE KEY of $t_A$. If any transparent value resides in $t_A$, it can simply be moved to another address before publication.
+
+Of course Amanda is free to never reveal her identity and remain a psuedonym indefinitely.
+
+"Oppressed Minority" user story - Charlie
+
+"Security Researcher" user story - Dana
+
+"Whisteblower" user story - Martha
+
+"Censored Journalist" user story - Billy
 
 \nsection{References}
 
