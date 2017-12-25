@@ -1047,7 +1047,7 @@ network transaction analysis is possible. If these psuedonyms choose to actually
 
 Let Amanda have a transparent address $ t_A $ and let there be a PUBLIC \Hushlist with shielded address $ z_L $.
 
-Amanda sends \HushList memos from $t_A$ to a PUBLIC \HushList, ie.
+Amanda sends \HushList memos from $t_A$ to a PUBLIC \HushList with a de-shielding transaction, ie.
 
 $ t_A \rightarrow z_L $.
 
@@ -1056,13 +1056,23 @@ yet Amandas identity is "psuedonymous", i.e. everybody knows that every message 
 
 Of course Amanda is free to never reveal her identity and remain a psuedonym indefinitely.
 
-"Oppressed Minority" user story - Charlie
+Amanda needs to be concerned about her IP address being tied to $ t_A $ by a passive network attacker who records the Internet and is encouraged to use a proxy, Tor or other means depending on risk and operational security needs.
+
+"Oppressed Minority" user story - Francesca and Nicolau
+
+Francesca and Nicalau live in a place where their local religion/government/organization is oppressed by a larger religion/government/organication that controls everything around them, yet they still want to safely communicate.
 
 "Security Researcher" user story - Dana
 
+Dana wants to communicate 0-day exploits about nation-state infrastructure to the people that run this critical infrastructure, without anybody else listening in on this very sensitive information.
+
 "Whisteblower" user story - Martha
 
+Martha has data about something that most be transported from internal-only systems, to external places, preferably many, while knowing that the data is not tampered with or even viewed until the appropriate time.
+
 "Censored Journalist" user story - Billy
+
+This is an extension of the "Pen Name" User Story. Let's say that for some reason a journalist Billy is already known publicly, but is sensored from all media locally in various places. Billy can use HushList to publish his writing (and also source data, encrypted or not) to multiple blockchains to make it permanently mirrored across thousands of servers and very hard to censor.
 
 \nsection{References}
 
