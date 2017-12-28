@@ -82,16 +82,16 @@
 \newlist{formulae}{itemize}{3}
 \setlist[formulae]{itemsep=0.2ex,topsep=0ex,leftmargin=1.5em,label=,after=\vspace{1.5ex}}
 
-\newcommand{\docversion}{Version unavailable (check protocol.ver)}
-\InputIfFileExists{protocol.ver}{}{}
-
+\newcommand{\docversion}{Pre-Relase Version}
 \newcommand{\termbf}[1]{\textbf{#1}\xspace}
 \newcommand{\Hushlist}{\termbf{HushList}}
 \newcommand{\HushList}{\termbf{HushList}}
 \newcommand{\Hushlists}{\termbf{HushLists}}
 \newcommand{\HushLists}{\termbf{HushLists}}
 
-\newcommand{\doctitle}{\HushList Protocol Specification}
+\newcommand{\doctitle}{\HushList Protocol Specification \\
+\docversion
+}
 \newcommand{\leadauthor}{David Mercer}
 \newcommand{\coauthora}{Duke Leto}
 
@@ -790,7 +790,7 @@ genesis block and uses the Zcash Sprout proving key.
 
 \vspace{1.5ex}
 \noindent This specification defines the \Hushlist communication protocol and explains
-how it builds on the foundation of \Zcash \cite{Zcash} and \Bitcoin \cite{Naka2008}.
+how it builds on the foundation of \Zcash \cite{Zcash} and \Bitcoin \cite{Bitcoin}.
 
 \vspace{2.5ex}
 \noindent \textbf{Keywords:}~ \StrSubstitute[0]{\keywords}{,}{, }.
