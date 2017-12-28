@@ -39,6 +39,8 @@
 \renewcommand{\texttt}[1]{\scalebox{1.02}[1.07]{\oldtexttt{#1}}}
 \renewcommand{\mathtt}[1]{\scalebox{1.02}[1.07]{$\oldmathtt{#1}$}}
 
+\newcommand{\zsendmany}{\textbf{z\_sendmany}}
+
 % bold but not extended
 \newcommand{\textbnx}[1]{{\fontseries{b}\selectfont #1}}
 
@@ -177,7 +179,10 @@ electronic commerce and payment, financial privacy, proof of work, zero knowledg
 \newcommand{\Bitcoin}{\termbf{Bitcoin}}
 \newcommand{\CryptoNote}{\termbf{CryptoNote}}
 \newcommand{\ZEC}{\termbf{ZEC}}
+\newcommand{\ZEN}{\termbf{ZEN}}
+\newcommand{\ZCL}{\termbf{ZCL}}
 \newcommand{\KMD}{\termbf{KMD}}
+\newcommand{\BTCP}{\termbf{BTCP}}
 \newcommand{\HUSH}{\termbf{HUSH}}
 \newcommand{\zatoshi}{\term{zatoshi}}
 \newcommand{\puposhi}{\term{puposhi}}
@@ -765,8 +770,7 @@ electronic commerce and payment, financial privacy, proof of work, zero knowledg
 \HushList is a protocol for mailing lists using the encrypted memo
 field of the \Zcash protocol.  It supports anonymous and pseudonymous senders, receivers and Hushlist creators, as
 well as public and private lists.  The HushList protocol can run on any fork of \Zcash that has a compatible memo field, though certain advanced features might not be fully supported
-on all chains.  HushList is developed and tested on the Hush and Zcash mainnets as well as
-testnets (TUSH and TAZ), next to be tested is Komodo (KMD).
+on all chains.  HushList is developed and tested on the Hush mainnet and testnets and is kknown is designed to run on any \ZEC fork including but not limited to \HUSH, \KMD, \ZCL, \ZEN.
 
 In addition to the above properties, \HushList provides users with censorship-resistant
 storage and retrieval, since every \Hush full node will have an encrypted copy of every
@@ -881,7 +885,7 @@ various blockchains and using various software stacks. The design of \HushList i
 
 The reference implementation is developed as Free Software under the GNU Public License Version 3 on Github at the following URL:
 
-https://github.com/leto/hushlist
+	https://github.com/leto/hushlist
 
 This code is still in active development, consider it EXPERIMENTAL and ONLY FOR DEVELOPERS at this point pending a security review.
 
@@ -892,7 +896,7 @@ Multipart sends and public HushLists are still in development.
 
 \nsection{Account Funding}
 
-On first run, \HushList creates a new shielded zaddress $z_F$ to fund transparent addresses for pseudonymous sending.
+On first run, \HushList creates a new shielded zaddress $z_F$ to fund transparent addresses for pseudonymous sending via the \zsendmany RPC method.
 
 It may be funded by the user from any taddr or zaddr with no loss of privacy.
 
@@ -928,7 +932,7 @@ to ensure delivery and subvert censorship of a single chain.
 
 \nsubsection{Private \HushLists}
 A private \HushList is simply a list of contacts stored locally and costs nothing. The
-\Zcash protocol itself has a max of 54 recipients in a z\_sendmany RPC currently, so \HushList implementations
+\Zcash protocol itself has a max of 54 recipients in a \zsendmany RPC currently, so \HushList implementations
 should not allow lists with more than 54 recipients at this time.
 
 \nsubsection{Public \HushLists}
