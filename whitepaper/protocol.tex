@@ -83,9 +83,15 @@
 \newcommand{\docversion}{Version unavailable (check protocol.ver)}
 \InputIfFileExists{protocol.ver}{}{}
 
-\newcommand{\doctitle}{HushList Protocol Specification}
-\newcommand{\leadauthor}{David Mercer}
-\newcommand{\coauthora}{Duke Leto}
+\newcommand{\termbf}[1]{\textbf{#1}\xspace}
+\newcommand{\Hushlist}{\termbf{HushList}}
+\newcommand{\HushList}{\termbf{HushList}}
+\newcommand{\Hushlists}{\termbf{HushLists}}
+\newcommand{\HushLists}{\termbf{HushLists}}
+
+\newcommand{\doctitle}{\HushList Protocol Specification}
+\newcommand{\leadauthor}{David Mercer <HisMagesty@ᛚᛟᚲᛁ.com>}
+\newcommand{\coauthora}{Duke Leto <duke@leto.net>}
 
 \newcommand{\keywords}{anonymity, freedom of speech, cryptographic protocols,\
 electronic commerce and payment, financial privacy, proof of work, zero knowledge}
@@ -162,14 +168,11 @@ electronic commerce and payment, financial privacy, proof of work, zero knowledg
 
 \newcommand{\term}[1]{\textsl{#1}\kern 0.05em\xspace}
 \newcommand{\titleterm}[1]{#1}
-\newcommand{\termbf}[1]{\textbf{#1}\xspace}
 \newcommand{\quotedterm}[1]{``~\!\!\term{#1}''}
 \newcommand{\conformance}[1]{\textbnx{#1}\xspace}
 
 \newcommand{\Zcash}{\termbf{Zcash}}
 \newcommand{\Hush}{\termbf{Hush}}
-\newcommand{\Hushlist}{\termbf{HushList}}
-\newcommand{\HushList}{\termbf{HushList}}
 \newcommand{\Zerocash}{\termbf{Zerocash}}
 \newcommand{\Bitcoin}{\termbf{Bitcoin}}
 \newcommand{\CryptoNote}{\termbf{CryptoNote}}
@@ -921,12 +924,14 @@ If one has the addresses for a set of contacts on multiple chains that are suppo
 say ZEC, HUSH and KMD, then a user may send a memo to members across multiple blockchains
 to ensure delivery and subvert censorship of a single chain.
 
-\nsection{List Creation}
+\nsection{\HushList Creation}
 
+\nsubsection{Private \HushLists}
 A private \HushList is simply a list of contacts stored locally and costs nothing. The
-\Zcash protocol itself has a max of 54 recipients currently, so \HushList implementations
+\Zcash protocol itself has a max of 54 recipients in a z\_sendmany RPC currently, so \HushList implementations
 should not allow lists with more than 54 recipients at this time.
 
+\nsubsection{Public \HushLists}
 A public \HushList means publishing the PRIVATE KEY of a taddr (or potentially a zaddr)
 such that this address is no longer owned by a single individual. By intentially
 publishing the PRIVATE KEY in a public place, the owner has put all FUNDS and more importantly, the metadata of all transactions to that address, in the public domain.
@@ -951,11 +956,34 @@ and an anon handle zBob if the user so chooses.
 Subscribing to a \HushList is completely free, it is simply the act of importing
 data to your local wallet.
 
+To faciliate applications being able to uniquely identify public \HushLists we
+introduce a new URL scheme modeled after the venerable HTTP request
+
+	hushlist://COIN:NETWORK@K
+
+where COIN is the currency symbol of a compatible cryptocoin such as
+HUSH (Hush) , KMD (Komodo) , ZEC (Zcash), ZCL (Zcash Classic), ZEN (ZenCash) and potentially BTCP (Bitcoin Private).
+
+NETWORK is will often be "mainnet" but this schema allows
+for the very real use case of developers iterating through various testnets and
+supports "sidenets" for those that want to isolate data from mainnet.
+
+K is the base58-formatted PRIVATE KEY as returned by the \textbf{dumpprivkey} RPC method of the associated coin.
+
+When COIN and NETWORK are omitted, they default to HUSH and "mainnet" respectively, so
+
+	hushlist://K
+
+is equivalent to
+
+	hushlist://HUSH:mainnet@K
+
+
 \nsection{Sending To A List}
 
 One may send to a \HushList from a taddr (pen name, psuedonym) or zaddr
 (anonymous shielded address) which is implemented in the client via
-the z\_sendmany RPC command. Up to 54 recepients may be in a single shielded
+the \textbf{z\_sendmany} RPC method. Up to 54 recepients may be in a single shielded
 transaction. v1 of HushList only supports HushLists of this size, but v2
 may implement larger HushLists by breaking large recipient lists into multiple sends.
 
@@ -1052,7 +1080,10 @@ network transaction analysis is possible. If these psuedonyms choose to actually
 
 \nsection{User Stories}
 
-"Pen Name" user story - Amanda
+This section contains various "User Stories" of how potential users can use the various
+features of the \HushList protocol to meet their needs.
+
+\nsubsection{"Pen Name" user story - Amanda}
 
 Let Amanda have a transparent address $ t_A $ and let there be a PUBLIC \Hushlist with shielded address $ z_L $.
 
@@ -1071,15 +1102,15 @@ Amanda needs to be concerned about her IP address being tied to $ t_A $ by a pas
 
 Francesca and Nicalau live in a place where their local religion/government/organization is oppressed by a larger religion/government/organication that controls everything around them, yet they still want to safely communicate.
 
-"Security Researcher" user story - Dana
+\nsubsection{"Security Researcher" user story - Gordon}
 
 Dana wants to communicate 0-day exploits about nation-state infrastructure to the people that run this critical infrastructure, without anybody else listening in on this very sensitive information.
 
-"Whisteblower" user story - Martha
+\nsubsection{"Whisteblower" user story - Martha}
 
 Martha has data about something that most be transported from internal-only systems, to external places, preferably many, while knowing that the data is not tampered with or even viewed until the appropriate time.
 
-"Censored Journalist" user story - Billy
+\nsubsection{"Censored Journalist" user story - Billy}
 
 This is an extension of the "Pen Name" User Story. Let's say that for some reason a journalist Billy is already known publicly, but is sensored from all media locally in various places. Billy can use HushList to publish his writing (and also source data, encrypted or not) to multiple blockchains to make it permanently mirrored across thousands of servers and very hard to censor.
 
