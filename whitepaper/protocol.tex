@@ -770,16 +770,16 @@ electronic commerce and payment, financial privacy, proof of work, zero knowledg
 \HushList is a protocol for mailing lists using the encrypted memo
 field of the \Zcash protocol.  It supports anonymous and pseudonymous senders, receivers and Hushlist creators, as
 well as public and private lists.  The HushList protocol can run on any fork of \Zcash that has a compatible memo field, though certain advanced features might not be fully supported
-on all chains.  HushList is developed and tested on the Hush mainnet and testnets and is kknown is designed to run on any \ZEC fork including but not limited to \HUSH, \KMD, \ZCL, \ZEN and the upcoming \BTCP.
+on all chains.  HushList is developed and tested on the Hush mainnet and testnets and is known is designed to run on any \ZEC fork including but not limited to \HUSH, \KMD, \ZCL, \ZEN and the upcoming \BTCP.
 
 In addition to the above properties, \HushList provides users with censorship-resistant
 storage and retrieval, since every \Hush full node will have an encrypted copy of every
 \HushList memo. Furthermore, sending and receiving via one or more blockchains is a serious deviation from traditional server-client design which easily allows a Man-In-The-Middle Attack and Deep Packet Inspection (DPI). Network traffic monitoring and correlation is made much harder, because there is no longer a packet with a timestamp and "selectors" going from one unique IP to another unique IP via a very predictable network route.
 
-\Zcash is an implementation of the \term{Decentralized Anonymous Payment}
+\Zcash \cite{Zcash} is an implementation of the \term{Decentralized Anonymous Payment}
 scheme \Zerocash, with security fixes and adjustments
 to terminology, functionality and performance. It bridges the existing
-\emph{transparent} payment scheme used by \Bitcoin with a
+\emph{transparent} payment scheme used by \Bitcoin \cite{Bitcoin} with a
 \emph{shielded} payment scheme secured by zero-knowledge succinct
 non-interactive arguments of knowledge (\zkSNARKs). 
 
@@ -788,7 +788,7 @@ genesis block and uses the Zcash Sprout proving key.
 
 \vspace{1.5ex}
 \noindent This specification defines the \Hushlist communication protocol and explains
-how it builds on the foundation of \Zcash \cite{Zcash} and \Bitcoin \cite{Bitcoin}.
+how it builds on the foundation of \Zcash and \Bitcoin .
 
 \vspace{2.5ex}
 \noindent \textbf{Keywords:}~ \StrSubstitute[0]{\keywords}{,}{, }.
