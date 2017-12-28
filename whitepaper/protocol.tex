@@ -92,7 +92,7 @@
 \newcommand{\HushLists}{\termbf{HushLists}}
 
 \newcommand{\doctitle}{\HushList Protocol Specification}
-\newcommand{\leadauthor}{David Mercer <HisMagesty@ᛚᛟᚲᛁ.com>}
+\newcommand{\leadauthor}{David Mercer <radi42@gmail.com>}
 \newcommand{\coauthora}{Duke Leto <duke@leto.net>}
 
 \newcommand{\keywords}{anonymity, freedom of speech, cryptographic protocols,\
@@ -751,6 +751,7 @@ electronic commerce and payment, financial privacy, proof of work, zero knowledg
 \newenvironment{pnotes}{\introlist\subparagraph{Notes:}\begin{itemize}}{\end{itemize}}
 
 \newcommand{\affiliation}{\hairspace$^\dagger$\;}
+\newcommand{\affiliationDuke}{\hairspace$^\ddagger$\;}
 
 \begin{document}
 
@@ -758,7 +759,7 @@ electronic commerce and payment, financial privacy, proof of work, zero knowledg
 \Large \docversion}
 \author{
 \Large \leadauthor\hairspace\thanks{\;Hush Core Developers} \\
-\Large \coauthora\affiliation }
+\Large \coauthora\affiliationDuke }
 \date{\today}
 \maketitle
 
@@ -961,11 +962,12 @@ Subscribing to a \HushList is completely free, it is simply the act of importing
 data to your local wallet.
 
 To faciliate applications being able to uniquely identify public \HushLists we
-introduce a new URL scheme modeled after the venerable HTTP request
+introduce a new URL scheme where there username is the currency symbole of the
+cryptocoin and the password field is the network, i.e.
 
 	hushlist://COIN:NETWORK@K
 
-where COIN is the currency symbol of a compatible cryptocoin such as
+COIN can be the currency symbol of a compatible cryptocoin such as
 HUSH (Hush) , KMD (Komodo) , ZEC (Zcash), ZCL (Zcash Classic), ZEN (ZenCash) and potentially BTCP (Bitcoin Private).
 
 NETWORK is will often be "mainnet" but this schema allows
