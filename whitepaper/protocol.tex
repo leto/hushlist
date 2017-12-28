@@ -790,7 +790,7 @@ genesis block and uses the Zcash Sprout proving key.
 
 \vspace{1.5ex}
 \noindent This specification defines the \Hushlist communication protocol and explains
-how it builds on the foundation of \Zcash and \Bitcoin.
+how it builds on the foundation of \Zcash \cite{Zcash} and \Bitcoin \cite{Naka2008}.
 
 \vspace{2.5ex}
 \noindent \textbf{Keywords:}~ \StrSubstitute[0]{\keywords}{,}{, }.
@@ -842,8 +842,6 @@ The following overview is intended to give a concise summary of the ideas behind
 the protocol, for an audience already familiar with \blockchain-based
 cryptocurrencies such as \Bitcoin or \Zcash.
 
-XXX
-
 Value in \Hush is either \transparent or \shielded. Transfers of \transparent
 value work essentially as in \Bitcoin and have the same privacy properties.
 \xShielded value is carried by \notes, which specify an amount and a \payingKey.
@@ -889,12 +887,11 @@ The reference implementation is developed as Free Software under the GNU Public 
 
 	https://github.com/leto/hushlist
 
-This code is still in active development, consider it EXPERIMENTAL and ONLY FOR DEVELOPERS at this point pending a security review.
+This code is still in active development, consider it EXPERIMENTAL and ONLY FOR DEVELOPERS at this point pending a security review. This is the bleeding edge, folks.
 
 The current reference implementation can send and receive memos, including files on disk or simple strings of text, as long as they are up to 512 bytes.
 
-Multipart sends and public HushLists are still in development.
-
+Multipart \HushList memos (file attachments) and public HushLists are still in development.
 
 \nsection{Account Funding}
 
@@ -1131,10 +1128,11 @@ Martha has data about something that must be transported from internal-only syst
 
 This is an extension of the "Pen Name" User Story. Let's say that for some reason a journalist Billy is already known publicly, but is censored from all media locally in various places. Billy can use HushList to publish his writing (and also source data, encrypted or not) to multiple blockchains to make it permanently mirrored across thousands of servers and very hard to censor.
 
-\nsection{Thanks}
+\nsection{Special Thanks}
 
 A special thanks to Daira Hopwood for an inspring Zcash Protocol document and for making
-the \LaTeX infrastructure open source, which was used to make this document.
+the \LaTeX infrastructure open source, which was used to make this document. HushList is
+built on the shoulders of giants and to all the people that have made the Bitcoin and Zcash ecosystems what they are, thank you.
 
 \nsection{References}
 
