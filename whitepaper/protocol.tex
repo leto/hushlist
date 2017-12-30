@@ -773,7 +773,7 @@ electronic commerce and payment, financial privacy, proof of work, zero knowledg
 \normalsize \noindent \textbf{Abstract.}
 
 \HushList is a protocol for mailing lists using the encrypted memo
-field of the \Zcash protocol.  It supports anonymous and pseudonymous senders, receivers and Hushlist creators, as
+field of the \Zcash protocol.  It supports anonymous and pseudonymous senders, anonymous receivers and Hushlist creators, as
 well as public and private lists.  The HushList protocol can run on any fork of \Zcash that has a compatible memo field, though certain advanced features might not be fully supported
 on all chains.  HushList is developed and tested on the Hush mainnet and testnets and is designed to run on any \ZEC fork including but not limited to \HUSH, \KMD, \ZCL, \ZEN and the upcoming \BTCP and \ZGLD forks.
 
@@ -874,7 +874,9 @@ Let $ z \rightarrow z $ be called \xShielded transactions, which take \xShielded
 from one \xShielded address to another, and is fully protected by \zkSNARKs. \HushList implementations \MUST  support these transactions, and additionally \SHOULD educate users that they are the most private type of transaction, which minimized metadata leakage.
 
 Let $ z \rightarrow t $ be called \deshielding transactions, which take \xShielded value
-stored in \notes in $z$ and transfer them to \UTXOs stored in $t$. \HushList \MUSTNOT  create \deshielding transactions, as they leak metadata and can potentially link a previously \xShielded address $z$ to a transparent address $t$. \HushList implementation \SHOULD attempt to prevent, at all costs, accidentally sending to a $t$ address via the \zsendmany RPC command.
+stored in \notes in $z$ and transfer them to \UTXOs stored in $t$. \HushList \MUSTNOT  create \deshielding transactions, as they leak metadata and can potentially link a previously \xShielded address $z$ to a transparent address $t$. \HushList implementation \SHOULD attempt to prevent, at all costs, accidentally sending to a $t$ address via the \zsendmany  RPC command.
+
+An easy way to summarize the support transactions of \Hushlist is to say: All receivers must by \shielded addresses, senders can be either \transparent or \shielded addresses.
 
 Each \HushList \MUST have a default blockchain and network that it is attached to, and the default
 chain \SHOULD be HUSH. The default network \MUST be assumed to be "mainnet" if not specified, similar to how the *master* branch is assumed in many Git commands if not specified. The user \MUST be able to set their GLOBAL default chain (not implemented yet) as well as a default chain for each list.
