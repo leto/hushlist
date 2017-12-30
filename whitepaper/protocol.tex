@@ -253,6 +253,8 @@ electronic commerce and payment, financial privacy, proof of work, zero knowledg
 \newcommand{\fullnodes}{\term{full nodes}}
 \newcommand{\anchor}{\term{anchor}}
 \newcommand{\anchors}{\term{anchors}}
+\newcommand{\UTXO}{\term{UTXO}}
+\newcommand{\UTXOs}{\term{UTXOs}}
 \newcommand{\block}{\term{block}}
 \newcommand{\blocks}{\term{blocks}}
 \newcommand{\header}{\term{header}}
@@ -283,6 +285,8 @@ electronic commerce and payment, financial privacy, proof of work, zero knowledg
 \newcommand{\xTransparent}{\term{Transparent}}
 \newcommand{\Transparent}{\titleterm{Transparent}}
 \newcommand{\transparentValuePool}{\term{transparent value pool}}
+\newcommand{\deshielding}{\term{deshielding}}
+\newcommand{\shielding}{\term{shielding}}
 \newcommand{\shielded}{\term{shielded}}
 \newcommand{\shieldedXTN}{\term{shielded} $ t \rightarrow z $ transaction}
 \newcommand{\shieldedXTNs}{\term{shielded} $ t \rightarrow z $ transactions}
@@ -856,13 +860,29 @@ more \joinSplitDescriptions. Each of these describes a \joinSplitTransfer
 which takes in a \transparent value and up to two input \notes, and produces a
 \transparent value and up to two output \notes.
 
-Each \HushList \MUST have a default blockchain that it is attached to, and the default
-chain \SHOULD be HUSH. The user \MUST be able to set their GLOBAL default chain (not implemented yet) as well as a default chain for each list.
+\nsubsection{Types Of Transactions}
+
+All Zcash forks have what we will classify into FOUR categories of transactions.
+
+Let $ t \rightarrow t $ be called a \transparent transaction, which is identical to a \Bitcoin transaction, consisting entirely of transparent inputs and outputs. \HushList protocol implementations \MUSTNOT create \transparent transactions, they do not protect metadata in any way and lack memo fields. These transactions can be done with traditional wallet software and does not have any part in \HushList protocol.
+
+Let $ t \rightarrow z $ be called \shielding transactions, which takes transparent
+value stored in UTXOs and transforms them to \xShielded value stored inside of \notes
+which are protected by \zkSNARKs.
+
+Let $ z \rightarrow z $ be called \xShielded transactions, which take \xShielded value
+from one \xShielded address to another, and is fully protected by \zkSNARKs. \HushList implementations \MUST  support these transactions, and additionally \SHOULD educate users that they are the most private type of transaction, which minimized metadata leakage.
+
+Let $ z \rightarrow t $ be called \deshielding transactions, which take \xShielded value
+stored in \notes in $z$ and transfer them to \UTXOs stored in $t$. \HushList \MUSTNOT  create \deshielding transactions, as they leak metadata and can potentially link a previously \xShielded address $z$ to a transparent address $t$. \HushList implementation \SHOULD attempt to prevent, at all costs, accidentally sending to a $t$ address via the \zsendmany RPC command.
+
+Each \HushList \MUST have a default blockchain and network that it is attached to, and the default
+chain \SHOULD be HUSH. The default network \MUST be assumed to be "mainnet" if not specified, similar to how the *master* branch is assumed in many Git commands if not specified. The user \MUST be able to set their GLOBAL default chain (not implemented yet) as well as a default chain for each list.
 
 Each list also has a tadd+zaddr dedicated to that list, so the user has dedicated addresses to send psuedo/anon messages, as well as default fee and amount. The default amount is
 $ 0.0 $ and the default fee is currently $ 0.0001 $ but these numbers are subject to change.
 
-\HushList supports file attachments and embedding arbitrary binary data, it is not limited to ASCII.
+\HushList supports file attachments and embedding arbitrary binary data, it is not limited to ASCII. \HushList does not impose file size limits and network fees and CPU/RAM costs provide natural incentives for spammers to find cheaper and easier-to-access dumping grounds.
 
 \nsection{Design of \HushList}
 
@@ -872,13 +892,13 @@ which provide "easy-onramps" to learn how to use the CLI.
 
 This document specifies a protocol and the authors provide a reference implementation of this protocol in cross-platform Perl which can be easily installed on millions of computers around the world via CPAN and other methods.
 
-\HushList should work across any platform that supports Perl and Hush (or your other coin).
+\HushList should work across any platform that supports Perl and the coin being used. In this case, cryptocoins are much less portable than Perl, so Perl will not be the limiting factor.
 
 The reference implemenation is written in a maintainable and testable way such that it
 can easily evolve as the Protocol evolves.
 
 It is hoped that in the future there will be many implementations of \HushList, running on
-various blockchains and using various software stacks. The design of \HushList is compatible with Simple Payment Verification (SPV) light wallets and a future version of \HushList will learn to speak to an ElectrumX backend server.
+various blockchains and using various software stacks. The design of \HushList is compatible with Simple Payment Verification (SPV) light wallets and a future version of \HushList will learn to speak to an ElectrumX backend server, which natively supports Hush as of the upcoming 1.2.1 release.
 
 \nsection{Reference Implementation}
 
