@@ -1,0 +1,15 @@
+[16] Config.pm:340> INFO - This is Biber 2.4
+[17] Config.pm:343> INFO - Logfile is 'protocol.blg'
+[328] biber:287> INFO - === Sun Jan  7, 2018, 10:47:14
+[1148] Biber.pm:348> INFO - Reading 'protocol.bcf'
+[2154] Biber.pm:742> INFO - Found 5 citekeys in bib section 0
+[2323] Biber.pm:3151> INFO - Processing section 0
+[2647] Biber.pm:3308> INFO - Looking for bibtex format file 'hush.bib' for section 0
+[3300] bibtex.pm:1113> INFO - Decoding LaTeX character macros into UTF-8
+[3856] bibtex.pm:974> INFO - Found BibTeX data source 'hush.bib'
+[4737] UCollate.pm:65> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
+[4738] UCollate.pm:65> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[4738] Biber.pm:3028> INFO - Sorting list 'anyt/global' of type 'entry' with scheme 'anyt' and locale 'en-US'
+[4738] Biber.pm:3032> INFO - No sort tailoring available for locale 'en-US'
+[4779] bbl.pm:519> INFO - Writing 'protocol.bbl' with encoding 'ascii'
+[4959] bbl.pm:615> INFO - Output to protocol.bbl
