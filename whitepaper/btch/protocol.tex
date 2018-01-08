@@ -1,4 +1,5 @@
 \documentclass{article}
+
 \RequirePackage{amsmath}
 \RequirePackage{bytefield}
 \RequirePackage{graphicx}
@@ -89,12 +90,12 @@
 \newcommand{\Hushlists}{\termbf{HushLists}}
 \newcommand{\HushLists}{\termbf{HushLists}}
 
-\newcommand{\doctitle}{\HushList Protocol Specification}
-\newcommand{\leadauthor}{David Mercer}
-\newcommand{\coauthora}{Duke Leto}
+\newcommand{\doctitle}{BTCH Cryptocoin Specification}
+\newcommand{\leadauthor}{Duke Leto}
+\newcommand{\coauthora}{jl777}
 
-\newcommand{\keywords}{anonymity, freedom of speech, cryptographic protocols,\
-electronic commerce and payment, financial privacy, proof of work, zero knowledge}
+\newcommand{\keywords}{privacy coin, cryptocurrency, UTXOs, anonymity, freedom of speech, cryptographic protocols,\
+electronic commerce and payment, financial privacy, proof of work, zero knowledge, zkSNARKs}
 
 \hypersetup{
   pdfborderstyle={/S/U/W 0.7},
@@ -175,8 +176,10 @@ electronic commerce and payment, financial privacy, proof of work, zero knowledg
 \newcommand{\Hush}{\termbf{Hush}}
 \newcommand{\Zerocash}{\termbf{Zerocash}}
 \newcommand{\Bitcoin}{\termbf{Bitcoin}}
+\newcommand{\Komodo}{\termbf{Komodo}}
 \newcommand{\CryptoNote}{\termbf{CryptoNote}}
 \newcommand{\ZEC}{\termbf{ZEC}}
+\newcommand{\ZER}{\termbf{ZER}}
 \newcommand{\ZEN}{\termbf{ZEN}}
 \newcommand{\ZCL}{\termbf{ZCL}}
 \newcommand{\KMD}{\termbf{KMD}}
@@ -762,8 +765,8 @@ electronic commerce and payment, financial privacy, proof of work, zero knowledg
 \title{\doctitle \\
 \Large \docversion}
 \author{
-\Large \leadauthor\hairspace\thanks{\;radix42@gmail.com} \\
-\Large \coauthora\hairspace\thanks{\;duke@leto.net}
+\Large \leadauthor\hairspace\thanks{\;@dukeleto}
+\Large \coauthora\hairspace\thanks{\;...}
 }
 \date{\today}
 \maketitle
@@ -776,8 +779,8 @@ electronic commerce and payment, financial privacy, proof of work, zero knowledg
 
 Bitcoin Hush (\BTCH) is a new research and development cryptocoin which has
 many unique features compared to existing options. It avoids all transaction
-history and simply imports UTXO value for four different blockchains onto
-a fifth "host chain", Komodo. We use the Komodo Asset Chain feature to build
+history and simply imports Unspent Transaction Output (UTXO) values for
+four different blockchains onto a fifth "host chain", Komodo. We use the Komodo Asset Chain feature to build
 a coin with delayed-Proof-of-Work, which enjoys the full security of Bitcoin
 level security via notarization.
 
@@ -785,14 +788,20 @@ Additionally, the need for the latest two way replay protection (2WRP) algorithm
 completely avoided, since no transaction hashes are leaked
 onto the new chain. This also completely avoids the problem that many Bitcoin
 forks have where they inherit a very large existing chain and must sync gigabytes
-of data for no reason.
+of data.
 
-The recently released \HushList protocol is compatible with \BTCH and all \KMD
-asset chains, in fact.
+We hope these techniques are utilized in all future Bitcoin and related forks
+to avoid large inefficiencies as well as potential replay attacks.
+
+The recently released \HushList protocol is compatible with \BTCH, \KMD and
+all \KMD asset chains, which all contain \zkSNARK technology.
+Additionaly, \HushList is known to be compatible with
+\HUSH, \ZEC, \ZCL, \ZEN, \ZER and the upcoming \BTCP.
+
 
 \vspace{1.5ex}
 \noindent This specification defines how the \BTCH cryptocoin works and how
-how it builds on the foundation of \KMD,  \Zcash and \Bitcoin .
+how it builds on the foundation of \Komodo,  \Zcash and \Bitcoin .
 
 \vspace{2.5ex}
 \noindent \textbf{Keywords:}~ \StrSubstitute[0]{\keywords}{,}{, }.
