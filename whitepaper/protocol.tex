@@ -998,7 +998,8 @@ cryptocoin and the password field is the network, i.e.
 	hushlist://COIN:NETWORK@K
 
 COIN can be the currency symbol of a compatible cryptocoin such as
-HUSH (Hush) , KMD (Komodo) , ZEC (Zcash), ZCL (Zcash Classic), ZEN (ZenCash) and potentially BTCP (Bitcoin Private).
+\HUSH (Hush) , \KMD (Komodo) , \ZEC (Zcash), \ZCL (ZClassic), \ZEN (ZenCash) 
+or \BTCH (Bitcoin Hush).
 
 NETWORK is will often be "mainnet" but this schema allows
 for the very real use case of developers iterating through various testnets and
@@ -1013,6 +1014,12 @@ When COIN and NETWORK are omitted, they default to HUSH and "mainnet" respective
 is equivalent to
 
 	hushlist://HUSH:mainnet@K
+
+Additionally, URL parameters can be used to speficify a nickname and fee for the list to be imported:
+
+	hushlist://HUSH:mainnet@K?n=nickname\&fee=X
+
+The nickname and fee are just suggestions and the user \MUST be able to modify them before importing the list.
 
 
 \nsection{Sending To A List}
