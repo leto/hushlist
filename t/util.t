@@ -2,8 +2,7 @@
 use strict;
 use warnings;
 use Test::Most;
-use Hush::Util qw/is_valid_zaddr/;
-
+use Hush::Util qw/is_valid_zaddr is_valid_privkey/;
 
 my @INVALID = qw(
 notevenCLOSE
@@ -36,5 +35,7 @@ for my $z (@INVALID) {
 for my $z (@VALID) {
    ok( is_valid_zaddr($z), "$z is a valid zaddr");
 }
+
+#is_valid_privkey($hushlist);
 
 done_testing;
