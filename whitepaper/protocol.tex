@@ -1017,7 +1017,7 @@ is equivalent to
 
 Additionally, URL parameters can be used to speficify a nickname and fee for the list to be imported:
 
-	hushlist://HUSH:mainnet@K?n=nickname\&fee=X\&height=N
+	\textbf{hushlist://HUSH:mainnet@K?n=nickname\&fee=X\&height=N}
 
 The nickname and fee are just suggestions and the user \MUST be able to modify them before importing the list.
 The height is actually for performance reasons, and helps the local avoid scanning the entire history of the
@@ -1025,13 +1025,13 @@ blockchain for transactions.
 
 The first public HushList can be uniquely identified by the following URL
 
-	hushlist://SKxqPjNKvcfpmBpR8daQHNj4DoMfKmaPiVcT3A3YPynZNYXoDoaq
+	\textbf{hushlist://SKxqPjNKvcfpmBpR8daQHNj4DoMfKmaPiVcT3A3YPynZNYXoDoaq}
 
 For performance reasons, we can help each node skip over 200,000 blocks filled
 with transactions by specfying the minimum block height for z\_importkey to look in. This more
 performant URL is:
 
-	hushlist://SKxqPjNKvcfpmBpR8daQHNj4DoMfKmaPiVcT3A3YPynZNYXoDoaq?height=215683
+	\textbf{hushlist://SKxqPjNKvcfpmBpR8daQHNj4DoMfKmaPiVcT3A3YPynZNYXoDoaq?height=215683}
 
 This HushList contains the first HushList memo, described in the sections below.
 
