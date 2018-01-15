@@ -1,4 +1,5 @@
 \documentclass{article}
+
 \RequirePackage{amsmath}
 \RequirePackage{bytefield}
 \RequirePackage{graphicx}
@@ -89,12 +90,12 @@
 \newcommand{\Hushlists}{\termbf{HushLists}}
 \newcommand{\HushLists}{\termbf{HushLists}}
 
-\newcommand{\doctitle}{\HushList Protocol Specification}
-\newcommand{\leadauthor}{David Mercer}
-\newcommand{\coauthora}{Duke Leto}
+\newcommand{\doctitle}{BTCH Cryptocoin Specification}
+\newcommand{\leadauthor}{Duke Leto}
+\newcommand{\coauthora}{\;jl777}
 
-\newcommand{\keywords}{anonymity, freedom of speech, cryptographic protocols,\
-electronic commerce and payment, financial privacy, proof of work, zero knowledge}
+\newcommand{\keywords}{privacy coin, cryptocurrency, UTXOs, anonymity, freedom of speech, cryptographic protocols,\
+electronic commerce and payment, financial privacy, proof of work, zero knowledge, zkSNARKs}
 
 \hypersetup{
   pdfborderstyle={/S/U/W 0.7},
@@ -175,14 +176,16 @@ electronic commerce and payment, financial privacy, proof of work, zero knowledg
 \newcommand{\Hush}{\termbf{Hush}}
 \newcommand{\Zerocash}{\termbf{Zerocash}}
 \newcommand{\Bitcoin}{\termbf{Bitcoin}}
+\newcommand{\Komodo}{\termbf{Komodo}}
 \newcommand{\CryptoNote}{\termbf{CryptoNote}}
 \newcommand{\ZEC}{\termbf{ZEC}}
+\newcommand{\ZER}{\termbf{ZER}}
 \newcommand{\ZEN}{\termbf{ZEN}}
 \newcommand{\ZCL}{\termbf{ZCL}}
 \newcommand{\KMD}{\termbf{KMD}}
 \newcommand{\BTCH}{\termbf{BTCH}}
 \newcommand{\BTCP}{\termbf{BTCP}}
-\newcommand{\ZAU}{\termbf{ZAU}}
+\newcommand{\ZGLD}{\termbf{ZGLD}}
 \newcommand{\HUSH}{\termbf{HUSH}}
 \newcommand{\zatoshi}{\term{zatoshi}}
 \newcommand{\puposhi}{\term{puposhi}}
@@ -762,8 +765,7 @@ electronic commerce and payment, financial privacy, proof of work, zero knowledg
 \title{\doctitle \\
 \Large \docversion}
 \author{
-\Large \leadauthor\hairspace\thanks{\;radix42@gmail.com} \\
-\Large \coauthora\hairspace\thanks{\;duke@leto.net}
+\Large \leadauthor, \Large \coauthora
 }
 \date{\today}
 \maketitle
@@ -773,28 +775,32 @@ electronic commerce and payment, financial privacy, proof of work, zero knowledg
 \begin{abstract}
 \normalsize \noindent \textbf{Abstract.}
 
-\HushList is a protocol for mailing lists using the encrypted memo
-field of the \Zcash protocol.  It supports anonymous and pseudonymous senders, anonymous receivers and Hushlist creators, as
-well as public and private lists.  The HushList protocol can run on any fork of \Zcash that has a compatible memo field, though certain advanced features might not be fully supported
-on all chains.  HushList is developed and tested on the Hush mainnet and testnets and is designed to run on any \ZEC code fork including but not limited to \HUSH, \KMD, \ZCL, \ZEN and the upcoming \BTCP and \ZAU forks. HushList is also compatible with Bitcoin Hush \BTCH, which is a \KMD asset chain.
 
-In addition to the above properties, \HushList provides users with censorship-resistant
-storage and retrieval, since every \Hush full node will have an encrypted copy of every
-\HushList memo. Furthermore, sending and receiving via one or more blockchains is a serious deviation from traditional server-client design which easily allows a Man-In-The-Middle Attack and Deep Packet Inspection (DPI). Network traffic monitoring and correlation is made much harder, because there is no longer a packet with a timestamp and "selectors" going from one unique IP to another unique IP via a very predictable network route.
+Bitcoin Hush (\BTCH) is a new research and development cryptocoin which has
+many unique features compared to existing options. It avoids all transaction
+history and simply imports Unspent Transaction Output (UTXO) values for
+four different blockchains onto a fifth "host chain", Komodo. We use the Komodo Asset Chain feature to build
+a coin with delayed-Proof-of-Work, which enjoys the full security of Bitcoin
+level security via notarization.
 
-\Zcash \cite{Zcash} is an implementation of the \term{Decentralized Anonymous Payment}
-scheme \Zerocash, with security fixes and adjustments
-to terminology, functionality and performance. It bridges the existing
-\emph{transparent} payment scheme used by \Bitcoin \cite{Bitcoin} with a
-\emph{shielded} payment scheme secured by zero-knowledge succinct
-non-interactive arguments of knowledge (\zkSNARKs). 
+Additionally, the need for the latest two way replay protection (2WRP) algorithms are
+completely avoided, since no transaction hashes are leaked
+onto the new chain. This also completely avoids the problem that many Bitcoin
+forks have where they inherit a very large existing chain and must sync gigabytes
+of data.
 
-\Hush is a fork of the \Zcash codebase (1.0.9) which generated it's own
-genesis block and uses the Zcash Sprout proving key.
+We hope these techniques are utilized in all future Bitcoin and related forks
+to avoid large inefficiencies as well as potential replay attacks.
+
+The recently released \HushList protocol is compatible with \BTCH, \KMD and
+all \KMD asset chains, which all contain \zkSNARK technology.
+Additionaly, \HushList is known to be compatible with
+\HUSH, \ZEC, \ZCL, \ZEN, \ZER and the upcoming \BTCP.
+
 
 \vspace{1.5ex}
-\noindent This specification defines the \Hushlist communication protocol and explains
-how it builds on the foundation of \Zcash and \Bitcoin .
+\noindent This specification defines how the \BTCH cryptocoin works and how
+how it builds on the foundation of \Komodo,  \Zcash and \Bitcoin .
 
 \vspace{2.5ex}
 \noindent \textbf{Keywords:}~ \StrSubstitute[0]{\keywords}{,}{, }.
@@ -998,8 +1004,7 @@ cryptocoin and the password field is the network, i.e.
 	hushlist://COIN:NETWORK@K
 
 COIN can be the currency symbol of a compatible cryptocoin such as
-\HUSH (Hush) , \KMD (Komodo) , \ZEC (Zcash), \ZCL (ZClassic), \ZEN (ZenCash) 
-or \BTCH (Bitcoin Hush).
+HUSH (Hush) , KMD (Komodo) , ZEC (Zcash), ZCL (Zcash Classic), ZEN (ZenCash) and potentially BTCP (Bitcoin Private).
 
 NETWORK is will often be "mainnet" but this schema allows
 for the very real use case of developers iterating through various testnets and
@@ -1009,31 +1014,12 @@ K is the base58-formatted PRIVATE KEY as returned by the \textbf{dumpprivkey} RP
 
 When COIN and NETWORK are omitted, they default to HUSH and "mainnet" respectively, so
 
-	\textbf{hushlist://K}
+	hushlist://K
 
 is equivalent to
 
-	\textbf{hushlist://HUSH:mainnet@K}
+	hushlist://HUSH:mainnet@K
 
-Additionally, URL parameters can be used to speficify a nickname and fee for the list to be imported:
-
-	\textbf{hushlist://HUSH:mainnet@K?n=nickname\&fee=X\&height=N}
-
-The nickname and fee are just suggestions and the user \MUST be able to modify them before importing the list.
-The height is actually for performance reasons, and helps the local avoid scanning the entire history of the
-blockchain for transactions. 
-
-The first public HushList can be uniquely identified by the following URL
-
-	\textbf{hushlist://SKxqPjNKvcfpmBpR8daQHNj4DoMfKmaPiVcT3A3YPynZNYXoDoaq}
-
-For performance reasons, we can help each node skip over 200,000 blocks filled
-with transactions by specfying the minimum block height for z\_importkey to look in. This more
-performant URL is:
-
-	\textbf{hushlist://SKxqPjNKvcfpmBpR8daQHNj4DoMfKmaPiVcT3A3YPynZNYXoDoaq?height=215683}
-
-This HushList contains the first HushList memo, described in the sections below.
 
 \nsection{Sending To A List}
 
@@ -1154,20 +1140,7 @@ Of course Amanda is free to never reveal her identity and remain a psuedonym ind
 
 Amanda needs to be concerned about her IP address being tied to $ t_A $ by a passive network attacker who records the Internet and is encouraged to use a proxy, Tor or other means depending on risk and operational security needs.
 
-\nsubsection{Last Will And Testament User Story - Xerxes}
-
-Xerxes would like to store a copy of their Last Will And Testament in multiple secure locations, where they cannot be lost nor destroyed by parties that would benefit
-from the destruction of the Will.
-
-Xerxes can use HushList protocol to store their will in many different blockchains, in the hopes that at least one will survive longer than him, and to prevent
-censorship if he only stored the data on one chain. Xerxes can choose to additionally make the will public initially, or after some time period, or only leave
-instructions for retreiving the will with executors of their Estate.
-
-This use case also supports the continual updating of a Will, and provides a record of all the changes to a will, with timestamps and cryptographic certainty.
-This record can be verified by any and all exectuors, with or without making the records public. Indeed, a public HushList can be used to provide instructions
-and the actual Will, and newer memos to that list are public proof that the person has changed their Will.
-
-\nsubsection{"Oppressed Minority" user story - Francesca and Nicolau}
+"Oppressed Minority" user story - Francesca and Nicolau
 
 Francesca and Nicalau live in a place where their local religion/government/organization is oppressed by a larger religion/government/organication that controls everything around them, yet they still want to safely communicate.
 
