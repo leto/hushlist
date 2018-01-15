@@ -1009,15 +1009,21 @@ K is the base58-formatted PRIVATE KEY as returned by the \textbf{dumpprivkey} RP
 
 When COIN and NETWORK are omitted, they default to HUSH and "mainnet" respectively, so
 
+\begin{center}
 	\textbf{hushlist://K}
+\end{center}
 
 is equivalent to
 
+\begin{center}
 	\textbf{hushlist://HUSH:mainnet@K}
+\end{center}
 
 Additionally, URL parameters can be used to speficify a nickname and fee for the list to be imported:
 
+\begin{center}
 	\textbf{hushlist://HUSH:mainnet@K?n=nickname\&fee=X\&height=N}
+\end{center}
 
 The nickname and fee are just suggestions and the user \MUST be able to modify them before importing the list.
 The height is actually for performance reasons, and helps the local avoid scanning the entire history of the
@@ -1025,13 +1031,17 @@ blockchain for transactions.
 
 The first public HushList can be uniquely identified by the following URL
 
+\begin{center}
 	\textbf{hushlist://SKxqPjNKvcfpmBpR8daQHNj4DoMfKmaPiVcT3A3YPynZNYXoDoaq}
+\end{center}
 
 For performance reasons, we can help each node skip over 200,000 blocks filled
 with transactions by specfying the minimum block height for z\_importkey to look in. This more
 performant URL is:
 
+\begin{center}
 	\textbf{hushlist://SKxqPjNKvcfpmBpR8daQHNj4DoMfKmaPiVcT3A3YPynZNYXoDoaq?height=215683}
+\end{center}
 
 This HushList contains the first HushList memo, described in the sections below.
 
