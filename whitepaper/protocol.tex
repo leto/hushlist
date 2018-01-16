@@ -1036,7 +1036,7 @@ The first public HushList can be uniquely identified by the following URL
 \end{center}
 
 For performance reasons, we can help each node skip over 200,000 blocks filled
-with transactions by specfying the minimum block height for z\_importkey to look in. This more
+with transactions by specfying the minimum block height for \textbf{z\_importkey} to look in. This more
 performant URL is:
 
 \begin{center}
@@ -1045,15 +1045,37 @@ performant URL is:
 
 This HushList contains the first HushList memo, described in the sections below.
 
-\nsection{Sending To A List}
+\nsection{Subscribing To A Public \HushList}
+
+The URL above serves as the main way for people to subscribe to a public
+\HushList, since it can be embedded just like a https:// link in any other text
+document or website.  Depending on the browser that one uses, the hushlist://
+protocol may already be linkified on a web page.  Protocol helper applications
+can and will be developed so the appropriate action can be taken when a user
+clicks a hushlist:// link.
+
+In the reference implementation, the \textbf{subscribe} subcommand can be used:
+
+\begin{center}
+hushlist subscribe \textbf{hushlist://SKxqPjNKvcfpmBpR8daQHNj4DoMfKmaPiVcT3A3YPynZNYXoDoaq?height=215683}
+\end{center}
+
+\nsection{Sending To A \HushList}
 
 One may send to a \HushList from a taddr (pen name, psuedonym) or zaddr
-(anonymous shielded address) which is implemented in the client via
-the \zsendmany  RPC method. Up to 54 recepients may be in a single shielded
-transaction. v1 of HushList only supports HushLists of this size, but v2
-may implement larger HushLists by breaking large recipient lists into multiple sends.
+(anonymous shielded address) which is implemented in the client via the
+\zsendmany  RPC method. Up to 54 recepients may be in a single shielded
+transaction, which is an upstream \ZEC limitation which exists in all \ZEC
+forks. v1 of HushList only supports HushLists of this size, but v2 may implement
+larger HushLists by breaking large recipient lists into multiple sends, at the
+expense of atomicity.
 
-One may send a string of text via the *send* subcommand or send the contents of a file via the *send-file* subcommand. If one sends a string of text, there is no metadata related to that at all, locally. It only exists encrypted in a memo field on the chain. If one uses the *send-file* command, it may be prudent to securely delete the file from the filesystem after it is sent, depending on the needs of the user.
+One may send a string of text via the *send* subcommand or send the contents of
+a file via the *send-file* subcommand. If one sends a string of text, there is
+no metadata related to that at all, locally. It only exists encrypted in a memo
+field on the chain. If one uses the *send-file* command, it may be prudent to
+securely delete the file from the filesystem after it is sent, depending on the
+needs of the user.
 
 Each HushList has a dedicated default chain that it is attached to. When looking up
 \HushList contacts for a given list, their address on that chain will be retreived.
