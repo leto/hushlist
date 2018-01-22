@@ -1,1 +1,10 @@
 *.sw?
+whitepaper/missfont.log
+whitepaper/protocol.aux
+whitepaper/protocol.bbl
+whitepaper/protocol.bcf
+whitepaper/protocol.blg
+whitepaper/protocol.log
+whitepaper/protocol.out
+whitepaper/protocol.run.xml
+whitepaper/protocol.toc
