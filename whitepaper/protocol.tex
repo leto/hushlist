@@ -629,54 +629,6 @@ electronic commerce and payment, financial privacy, proof of work, zero knowledg
 \newcommand{\MerkleHashLength}{\mathsf{\ell_{Merkle}}}
 \newcommand{\MerkleHash}{\bitseq{\MerkleHashLength}}
 
-% Transactions
-\newcommand{\versionField}{\mathtt{version}}
-\newcommand{\txInCount}{\mathtt{tx\_in\_count}}
-\newcommand{\txIn}{\mathtt{tx\_in}}
-\newcommand{\txOutCount}{\mathtt{tx\_out\_count}}
-\newcommand{\txOut}{\mathtt{tx\_out}}
-\newcommand{\lockTime}{\mathtt{lock\_time}}
-\newcommand{\nJoinSplit}{\mathtt{nJoinSplit}}
-\newcommand{\vJoinSplit}{\mathtt{vJoinSplit}}
-\newcommand{\vpubOldField}{\mathtt{vpub\_old}}
-\newcommand{\vpubNewField}{\mathtt{vpub\_new}}
-\newcommand{\anchorField}{\mathtt{anchor}}
-\newcommand{\joinSplitSig}{\mathtt{joinSplitSig}}
-\newcommand{\joinSplitPrivKey}{\mathtt{joinSplitPrivKey}}
-\newcommand{\joinSplitPubKey}{\mathtt{joinSplitPubKey}}
-\newcommand{\nullifiersField}{\mathtt{nullifiers}}
-\newcommand{\commitments}{\mathtt{commitments}}
-\newcommand{\ephemeralKey}{\mathtt{ephemeralKey}}
-\newcommand{\encCiphertexts}{\mathtt{encCiphertexts}}
-\newcommand{\randomSeed}{\mathtt{randomSeed}}
-\newcommand{\Varies}{\textit{Varies}}
-\newcommand{\heading}[1]{\multicolumn{1}{c|}{#1}}
-\newcommand{\type}[1]{\texttt{#1}}
-\newcommand{\compactSize}{\type{compactSize uint}}
-
-\newcommand{\sighashType}{\term{SIGHASH type}}
-\newcommand{\sighashTypes}{\term{SIGHASH types}}
-\newcommand{\SIGHASHALL}{\mathsf{SIGHASH\_ALL}}
-\newcommand{\scriptSig}{\mathtt{scriptSig}}
-\newcommand{\scriptPubKey}{\mathtt{scriptPubKey}}
-\newcommand{\ScriptOP}[1]{\texttt{OP\_{#1}}}
-
-% Equihash and block headers
-\newcommand{\validEquihashSolution}{\term{valid Equihash solution}}
-\newcommand{\powtag}{\mathsf{powtag}}
-\newcommand{\powheader}{\mathsf{powheader}}
-\newcommand{\powcount}{\mathsf{powcount}}
-\newcommand{\nVersion}{\mathtt{nVersion}}
-\newcommand{\hashPrevBlock}{\mathtt{hashPrevBlock}}
-\newcommand{\hashMerkleRoot}{\mathtt{hashMerkleRoot}}
-\newcommand{\hashReserved}{\mathtt{hashReserved}}
-\newcommand{\nTimeField}{\mathtt{nTime}}
-\newcommand{\nTime}{\mathsf{nTime}}
-\newcommand{\nBitsField}{\mathtt{nBits}}
-\newcommand{\nBits}{\mathsf{nBits}}
-\newcommand{\nNonce}{\mathtt{nNonce}}
-\newcommand{\solutionSize}{\mathtt{solutionSize}}
-\newcommand{\solution}{\mathtt{solution}}
 \newcommand{\SHAd}{\term{SHA-256d}}
 
 % Proving system
@@ -1180,7 +1132,11 @@ Amanda sends \HushList memos from $t_A$ to a PUBLIC \HushList with a de-shieldin
 $ t_A \rightarrow z_L $.
 
  Any person who is subscribed to this public \HushList will be able to see Amandas memos,
-yet Amandas identity is "psuedonymous", i.e. everybody knows that every message from $ t_A$ is the same person, but her identity remains unknown. If at any time in the future, Amanda would like to *cryptographically prove* that she is the identity behind $t_A$, all she must do is publish the PRIVATE KEY of $t_A$. If any transparent value resides in $t_A$, it can simply be moved to another address before publication.
+yet Amandas identity is "psuedonymous", i.e. everybody knows that every message from $ t_A$ is the same person, but her identity remains unknown. If at any time in the future, Amanda would like to *cryptographically prove* that she is the identity behind $t_A$, all she must do is create a signed message with her private key, which proves her ownership of it.
+
+A more "nuclear" option is to publish the PRIVATE KEY of $t_A$. If any transparent value resides in $t_A$, it can simply be moved to another address before publication.
+This option "burns" the identity somewhat, as no messages after the publishing of the PRIVATE KEY can be known as the original authors or any other person who learned
+the key.
 
 Of course Amanda is free to never reveal her identity and remain a psuedonym indefinitely.
 
