@@ -12,7 +12,7 @@ use Hush::Contact;
 use Data::Dumper;
 use JSON;
 
-my $VERSION = '0.01';
+my $VERSION = '0.02';
 
 =head1 NAME
 

@@ -2,7 +2,7 @@ package Hush;
 use strict;
 use warnings;
 
-my $VERSION = '0.01';
+my $VERSION = '0.02';
 
 =head1 NAME
 
