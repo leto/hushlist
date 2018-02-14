@@ -14,6 +14,7 @@ This is the top-level namespace for Hush applications, which mostly consist of H
 
 =head1 SYNOPSIS
 
+    use Hush;
     use Hush::List;
 
 =head1 LATEST CODE
@@ -23,7 +24,7 @@ the git repository lives at https://github.com/leto/hushlist .
 
 =head1 AUTHOR
 
-Jonathan "Duke" Leto <jonathan@leto.net>
+Duke Leto <duke@leto.net>
 
 =head1 SUPPORT THIS WORK
 
