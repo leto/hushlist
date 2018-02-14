@@ -288,6 +288,17 @@ sub public {
     my ($self,$name) = @_;
 }
 
+# hushlist://SKxqPjNKvcfpmBpR8daQHNj4DoMfKmaPiVcT3A3YPynZNYXoDoaq?height=215683
+sub subscribe {
+    my ($self,@hushlist)             = @_;
+    my ($chain, $net, $key, $height) = @hushlist;
+    #warn Dumper [ @hushlist ];
+
+    my $rescan = "whenkeyisnew";
+    $rpc->z_importkey($key, $rescan, $height + 0);
+    return $self;
+}
+
 sub add_contact {
     my ($self,$name,$contact) = @_;
 

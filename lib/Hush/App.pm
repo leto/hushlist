@@ -20,6 +20,7 @@ my $COMMANDS  = {
     "show"      => \&show,
     "status"    => \&status,
     #"public"   => \&public,
+    "subscribe" => \&subscribe,
 };
 # TODO: translations
 my %HELP      = (
@@ -35,7 +36,37 @@ my %HELP      = (
     #"public"   => "Make a private Hushlist public",
 );
 
-my $rpc           = Hush::RPC->new;
+my $options   = {};
+my $rpc       = Hush::RPC->new;
+my $list      = Hush::List->new($rpc, $options);
+
+sub validate_hushlist_url {
+    my ($url) = @_;
+    # TODO: allow full syntax and bare privkeys
+    # and other chains
+    if ($url =~ m!^hushlist://(SK[A-z0-9]+)(\?height=(\d+))?!i) {
+        my ($key,$height) = ($1,$3);
+        my ($chain,$net)  = ("hush","");
+        return ($chain, $net, $key,$height);
+    }
+    return undef;
+}
+
+sub subscribe {
+    my ($url) = @_;
+
+    my $status;
+    if ($url) {
+        if (my @hushlist = validate_hushlist_url($url)) {
+            $status = $list->subscribe(@hushlist);
+        } else {
+            die "Invalid hushlist URL!\n";
+        }
+    } else {
+        die "Usage: hushlist subscribe URL\n";
+    }
+    return $status;
+}
 
 sub show_status {
     my $chaininfo     = $rpc->getblockchaininfo;
@@ -52,8 +83,6 @@ sub show_status {
     print "Balances: transparent $tbalance HUSH, private $zbalance HUSH\n";
 }
 
-my $options   = {};
-my $list      = Hush::List->new($rpc, $options);
 
 sub run {
     my ($command) = @_;
@@ -63,7 +92,7 @@ sub run {
     show_status();
 
     if ($cmd) {
-        $cmd->(@ARGV);
+        return $cmd->(@ARGV);
     } else {
         usage();
     }
@@ -127,6 +156,7 @@ sub show {
 sub usage {
     print "Usage: $0 command [subcommand] [options]\n";
     print "$0 help for more details :)\n";
+    return 1;
 }
 
 sub status {
