@@ -12,6 +12,52 @@ use Hush::Contact;
 use Data::Dumper;
 use JSON;
 
+my $VERSION = '0.01';
+
+=head1 NAME
+
+Hush::List - HushList Protocol Reference Implementation
+
+=head1 DESCRIPTION
+
+HushList
+
+=head1 SYNOPSIS
+
+    # API access
+    use Hush::List;
+
+    # CLI
+    hushlist subscribe 'hushlist://SKxqPjNKvcfpmBpR8daQHNj4DoMfKmaPiVcT3A3YPynZNYXoDoaq?height=215683'
+
+=head1 AUTHOR
+
+Duke Leto <duke@leto.net>
+
+=head1 SUPPORT THIS WORK
+
+If you would like to support this work, because it helped you out
+and your life is now amazing, feel free to send some donations to
+the developer via the blockchain :
+
+HUSH: zcB3LvCwYPdvVmNmTvEFdFGwb4teocrPnVD8wvBgMn8ZKo5Vq9ypJLpAuqUM31hEbBnSHCjCpax5mjUi2HEM6NB8x7vfKrV
+
+ZEC: zcZLVdeNHvbw58ch56RWi92ws8hweLHyxhoT6jniFKd8kkBPXPR5E46YXzAqXhrfagtwRojAtumg4M3kmrHfZPU6m63Rj5z
+
+
+Cryptocoins make the world go round and round.
+
+=head1 COPYRIGHT
+
+Copyright (c) 2017-2018 by Duke Leto <duke@leto.net>.  All rights reserved.
+
+=head1 LICENSE AGREEMENT
+
+This package is free software; you can redistribute it and/or
+modify it under the GNU Public License Version 3.
+
+=cut
+
 # as per z_sendmany rpc docs
 my $MAX_RECIPIENTS      = 54;
 my $HUSH_CONFIG_DIR     = $ENV{HUSH_CONFIG_DIR} || catdir($ENV{HOME},'.hush');
@@ -296,6 +342,7 @@ sub subscribe {
 
     my $rescan = "whenkeyisnew";
     $rpc->z_importkey($key, $rescan, $height + 0);
+    print "Successfully subscribed to hushlist://$key !\n";
     return $self;
 }
 

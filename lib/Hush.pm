@@ -45,7 +45,7 @@ Hush::List, Alien::Hush
 
 =head1 COPYRIGHT
 
-Copyright (c) 2017 by Jonathan "Duke" Leto <jonathan@leto.net>.  All rights reserved.
+Copyright (c) 2017-2018 by Duke Leto <duke@leto.net>.  All rights reserved.
 
 =head1 LICENSE AGREEMENT
 
