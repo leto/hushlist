@@ -9,7 +9,7 @@ use URL::Encode qw/url_encode/;
 
 sub new {
     my $port   = $ENV{HUSH_RPC_PORT} || 8822;
-    my $host   = "127.0.0.1";
+    my $host   = $ENV{HUSH_RPC_HOST} || "127.0.0.1";
     my $HOME   = $ENV{HOME};
     my $config = catfile($HOME, qw/.hush hush.conf/);
     my ($user,$password) = ('','');
