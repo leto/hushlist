@@ -507,7 +507,7 @@ sub send_memo {
 #       4. fee                   (numeric, optional, default=0.0001) The fee amount to attach to this transaction.
 
     my $minconf = 1;
-    my $opid    = $rpc->z_sendmany($from, [values $list_addrs], $minconf, $fee);
+    my $opid    = $rpc->z_sendmany($from, [values %$list_addrs], $minconf, $fee);
 
     if (defined $opid) {
         $debug->("z_sendmany opid=$opid from $from");
