@@ -12,8 +12,6 @@ use Hush::Contact;
 use Data::Dumper;
 use JSON;
 
-my $VERSION = '0.02';
-
 =head1 NAME
 
 Hush::List - HushList Protocol Reference Implementation
@@ -62,7 +60,7 @@ modify it under the GNU Public License Version 3.
 my $MAX_RECIPIENTS      = 54;
 my $HUSH_CONFIG_DIR     = $ENV{HUSH_CONFIG_DIR} || catdir($ENV{HOME},'.hush');
 my $HUSHLIST_CONFIG_DIR = $ENV{HUSH_CONFIG_DIR} || catdir($HUSH_CONFIG_DIR, 'list');
-our $VERSION            = 20171031;
+our $VERSION            = 20180215;
 my $rpc                 = Hush::RPC->new;
 
 sub _sanity_checks {

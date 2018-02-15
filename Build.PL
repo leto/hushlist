@@ -16,6 +16,7 @@ my $builder = Module::Build->new(
     configure_requires => { 'Module::Build' => 0.38 },
     requires => {
         'perl'                 => '5.008',
+	'URL::Encode'          => '0.03',
         'Bitcoin::RPC::Client' => '0.07',
     },
     add_to_cleanup      => [ 'Hush-*' ],
