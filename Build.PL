@@ -15,7 +15,8 @@ my $builder = Module::Build->new(
     },
     configure_requires => { 'Module::Build' => 0.38 },
     requires => {
-        'perl'            => '5.008',
+        'perl'                 => '5.008',
+        'Bitcoin::RPC::Client' => '0.07',
     },
     add_to_cleanup      => [ 'Hush-*' ],
     meta_merge     => {
