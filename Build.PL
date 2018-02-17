@@ -10,14 +10,15 @@ my $builder = Module::Build->new(
     dist_version        => '0.03',
     include_dirs        => '',
     build_requires => {
-        'Test::More'      => 0,
+        'Test::Most'      => 0,
         'Test::Exception' => 0,
     },
     configure_requires => { 'Module::Build' => 0.38 },
     requires => {
         'perl'                 => '5.008',
-	'URL::Encode'          => '0.03',
+        'URL::Encode'          => '0.03',
         'Bitcoin::RPC::Client' => '0.07',
+        'File::Slurp'          => '9999.19',
     },
     add_to_cleanup      => [ 'Hush-*' ],
     meta_merge     => {
