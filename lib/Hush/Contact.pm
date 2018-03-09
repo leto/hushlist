@@ -1,6 +1,7 @@
 package Hush::Contact;
 use strict;
 use warnings;
+use lib 'lib';
 use Hush::Util qw/barf is_valid_zaddr/;
 use Data::Dumper;
 use File::Spec::Functions;
@@ -25,18 +26,23 @@ sub contact {
             my $chain = "hush";
             my $contacts_file = catdir($HUSHLIST_CONFIG_DIR,"$chain-contacts.txt");
 
-            if (-e $contacts_file) {
-                my %contacts   = read_file( $contacts_file ) =~ /^(z[a-z0-9]+) (.*)$/mgi ;
+            unless (-e $contacts_file) {
+                # first contact being added, create the file
+                open my $fh, ">>", $contacts_file or barf "Could not create contacts file $contacts_file ! : $!";
+                print $fh "";
+                close $fh;
+            }
 
-                # TODO: check if zaddr OR nickname exists
-                if ($contacts{$zaddr}) {
-                } else {
-                    # TODO: see if this contact exists already in this chain
-                    open my $fh, ">>", $contacts_file or barf "Could not write file $contacts_file ! : $!";
-                    #TODO: validation?
-                    print $fh "$zaddr $name\n";
-                    close $fh;
-                }
+            my %contacts   = read_file( $contacts_file ) =~ /^(z[a-z0-9]+) (.*)$/mgi ;
+
+            # TODO: check if zaddr OR nickname exists
+            if ($contacts{$zaddr}) {
+            } else {
+                # TODO: see if this contact exists already in this chain
+                open my $fh, ">>", $contacts_file or barf "Could not write file $contacts_file ! : $!";
+                #TODO: validation?
+                print $fh "$zaddr $name\n";
+                close $fh;
             }
         },
         "rm" => sub {
