@@ -6,6 +6,7 @@ use Carp qw/longmess/;
 our @EXPORT_OK = qw/
     barf timing now
     is_valid_zaddr
+    is_valid_taddr
     is_valid_privkey
 /;
 use Time::HiRes qw/gettimeofday tv_interval/;
@@ -25,6 +26,18 @@ sub is_valid_zaddr {
 
     # TODO: only base58 is valid
     if ($z =~ m/^zc[a-z0-9]{93}$/i) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+# valid for HUSH+ZEC, we need tables for other prefixes
+sub is_valid_taddr {
+    my ($t) = @_;
+
+    # TODO: only base58 is valid
+    if ($t =~ m/^t1[a-z0-9]{35}$/i) {
         return 1;
     } else {
         return 0;
