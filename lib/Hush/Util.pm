@@ -37,7 +37,7 @@ sub is_valid_taddr {
     my ($t) = @_;
 
     # TODO: only base58 is valid
-    if ($t =~ m/^t1[a-z0-9]{35}$/i) {
+    if ($t =~ m/^t1[a-z0-9]{33}$/i) {
         return 1;
     } else {
         return 0;

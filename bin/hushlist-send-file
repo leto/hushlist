@@ -26,16 +26,14 @@ my $rpc      = Hush::RPC->new;
 #my $hex_memo = unpack("H*",$memo); # backend wants hex-encoded memo-field
 #print "Hex memos length=" . length($hex_memo) . "\n";
 
-if(0){
 unless ( is_valid_zaddr($from) or is_valid_taddr($from) ) {
     die "From address must be a valid taddr or zaddr!";
 }
 die "Invalid zaddr!" unless is_valid_zaddr($to);
-}
 
-my @hex_memos = unpack("(H512)*", $memo);
+my @hex_memos = unpack("(H1024)*", $memo);
 # hexify doubles the length
-my $num_memos = int(@hex_memos / 2) + (@hex_memos % 2);
+my $num_memos = int(@hex_memos);
 #die Dumper ['array=', @hex_memos, "string=$hex_memo" ];
 
 print "This file will be stored in $num_memos memo fields\n";
@@ -49,7 +47,7 @@ for my $memo (@hex_memos) {
         memo    => $memo,
     };
 }
-#die Dumper [ $recipients ];
+die Dumper [ $recipients ];
 
 my $opid     = $rpc->z_sendmany($from,$recipients);
 print "z_sendmany complete\n";
