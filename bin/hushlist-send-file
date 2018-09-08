@@ -15,9 +15,14 @@ use JSON;
 
 my ($from,$to,$filename,$amount) = @ARGV;
 $amount ||= 0.0;
+# this is for Sprout, Sapling will not have a limit except for block size(!)
+my $max_size = 512 * 54 - 54;
 
 die "You must specify a filename!" unless $filename;
 die "File does not exist!" unless -e $filename;
+my $filesize = -s $filename;
+die "File is empty!" unless $filesize;
+die "Currently this tool only supports files which fit in one transaction, up to $max_size bytes. Patches welcome!" unless ($filesize <= $max_size);
 
 my $memo     = read_file($filename);
 my $length   = length $memo;
