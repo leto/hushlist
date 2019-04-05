@@ -25,6 +25,7 @@ sub is_valid_zaddr {
     #warn "zaddr=$z";
 
     # TODO: only base58 is valid
+    # TODO: support Zcash Sapling addresses
     if ($z =~ m/^zc[a-z0-9]{93}$/i) {
         return 1;
     } else {
@@ -37,7 +38,10 @@ sub is_valid_taddr {
     my ($t) = @_;
 
     # TODO: only base58 is valid
-    if ($t =~ m/^t1[a-z0-9]{35}$/i) {
+    # HUSH/ZEC and most zec forks
+    if ($t =~ m/^t1[a-z0-9]{33}$/i) {
+        return 1;
+    } elsif ($t =~ m/^R[a-z0-9]{34}$/i) { # KMD and KMD asset chains
         return 1;
     } else {
         return 0;
@@ -48,6 +52,7 @@ sub is_valid_taddr {
 sub is_valid_privkey {
     my ($p) = @_;
     $p =~ s!^hushlist://!!g;
+    # TODO: support KMD + new Sapling privkeys
     if ($p =~ m/^SK[a-z0-9]{53}$/i) {
         return 1;
     } else {

@@ -15,9 +15,14 @@ use JSON;
 
 my ($from,$to,$filename,$amount) = @ARGV;
 $amount ||= 0.0;
+# this is for Sprout, Sapling will not have a limit except for block size(!)
+my $max_size = 512 * 54 - 54;
 
 die "You must specify a filename!" unless $filename;
 die "File does not exist!" unless -e $filename;
+my $filesize = -s $filename;
+die "File is empty!" unless $filesize;
+die "Currently this tool only supports files which fit in one transaction, up to $max_size bytes. Patches welcome!" unless ($filesize <= $max_size);
 
 my $memo     = read_file($filename);
 my $length   = length $memo;
@@ -26,16 +31,14 @@ my $rpc      = Hush::RPC->new;
 #my $hex_memo = unpack("H*",$memo); # backend wants hex-encoded memo-field
 #print "Hex memos length=" . length($hex_memo) . "\n";
 
-if(0){
 unless ( is_valid_zaddr($from) or is_valid_taddr($from) ) {
     die "From address must be a valid taddr or zaddr!";
 }
 die "Invalid zaddr!" unless is_valid_zaddr($to);
-}
 
-my @hex_memos = unpack("(H512)*", $memo);
+my @hex_memos = unpack("(H1024)*", $memo);
 # hexify doubles the length
-my $num_memos = int(@hex_memos / 2) + (@hex_memos % 2);
+my $num_memos = int(@hex_memos);
 #die Dumper ['array=', @hex_memos, "string=$hex_memo" ];
 
 print "This file will be stored in $num_memos memo fields\n";
@@ -49,7 +52,7 @@ for my $memo (@hex_memos) {
         memo    => $memo,
     };
 }
-#die Dumper [ $recipients ];
+die Dumper [ $recipients ];
 
 my $opid     = $rpc->z_sendmany($from,$recipients);
 print "z_sendmany complete\n";
