@@ -1,0 +1,485 @@
+\documentclass{article}
+\RequirePackage{amsmath}
+\RequirePackage{bytefield}
+\RequirePackage{graphicx}
+\RequirePackage{newtxmath}
+\RequirePackage{mathtools}
+\RequirePackage{xspace}
+\RequirePackage{url}
+\RequirePackage{changepage}
+\RequirePackage{enumitem}
+\RequirePackage{tabularx}
+\RequirePackage{hhline}
+\RequirePackage[usestackEOL]{stackengine}
+\RequirePackage{comment}
+\RequirePackage{needspace}
+\RequirePackage[nobottomtitles]{titlesec}
+\RequirePackage[hang]{footmisc}
+\RequirePackage{xstring}
+\RequirePackage[unicode,bookmarksnumbered,bookmarksopen,pdfview=Fit]{hyperref}
+\RequirePackage{cleveref}
+\RequirePackage{nameref}
+
+\RequirePackage[style=alphabetic,maxbibnames=99,dateabbrev=false,urldate=iso8601,backref=true,backrefstyle=none,backend=biber]{biblatex}
+\addbibresource{hush.bib}
+
+% Fonts
+\RequirePackage{lmodern}
+\RequirePackage{quattrocento}
+\RequirePackage[bb=ams]{mathalfa}
+
+% Quattrocento is beautiful but doesn't have an italic face. So we scale
+% New Century Schoolbook italic to fit in with slanted Quattrocento and
+% match its x height.
+\renewcommand{\emph}[1]{\hspace{0.15em}{\fontfamily{pnc}\selectfont\scalebox{1.02}[0.999]{\textit{#1}}}\hspace{0.02em}}
+
+% While we're at it, let's match the tt x height to Quattrocento as well.
+\let\oldtexttt\texttt
+\let\oldmathtt\mathtt
+\renewcommand{\texttt}[1]{\scalebox{1.02}[1.07]{\oldtexttt{#1}}}
+\renewcommand{\mathtt}[1]{\scalebox{1.02}[1.07]{$\oldmathtt{#1}$}}
+
+\newcommand{\zsendmany}{\textbf{z\_sendmany}}
+
+% bold but not extended
+\newcommand{\textbnx}[1]{{\fontseries{b}\selectfont #1}}
+
+
+\crefformat{footnote}{#2\footnotemark[#1]#3}
+
+\DeclareLabelalphaTemplate{
+  \labelelement{\field{citekey}}
+}
+
+\DefineBibliographyStrings{english}{
+  page  = {page},
+  pages = {pages},
+  backrefpage = {\mbox{$\uparrow$ p\!}},
+  backrefpages = {\mbox{$\uparrow$ p\!}}
+}
+
+\setlength{\oddsidemargin}{-0.25in}
+\setlength{\textwidth}{7in}
+\setlength{\topmargin}{-0.75in}
+\setlength{\textheight}{9.2in}
+\setlength{\parindent}{0ex}
+\renewcommand{\arraystretch}{1.4}
+\overfullrule=2cm
+
+\setlength{\footnotemargin}{0.6em}
+\setlength{\footnotesep}{2ex}
+\addtolength{\skip\footins}{3ex}
+
+\renewcommand{\bottomtitlespace}{8ex}
+
+% Use rubber lengths between paragraphs to improve default pagination.
+% https://tex.stackexchange.com/questions/17178/vertical-spacing-pagination-and-ideal-results
+\setlength{\parskip}{1.5ex plus 1pt minus 1pt}
+
+\setlist[enumerate]{before=\vspace{-1ex}}
+\setlist[itemize]{itemsep=0.5ex,topsep=0.2ex,before=\vspace{-1ex},after=\vspace{1.5ex}}
+
+\newlist{formulae}{itemize}{3}
+\setlist[formulae]{itemsep=0.2ex,topsep=0ex,leftmargin=1.5em,label=,after=\vspace{1.5ex}}
+
+\newcommand{\docversion}{Pre-Release Version}
+\newcommand{\termbf}[1]{\textbf{#1}\xspace}
+\newcommand{\Hushlist}{\termbf{HushList}}
+\newcommand{\HushList}{\termbf{HushList}}
+\newcommand{\Hushlists}{\termbf{HushLists}}
+\newcommand{\HushLists}{\termbf{HushLists}}
+
+\newcommand{\doctitle}{Hush Version 3}
+\newcommand{\leadauthor}{Duke Leto}
+
+\newcommand{\keywords}{anonymity, freedom of speech, cryptographic protocols,\
+electronic commerce and payment, financial privacy, proof of work, zero knowledge}
+
+\hypersetup{
+  pdfborderstyle={/S/U/W 0.7},
+  pdfinfo={
+    Title={\doctitle, \docversion},
+    Author={\leadauthor},
+    Keywords={\keywords}
+  }
+}
+
+\makeatletter
+\renewcommand*{\@fnsymbol}[1]{\ensuremath{\ifcase#1\or \dagger\or \ddagger\or
+    \mathsection\or \mathparagraph\else\@ctrerr\fi}}
+\makeatother
+
+\renewcommand{\sectionautorefname}{\S\!}
+\renewcommand{\subsectionautorefname}{\S\!}
+\renewcommand{\subsubsectionautorefname}{\S\!}
+\renewcommand{\subparagraphautorefname}{\S\!}
+\newcommand{\crossref}[1]{\autoref{#1}\, \emph{`\nameref*{#1}\kern -0.05em'} on p.\,\pageref*{#1}}
+
+\newcommand{\nstrut}[1]{\texorpdfstring{#1\rule[-.2\baselineskip]{0pt}{\baselineskip}}{#1}}
+\newcommand{\nsection}[1]{\section{\nstrut{#1}}}
+\newcommand{\nsubsection}[1]{\subsection{\nstrut{#1}}}
+\newcommand{\nsubsubsection}[1]{\subsubsection{\nstrut{#1}}}
+
+\newcommand{\introlist}{\needspace{15ex}}
+\newcommand{\introsection}{\needspace{30ex}}
+
+\mathchardef\mhyphen="2D
+
+% http://tex.stackexchange.com/a/309445/78411
+\DeclareFontFamily{U}{FdSymbolA}{}
+\DeclareFontShape{U}{FdSymbolA}{m}{n}{
+    <-> s*[.4] FdSymbolA-Regular
+}{}
+\DeclareSymbolFont{fdsymbol}{U}{FdSymbolA}{m}{n}
+\DeclareMathSymbol{\smallcirc}{\mathord}{fdsymbol}{"60}
+
+\makeatletter
+\newcommand{\hollowcolon}{\mathpalette\hollow@colon\relax}
+\newcommand{\hollow@colon}[2]{
+  \mspace{0.7mu}
+  \vbox{\hbox{$\m@th#1\smallcirc$}\nointerlineskip\kern.45ex \hbox{$\m@th#1\smallcirc$}\kern-.06ex}
+  \mspace{1mu}
+}
+\makeatother
+\newcommand{\typecolon}{\;\hollowcolon\;}
+
+% We just want one ampersand symbol from boisik.
+\DeclareSymbolFont{bskadd}{U}{bskma}{m}{n}
+\DeclareFontFamily{U}{bskma}{\skewchar\font130 }
+\DeclareFontShape{U}{bskma}{m}{n}{<->bskma10}{}
+\DeclareMathSymbol{\binampersand}{\mathbin}{bskadd}{"EE}
+
+\newcommand{\hairspace}{~\!}
+\newcommand{\hparen}{\hphantom{(}}
+
+\newcommand{\hfrac}[2]{\scalebox{0.8}{$\genfrac{}{}{0.5pt}{0}{#1}{#2}$}}
+
+
+\RequirePackage[usenames,dvipsnames]{xcolor}
+% https://en.wikibooks.org/wiki/LaTeX/Colors#The_68_standard_colors_known_to_dvips
+\newcommand{\todo}[1]{{\color{Sepia}\sf{TODO: #1}}}
+
+\newcommand{\changedcolor}{magenta}
+\newcommand{\setchanged}{\color{\changedcolor}}
+\newcommand{\changed}[1]{\texorpdfstring{{\setchanged{#1}}}{#1}}
+
+% terminology
+
+\newcommand{\term}[1]{\textsl{#1}\kern 0.05em\xspace}
+\newcommand{\titleterm}[1]{#1}
+\newcommand{\quotedterm}[1]{``~\!\!\term{#1}''}
+\newcommand{\conformance}[1]{\textbnx{#1}\xspace}
+
+\newcommand{\Zcash}{\termbf{Zcash}}
+\newcommand{\Hush}{\termbf{Hush}}
+\newcommand{\Zerocash}{\termbf{Zerocash}}
+\newcommand{\Bitcoin}{\termbf{Bitcoin}}
+\newcommand{\CryptoNote}{\termbf{CryptoNote}}
+\newcommand{\ZEC}{\termbf{ZEC}}
+\newcommand{\ZEN}{\termbf{ZEN}}
+\newcommand{\ZCL}{\termbf{ZCL}}
+\newcommand{\KMD}{\termbf{KMD}}
+\newcommand{\BTCH}{\termbf{BTCH}}
+\newcommand{\BTCP}{\termbf{BTCP}}
+\newcommand{\ZAU}{\termbf{ZAU}}
+\newcommand{\VOT}{\termbf{VOT}}
+\newcommand{\BTCZ}{\termbf{BTCZ}}
+\newcommand{\LTZ}{\termbf{LTZ}}
+\newcommand{\HUSH}{\termbf{HUSH}}
+\newcommand{\zatoshi}{\term{zatoshi}}
+\newcommand{\puposhi}{\term{puposhi}}
+\newcommand{\zcashd}{\textsf{zcashd}\,}
+\newcommand{\hushd}{\textsf{hushd}\,}
+
+\newcommand{\MUST}{\conformance{MUST}}
+\newcommand{\MUSTNOT}{\conformance{MUST NOT}}
+\newcommand{\SHOULD}{\conformance{SHOULD}}
+\newcommand{\SHOULDNOT}{\conformance{SHOULD NOT}}
+\newcommand{\ALLCAPS}{\conformance{ALL CAPS}}
+
+\newcommand{\note}{\term{note}}
+\newcommand{\notes}{\term{notes}}
+\newcommand{\Note}{\titleterm{Note}}
+\newcommand{\Notes}{\titleterm{Notes}}
+\newcommand{\dummy}{\term{dummy}}
+\newcommand{\dummyNotes}{\term{dummy notes}}
+\newcommand{\DummyNotes}{\titleterm{Dummy Notes}}
+\newcommand{\commitmentScheme}{\term{commitment scheme}}
+\newcommand{\commitmentTrapdoor}{\term{commitment trapdoor}}
+\newcommand{\commitmentTrapdoors}{\term{commitment trapdoors}}
+\newcommand{\trapdoor}{\term{trapdoor}}
+\newcommand{\noteCommitment}{\term{note commitment}}
+\newcommand{\noteCommitments}{\term{note commitments}}
+\newcommand{\NoteCommitment}{\titleterm{Note Commitment}}
+\newcommand{\NoteCommitments}{\titleterm{Note Commitments}}
+\newcommand{\noteCommitmentTree}{\term{note commitment tree}}
+\newcommand{\NoteCommitmentTree}{\titleterm{Note Commitment Tree}}
+\newcommand{\noteTraceabilitySet}{\term{note traceability set}}
+\newcommand{\noteTraceabilitySets}{\term{note traceability sets}}
+\newcommand{\joinSplitDescription}{\term{JoinSplit description}}
+\newcommand{\joinSplitDescriptions}{\term{JoinSplit descriptions}}
+\newcommand{\JoinSplitDescriptions}{\titleterm{JoinSplit Descriptions}}
+\newcommand{\sequenceOfJoinSplitDescriptions}{\changed{sequence of} \joinSplitDescription\changed{\term{s}}\xspace}
+\newcommand{\joinSplitTransfer}{\term{JoinSplit transfer}}
+\newcommand{\joinSplitTransfers}{\term{JoinSplit transfers}}
+\newcommand{\JoinSplitTransfer}{\titleterm{JoinSplit Transfer}}
+\newcommand{\JoinSplitTransfers}{\titleterm{JoinSplit Transfers}}
+\newcommand{\joinSplitSignature}{\term{JoinSplit signature}}
+\newcommand{\joinSplitSignatures}{\term{JoinSplit signatures}}
+\newcommand{\joinSplitSigningKey}{\term{JoinSplit signing key}}
+\newcommand{\joinSplitVerifyingKey}{\term{JoinSplit verifying key}}
+\newcommand{\joinSplitStatement}{\term{JoinSplit statement}}
+\newcommand{\joinSplitStatements}{\term{JoinSplit statements}}
+\newcommand{\JoinSplitStatement}{\titleterm{JoinSplit Statement}}
+\newcommand{\joinSplitProof}{\term{JoinSplit proof}}
+\newcommand{\statement}{\term{statement}}
+\newcommand{\zeroKnowledgeProof}{\term{zero-knowledge proof}}
+\newcommand{\ZeroKnowledgeProofs}{\titleterm{Zero-Knowledge Proofs}}
+\newcommand{\provingSystem}{\term{proving system}}
+\newcommand{\zeroKnowledgeProvingSystem}{\term{zero-knowledge proving system}}
+\newcommand{\ZeroKnowledgeProvingSystem}{\titleterm{Zero-Knowledge Proving System}}
+\newcommand{\ppzkSNARK}{\term{preprocessing zk-SNARK}}
+\newcommand{\provingKey}{\term{proving key}}
+\newcommand{\zkProvingKeys}{\term{zero-knowledge proving keys}}
+\newcommand{\verifyingKey}{\term{verifying key}}
+\newcommand{\zkVerifyingKeys}{\term{zero-knowledge verifying keys}}
+\newcommand{\joinSplitParameters}{\term{JoinSplit parameters}}
+\newcommand{\JoinSplitParameters}{\titleterm{JoinSplit Parameters}}
+\newcommand{\arithmeticCircuit}{\term{arithmetic circuit}}
+\newcommand{\rankOneConstraintSystem}{\term{Rank 1 Constraint System}}
+\newcommand{\primary}{\term{primary}}
+\newcommand{\primaryInput}{\term{primary input}}
+\newcommand{\primaryInputs}{\term{primary inputs}}
+\newcommand{\auxiliaryInput}{\term{auxiliary input}}
+\newcommand{\auxiliaryInputs}{\term{auxiliary inputs}}
+\newcommand{\fullnode}{\term{full node}}
+\newcommand{\fullnodes}{\term{full nodes}}
+\newcommand{\anchor}{\term{anchor}}
+\newcommand{\anchors}{\term{anchors}}
+\newcommand{\UTXO}{\term{UTXO}}
+\newcommand{\UTXOs}{\term{UTXOs}}
+\newcommand{\block}{\term{block}}
+\newcommand{\blocks}{\term{blocks}}
+\newcommand{\header}{\term{header}}
+\newcommand{\headers}{\term{headers}}
+\newcommand{\blockHeader}{\term{block header}}
+\newcommand{\blockHeaders}{\term{block headers}}
+\newcommand{\Blockheader}{\term{Block header}}
+\newcommand{\BlockHeader}{\titleterm{Block Header}}
+\newcommand{\blockVersionNumber}{\term{block version number}}
+\newcommand{\blockVersionNumbers}{\term{block version numbers}}
+\newcommand{\Blockversions}{\term{Block versions}}
+\newcommand{\blockTime}{\term{block time}}
+\newcommand{\blockHeight}{\term{block height}}
+\newcommand{\blockHeights}{\term{block heights}}
+\newcommand{\genesisBlock}{\term{genesis block}}
+\newcommand{\transaction}{\term{transaction}}
+\newcommand{\transactions}{\term{transactions}}
+\newcommand{\Transactions}{\titleterm{Transactions}}
+\newcommand{\transactionFee}{\term{transaction fee}}
+\newcommand{\transactionFees}{\term{transaction fees}}
+\newcommand{\transactionVersionNumber}{\term{transaction version number}}
+\newcommand{\transactionVersionNumbers}{\term{transaction version numbers}}
+\newcommand{\Transactionversion}{\term{Transaction version}}
+\newcommand{\coinbaseTransaction}{\term{coinbase transaction}}
+\newcommand{\coinbaseTransactions}{\term{coinbase transactions}}
+\newcommand{\CoinbaseTransactions}{\titleterm{Coinbase Transactions}}
+\newcommand{\transparent}{\term{transparent}}
+\newcommand{\xTransparent}{\term{Transparent}}
+\newcommand{\Transparent}{\titleterm{Transparent}}
+\newcommand{\transparentValuePool}{\term{transparent value pool}}
+\newcommand{\deshielding}{\term{deshielding}}
+\newcommand{\shielding}{\term{shielding}}
+\newcommand{\shielded}{\term{shielded}}
+\newcommand{\shieldedXTN}{\term{shielded} $ t \rightarrow z $ transaction}
+\newcommand{\shieldedXTNs}{\term{shielded} $ t \rightarrow z $ transactions}
+\newcommand{\shieldedNote}{\term{shielded note}}
+\newcommand{\shieldedNotes}{\term{shielded notes}}
+\newcommand{\xShielded}{\term{Shielded}}
+\newcommand{\Shielded}{\titleterm{Shielded}}
+\newcommand{\blockchain}{\term{block chain}}
+\newcommand{\blockchains}{\term{block chains}}
+\newcommand{\mempool}{\term{mempool}}
+\newcommand{\treestate}{\term{treestate}}
+\newcommand{\treestates}{\term{treestates}}
+\newcommand{\nullifier}{\term{nullifier}}
+\newcommand{\nullifiers}{\term{nullifiers}}
+\newcommand{\xNullifiers}{\term{Nullifiers}}
+\newcommand{\Nullifier}{\titleterm{Nullifier}}
+\newcommand{\Nullifiers}{\titleterm{Nullifiers}}
+\newcommand{\nullifierSet}{\term{nullifier set}}
+\newcommand{\NullifierSet}{\titleterm{Nullifier Set}}
+% Daira: This doesn't adequately distinguish between zk stuff and transparent stuff
+\newcommand{\paymentAddress}{\term{payment address}}
+\newcommand{\paymentAddresses}{\term{payment addresses}}
+\newcommand{\viewingKey}{\term{viewing key}}
+\newcommand{\viewingKeys}{\term{viewing keys}}
+\newcommand{\spendingKey}{\term{spending key}}
+\newcommand{\spendingKeys}{\term{spending keys}}
+\newcommand{\payingKey}{\term{paying key}}
+\newcommand{\transmissionKey}{\term{transmission key}}
+\newcommand{\transmissionKeys}{\term{transmission keys}}
+\newcommand{\keyTuple}{\term{key tuple}}
+\newcommand{\notePlaintext}{\term{note plaintext}}
+\newcommand{\notePlaintexts}{\term{note plaintexts}}
+\newcommand{\NotePlaintexts}{\titleterm{Note Plaintexts}}
+\newcommand{\notesCiphertext}{\term{transmitted notes ciphertext}}
+\newcommand{\incrementalMerkleTree}{\term{incremental Merkle tree}}
+\newcommand{\merkleRoot}{\term{root}}
+\newcommand{\merkleNode}{\term{node}}
+\newcommand{\merkleNodes}{\term{nodes}}
+\newcommand{\merkleHash}{\term{hash value}}
+\newcommand{\merkleHashes}{\term{hash values}}
+\newcommand{\merkleLeafNode}{\term{leaf node}}
+\newcommand{\merkleLeafNodes}{\term{leaf nodes}}
+\newcommand{\merkleInternalNode}{\term{internal node}}
+\newcommand{\merkleInternalNodes}{\term{internal nodes}}
+\newcommand{\MerkleInternalNodes}{\term{Internal nodes}}
+\newcommand{\merklePath}{\term{path}}
+\newcommand{\merkleLayer}{\term{layer}}
+\newcommand{\merkleLayers}{\term{layers}}
+\newcommand{\merkleIndex}{\term{index}}
+\newcommand{\merkleIndices}{\term{indices}}
+\newcommand{\zkSNARK}{\term{zk-SNARK}}
+\newcommand{\zkSNARKs}{\term{zk-SNARKs}}
+\newcommand{\libsnark}{\term{libsnark}}
+\newcommand{\memo}{\term{memo field}}
+\newcommand{\memos}{\term{memo fields}}
+\newcommand{\Memos}{\titleterm{Memo Fields}}
+\newcommand{\keyAgreementScheme}{\term{key agreement scheme}}
+\newcommand{\KeyAgreement}{\titleterm{Key Agreement}}
+\newcommand{\keyDerivationFunction}{\term{Key Derivation Function}}
+\newcommand{\KeyDerivation}{\titleterm{Key Derivation}}
+\newcommand{\encryptionScheme}{\term{encryption scheme}}
+\newcommand{\symmetricEncryptionScheme}{\term{authenticated one-time symmetric encryption scheme}}
+\newcommand{\SymmetricEncryption}{\titleterm{Authenticated One-Time Symmetric Encryption}}
+\newcommand{\signatureScheme}{\term{signature scheme}}
+\newcommand{\pseudoRandomFunction}{\term{Pseudo Random Function}}
+\newcommand{\pseudoRandomFunctions}{\term{Pseudo Random Functions}}
+\newcommand{\PseudoRandomFunctions}{\titleterm{Pseudo Random Functions}}
+
+% conventions
+\newcommand{\bytes}[1]{\underline{\raisebox{-0.22ex}{}\smash{#1}}}
+\newcommand{\zeros}[1]{[0]^{#1}}
+\newcommand{\bit}{\mathbb{B}}
+\newcommand{\Nat}{\mathbb{N}}
+\newcommand{\PosInt}{\mathbb{N}^+}
+\newcommand{\Rat}{\mathbb{Q}}
+\newcommand{\typeexp}[2]{{#1}\vphantom{)}^{[{#2}]}}
+\newcommand{\bitseq}[1]{\typeexp{\bit}{#1}}
+\newcommand{\byteseqs}{\typeexp{\bit}{8\mult\Nat}}
+\newcommand{\concatbits}{\mathsf{concat}_\bit}
+\newcommand{\listcomp}[1]{[~{#1}~]}
+\newcommand{\for}{\text{ for }}
+\newcommand{\from}{\text{ from }}
+\newcommand{\upto}{\text{ up to }}
+\newcommand{\downto}{\text{ down to }}
+\newcommand{\squash}{\!\!\!}
+\newcommand{\caseif}{\squash\text{if }}
+\newcommand{\caseotherwise}{\squash\text{otherwise}}
+\newcommand{\sorted}{\mathsf{sorted}}
+\newcommand{\length}{\mathsf{length}}
+\newcommand{\mean}{\mathsf{mean}}
+\newcommand{\median}{\mathsf{median}}
+\newcommand{\clamp}[2]{\mathsf{clamp\,}_{#1}^{#2}}
+\newcommand{\Lower}{\mathsf{lower}}
+\newcommand{\Upper}{\mathsf{upper}}
+\newcommand{\bitlength}{\mathsf{bitlength}}
+\newcommand{\size}{\mathsf{size}}
+\newcommand{\mantissa}{\mathsf{mantissa}}
+\newcommand{\ToCompact}{\mathsf{ToCompact}}
+\newcommand{\ToTarget}{\mathsf{ToTarget}}
+\newcommand{\hexint}[1]{\mathbf{0x{#1}}}
+\newcommand{\dontcare}{\kern -0.06em\raisebox{0.1ex}{\footnotesize{$\times$}}}
+\newcommand{\ascii}[1]{\textbf{``\texttt{#1}"}}
+\newcommand{\Justthebox}[2][-1.3ex]{\;\raisebox{#1}{\usebox{#2}}\;}
+\newcommand{\hSigCRH}{\mathsf{hSigCRH}}
+\newcommand{\hSigLength}{\mathsf{\ell_{hSig}}}
+\newcommand{\hSigType}{\bitseq{\hSigLength}}
+\newcommand{\EquihashGen}[1]{\mathsf{EquihashGen}_{#1}}
+\newcommand{\CRH}{\mathsf{CRH}}
+\newcommand{\CRHbox}[1]{\SHA\left(\Justthebox{#1}\right)}
+\newcommand{\SHA}{\mathtt{SHA256Compress}}
+\newcommand{\SHAName}{\term{SHA-256 compression}}
+\newcommand{\FullHash}{\mathtt{SHA256}}
+\newcommand{\FullHashName}{\mathsf{SHA\mhyphen256}}
+\newcommand{\Blake}[1]{\mathsf{BLAKE2b\kern 0.05em\mhyphen{#1}}}
+\newcommand{\BlakeGeneric}{\mathsf{BLAKE2b}}
+\newcommand{\FullHashbox}[1]{\FullHash\left(\Justthebox{#1}\right)}
+\newcommand{\setof}[1]{\{{#1}\}}
+\newcommand{\range}[2]{\{{#1}\,..\,{#2}\}}
+\newcommand{\minimum}{\mathsf{min}}
+\newcommand{\maximum}{\mathsf{max}}
+\newcommand{\floor}[1]{\mathsf{floor}\!\left({#1}\right)}
+\newcommand{\trunc}[1]{\mathsf{trunc}\!\left({#1}\right)}
+\newcommand{\ceiling}[1]{\mathsf{ceiling}\left({#1}\right)}
+\newcommand{\vsum}[2]{\smashoperator[r]{\sum_{#1}^{#2}}}
+\newcommand{\vxor}[2]{\smashoperator[r]{\bigoplus_{#1}^{#2}}}
+\newcommand{\xor}{\oplus}
+\newcommand{\band}{\binampersand}
+\newcommand{\mult}{\cdot}
+\newcommand{\rightarrowR}{\buildrel{\scriptstyle\mathrm{R}}\over\rightarrow}
+\newcommand{\leftarrowR}{\buildrel{\scriptstyle\mathrm{R}}\over\leftarrow}
+
+\newcommand{\JoinSplit}{\text{\footnotesize\texttt{JoinSplit}}}
+
+\newcommand{\affiliation}{\hairspace$^\dagger$\;}
+\newcommand{\affiliationDuke}{\hairspace$^\ddagger$\;}
+
+\begin{document}
+
+\title{\doctitle \\
+\Large \docversion}
+\author{
+\Large \leadauthor\hairspace\thanks{\;duke@leto.net}
+}
+\date{\today}
+\maketitle
+
+\renewcommand{\abstractname}{}
+\vspace{-8ex}
+\begin{abstract}
+\normalsize \noindent \textbf{Abstract.}
+
+\Hush originally was a source code fork of the \Zcash 1.0.8 codebase. Hush was
+    originally called "Zdash" and is not a chain fork, Hush mined it's own
+    unique genesis block.
+
+    ...
+
+\vspace{2.5ex}
+\noindent \textbf{Keywords:}~ \StrSubstitute[0]{\keywords}{,}{, }.
+\end{abstract}
+
+\vspace{-10ex}
+\phantomsection
+\addcontentsline{toc}{section}{\Large\nstrut{Contents}}
+
+\renewcommand{\contentsname}{}
+% http://tex.stackexchange.com/a/182744/78411
+\renewcommand{\baselinestretch}{0.85}\normalsize
+\tableofcontents
+\renewcommand{\baselinestretch}{1.0}\normalsize
+\newpage
+
+
+\nsection{Introduction}
+
+\nsection{Special Thanks}
+
+Special thanks to jl777 and the greater Komodo community for inspiring a new
+generation of cypherpunks to innovate outside the constraints of Bitcoin and
+Zcash core communities.
+
+Remember, remember, the 5th Of November.
+
+\nsection{References}
+
+\begingroup
+\hfuzz=2pt
+\renewcommand{\section}[2]{}
+\renewcommand{\emph}[1]{\textit{#1}}
+\printbibliography
+\endgroup
+
+\end{document}
