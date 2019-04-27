@@ -14,7 +14,7 @@ sub new {
     my $HOME   = $ENV{HOME};
     # TODO: support other OS's and custom config file path
     # TODO: update to KMD AC location
-    my $config = catfile($HOME, qw/.hush hush.conf/);
+    my $config = $ENV{HUSH_CONFIG} || catfile($HOME, qw/.hush hush.conf/);
     my ($user,$password) = ('','');
     if (-e $config) {
 	open(my $fh, '<', $config) or die $!;
