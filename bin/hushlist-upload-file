@@ -1,0 +1,51 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use Try::Tiny;
+use lib 'lib';
+use Hush::List;
+use Hush::Util qw/barf
+    is_valid_zaddr
+    is_valid_taddr
+/;
+use Data::Dumper;
+use Hush::RPC;
+use File::Slurp;
+use JSON;
+
+my ($from,$to,$filename) = @ARGV;
+my $amount = 0.0;
+
+die "You must specify a filename!" unless $filename;
+die "File does not exist!" unless -e $filename;
+
+my $memo     = read_file($filename);
+my $length   = length $memo;
+print "File is $length bytes\n";
+my $rpc      = Hush::RPC->new;
+my $hex_memo = unpack("h*",$memo); # backend wants hex-encoded memo-field
+#print $hex_memo;
+my $num_memos= int($length / 512) + (($length % 512) ? 1 : 0);
+print "This file will be stored in $num_memos memo fields\n";
+
+unless ( is_valid_zaddr($from) or is_valid_taddr($from) ) {
+    die "From address must be a valid taddr or zaddr!";
+}
+
+die "Invalid zaddr!" unless is_valid_zaddr($to);
+
+## splice hex_memo into 512 byte chunks
+for my $n (1 .. $num_memos) {
+}
+my $hex
+
+print "z_sendmany beginning\n";
+my $recipients = [];
+my $opid     = $rpc->z_sendmany($from,[{
+        address => $to,
+        amount  => $amount,
+        memo    => $hex_memo
+}]);
+print "z_sendmany complete\n";
+my $status = $rpc->z_getoperationstatus([[$opid]]);
+warn Dumper [ $opid, $status ];
