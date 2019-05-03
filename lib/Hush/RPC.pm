@@ -43,19 +43,19 @@ sub new {
         return $rpc,
     } else {
         my $coins = {
-            8822 => 'HUSH',
-           18822 => 'TUSH',
-	    7770 => 'KMD',
-	   17770 => 'KMD-test',
-            8232 => 'ZEC',
-           18232 => 'TAZ',
-	    1989 => 'BTCZ',
-           11989 => 'BTCZ-test',
+            8822  => 'HUSH',
+            18822 => 'TUSH',
+            7770  => 'KMD',
+            17770 => 'KMD-test',
+            8232  => 'ZEC',
+            18232 => 'TAZ',
+            1989  => 'BTCZ',
+            11989 => 'BTCZ-test',
         };
         my $sites = {
             "HUSH" => 'https://myhush.org',
             "TUSH" => 'https://myhush.org',
-	    "KMD"  => 'https://komodoplatform.com',
+            "KMD"  => 'https://komodoplatform.com',
             "ZEC"  => 'https://z.cash',
             "TAZ"  => 'https://z.cash',
         };
