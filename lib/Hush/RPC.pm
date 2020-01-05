@@ -9,7 +9,7 @@ use URL::Encode qw/url_encode/;
 
 sub new {
     # TODO: update ports
-    my $port   = $ENV{HUSH_RPC_PORT} || 8822;
+    my $port   = $ENV{HUSH_RPC_PORT} || 18031;
     my $host   = $ENV{HUSH_RPC_HOST} || "127.0.0.1";
     my $HOME   = $ENV{HOME};
     # TODO: support other OS's and custom config file path
@@ -43,7 +43,7 @@ sub new {
         return $rpc,
     } else {
         my $coins = {
-            8822  => 'HUSH',
+            18031 => 'HUSH',
             18822 => 'TUSH',
             7770  => 'KMD',
             17770 => 'KMD-test',
